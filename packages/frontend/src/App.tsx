@@ -35,7 +35,7 @@ function App() {
           <h1>Husain Basem</h1>
           <h1>Mahdi Alebrahim</h1>
           <h2>SayedQassim</h2>
-          <h3>AMIRAAAAAAA</h3>
+          <h3>AMIRA</h3>
         </div>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
