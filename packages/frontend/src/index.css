@@ -72,63 +72,83 @@ button:focus-visible {
 
 /* base styles */
 * {
+  box-sizing: border-box;
   margin: 0;
-  font-family: "Quicksand";
-  color: #333;
-} 	
+  padding: 0;
+  font-family: "Quicksand", sans-serif;
+}
+
+/* General styles */
+body {
+  color: #213547; /* Dark shade of blue */
+  background-color: #ffffff; /* White background */
+  line-height: 1.6;
+}
+
+/* Navbar styles */
 .navbar {
   padding: 20px;
   display: flex;
   align-items: center;
-  max-width: 600px;
-  margin: 0 auto;
-  border-bottom: 1px solid #f2f2f2;
+  justify-content: space-between;
+  background-color: #0A3A60; /* Deep navy blue */
+  color: white;
 }
+
 .navbar h1 {
-  color: #f1356d;
+  color: #FFD700; /* Golden yellow */
 }
-.navbar .links {
-  margin-left: auto;
-}
-.navbar a {
+
+.navbar .links a {
   margin-left: 16px;
   text-decoration: none;
   padding: 6px;
+  color: white; /* White text for contrast */
 }
-.navbar a:hover {
-  color: #f1356d;
+
+.navbar .links a:hover {
+  color: #FFD700; 
 }
+
+/* Content styles */
 .content {
-  max-width: 600px;
+  max-width: 1000px; 
   margin: 40px auto;
   padding: 20px;
 }
 
+/* Table styles */
 table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
 }
 
 th, td {
-  padding: 10px;
-  border: 1px solid navy; /* Navy blue borders */
+  padding: 12px 15px; /* More padding for a spacious look */
+  border: 1px solid #0A3A60; /* Deep navy blue borders */
   text-align: left;
+  font-weight: 500; /* Slightly bolder font for readability */
 }
 
 th {
-  background-color: navy;  
-  color: white;
+  background: linear-gradient(145deg, #0A3A60, #005082); /* Gradient navy blue */
+  color: white; /* White text for contrast */
+  letter-spacing: 1px; /* Spacing out the header text */
 }
 
 td {
-  background-color: white;  
+  background-color: white; /* Keeping the cells white for clarity */
+  color: #0A3A60; /* Text in deep navy blue for consistency */
 }
 
-tr:nth-child(even) td {
-  background-color: #f0f0f0;  
+tr:nth-child(even) {
+  background-color: #f0f0f0; /* Zebra striping for rows, soft grey */
 }
 
 tr:hover {
-  background-color: yellow;
+  background-color: #FFD700; /* Golden yellow on hover for interactivity */
 }
+
+/* Footer and other styles here */
