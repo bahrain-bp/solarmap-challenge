@@ -75,7 +75,7 @@ button:focus-visible {
   margin: 0;
   font-family: "Quicksand";
   color: #333;
-}
+} 	
 .navbar {
   padding: 20px;
   display: flex;
@@ -102,4 +102,33 @@ button:focus-visible {
   max-width: 600px;
   margin: 40px auto;
   padding: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th, td {
+  padding: 10px;
+  border: 1px solid navy; /* Navy blue borders */
+  text-align: left;
+}
+
+th {
+  background-color: navy;  
+  color: white;
+}
+
+td {
+  background-color: white;  
+}
+
+tr:nth-child(even) td {
+  background-color: #f0f0f0;  
+}
+
+tr:hover {
+  background-color: yellow;
 }
