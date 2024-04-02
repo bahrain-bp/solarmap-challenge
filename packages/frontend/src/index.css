@@ -152,3 +152,126 @@ tr:hover {
 }
 
 /* Footer and other styles here */
+
+.about-container {
+  min-height: 100vh;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f5faff; /* Light background to contrast with the table */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.about-container h2 {
+  color: #007bff; /* Blue color for headings */
+  margin-bottom: 15px;
+  font-size: 24px;
+  font-weight: bold;
+  border-bottom: 2px solid #ffc107; /* Yellow underline for headings */
+  padding-bottom: 5px;
+  display: inline-block;
+}
+
+.about-container p, .about-container ul {
+  color: #333; /* Darker text for readability */
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.about-container ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.about-container ul li {
+  margin-bottom: 10px;
+  position: relative;
+  padding-left: 20px;
+  font-weight: 500; /* Slightly bolder font for list items */
+}
+
+.about-container ul li::before {
+  content: "⚡"; /* Or any other symbol you're using */
+  color: #ffc107; /* Yellow color for the bullet symbol */
+  position: absolute;
+  left: 0;
+  font-size: 18px;
+  margin-right: 20px; /* Adds space between the symbol and the text */
+}
+
+.section, .team {
+  margin-bottom: 25px;
+  padding: 15px;
+  background-color: #e9ecef;
+  border-radius: 5px;
+}
+
+/* Extra styling for emphasis */
+.about-container p {
+  text-align: justify; /* Justify paragraph text for a clean look */
+}
+
+/* Add a bit of interactivity */
+.about-container h2:hover {
+  color: #ffc107; /* Change heading color to yellow on hover */
+  cursor: pointer; /* Change cursor to indicate interactivity */
+}
+
+.section, .team {
+  margin-bottom: 25px;
+  padding: 15px;
+  background-color: #e9ecef; /* Light grey background for sections */
+  border-radius: 5px; /* Rounded corners for sections */
+}
+
+/* Styling for table */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+th, td {
+  border: 1px solid #007bff;
+  text-align: left;
+  padding: 12px;
+  background-color: white; /* Bright background for cells to pop */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions for 3D effect */
+}
+
+/* Gradient and 3D effect on headers */
+th {
+  background-image: linear-gradient(to right, #007bff, #ffc107);
+  color: white;
+  position: relative; /* Needed for pseudo-elements */
+}
+
+th::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 2px;
+  background: rgba(0,0,0,0.2);
+}
+
+/* Hover effect on rows for interactivity */
+tr:hover td {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Ensuring even rows stand out slightly */
+tr:nth-child(even) td {
+  background-color: #e9ecef;
+}
+
+/* Distinctive styling for the first column to align with theme */
+th:first-child, td:first-child {
+  border-right: 2px solid #ffc107; /* Yellow border for a splash of color */
+}
