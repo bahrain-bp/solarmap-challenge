@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter, Route, Routes} from 'react-router-dom';
 import Navbar from './pages/Navbar';
 import Home from './pages/Home';
@@ -12,10 +11,10 @@ function App() {
         <div className="content">
           <h1>Welcome to SolarMap</h1>
           <p>This is a solar map app</p>
-          <Routes>
+          {/* <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/About" element={<About />} />
-          </Routes>
+          </Routes> */}
         </div>
       </div>
     </BrowserRouter>
