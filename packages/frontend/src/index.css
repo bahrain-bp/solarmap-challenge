@@ -103,3 +103,22 @@ button:focus-visible {
   margin: 40px auto;
   padding: 20px;
 }
+
+.about-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+}
+
+.about-container h1 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.about-text p {
+  color: #666;
+  font-size: 18px;
+  line-height: 1.6;
+}
+

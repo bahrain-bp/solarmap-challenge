@@ -3,6 +3,7 @@
 // import viteLogo from '/vite.svg'
 import Navbar from './pages/Navbar'
 import Home from './pages/Home'
+import About from './pages/About'
 // import './App.css'
 
 function App() {
@@ -54,6 +55,7 @@ function App() {
         <h1>Welcome to SolarMap</h1>
         <p>This is a solar map app</p>
         <Home />
+        <About /> 
       </div>
     </div>
   )
