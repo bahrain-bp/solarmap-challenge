@@ -71,6 +71,14 @@ button:focus-visible {
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
 
 /* base styles */
+:root {
+  --primary-color: #007bff; /* Blue for primary actions */
+  --secondary-color: #ffc107; /* Yellow for highlights */
+  --background-color: #f5faff; /* Light background */
+  --text-color: #213547; /* Dark blue for text */
+  --nav-height: 60px; /* Height for navbar */
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -78,10 +86,9 @@ button:focus-visible {
   font-family: "Quicksand", sans-serif;
 }
 
-/* General styles */
 body {
-  color: #213547; /* Dark shade of blue */
-  background-color: #ffffff; /* White background */
+  color: var(--text-color);
+  background-color: var(--background-color);
   line-height: 1.6;
 }
 
@@ -91,19 +98,19 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #0A3A60; /* Deep navy blue */
+  background-color: #0A3A60; 
   color: white;
 }
 
 .navbar h1 {
-  color: #FFD700; /* Golden yellow */
+  color: #FFD700; 
 }
 
 .navbar .links a {
   margin-left: 16px;
   text-decoration: none;
   padding: 6px;
-  color: white; /* White text for contrast */
+  color: white; 
 }
 
 .navbar .links a:hover {
@@ -112,7 +119,7 @@ body {
 
 /* Content styles */
 .content {
-  max-width: 1000px; 
+  max-width: 1500px ; 
   margin: 40px auto;
   padding: 20px;
 }
@@ -121,34 +128,47 @@ body {
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  margin: 20px 0;
 }
 
 th, td {
-  padding: 12px 15px; /* More padding for a spacious look */
-  border: 1px solid #0A3A60; /* Deep navy blue borders */
+  padding: 12px 15px;
   text-align: left;
-  font-weight: 500; /* Slightly bolder font for readability */
+  border-bottom: 1px solid #ddd;
 }
 
 th {
-  background: linear-gradient(145deg, #0A3A60, #005082); /* Gradient navy blue */
-  color: white; /* White text for contrast */
-  letter-spacing: 1px; /* Spacing out the header text */
+  background-color: var(--primary-color);
+  color: white;
 }
 
-td {
-  background-color: white; /* Keeping the cells white for clarity */
-  color: #0A3A60; /* Text in deep navy blue for consistency */
+.search-and-filter {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
 }
 
-tr:nth-child(even) {
-  background-color: #f0f0f0; /* Zebra striping for rows, soft grey */
+.search-bar, .level-filter {
+  padding: 10px;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  width: 100%;
 }
 
-tr:hover {
-  background-color: #FFD700; /* Golden yellow on hover for interactivity */
+.search-bar {
+  margin-right: 10px;
+}
+
+
+.search-bar::placeholder {
+  color: #0A3A60;
+  opacity: 0.7;
+}
+
+.search-bar:focus {
+  box-shadow: 0 0 12px rgba(10, 58, 96, 0.8); 
+  border-color: #FFD700;
 }
 
 /* Footer and other styles here */
@@ -158,24 +178,24 @@ tr:hover {
   width: 100%;
   margin: 0 auto;
   padding: 20px;
-  background-color: #f5faff; /* Light background to contrast with the table */
+  background-color: #f5faff; 
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
 .about-container h2 {
-  color: #007bff; /* Blue color for headings */
+  color: #007bff; 
   margin-bottom: 15px;
   font-size: 24px;
   font-weight: bold;
-  border-bottom: 2px solid #ffc107; /* Yellow underline for headings */
+  border-bottom: 2px solid #ffc107; 
   padding-bottom: 5px;
   display: inline-block;
 }
 
 .about-container p, .about-container ul {
-  color: #333; /* Darker text for readability */
+  color: #333; 
   font-size: 16px;
   line-height: 1.6;
 }
@@ -189,7 +209,7 @@ tr:hover {
   margin-bottom: 10px;
   position: relative;
   padding-left: 20px;
-  font-weight: 500; /* Slightly bolder font for list items */
+  font-weight: 500; 
 }
 
 .about-container ul li::before {
@@ -239,15 +259,14 @@ th, td {
   border: 1px solid #007bff;
   text-align: left;
   padding: 12px;
-  background-color: white; /* Bright background for cells to pop */
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions for 3D effect */
+  background-color: white; 
+  transition: transform 0.3s ease, box-shadow 0.3s ease; 
 }
 
-/* Gradient and 3D effect on headers */
 th {
   background-image: linear-gradient(to right, #007bff, #ffc107);
   color: white;
-  position: relative; /* Needed for pseudo-elements */
+  position: relative; 
 }
 
 th::after {
@@ -260,18 +279,15 @@ th::after {
   background: rgba(0,0,0,0.2);
 }
 
-/* Hover effect on rows for interactivity */
 tr:hover td {
   transform: translateY(-2px);
   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
-/* Ensuring even rows stand out slightly */
 tr:nth-child(even) td {
   background-color: #e9ecef;
 }
 
-/* Distinctive styling for the first column to align with theme */
 th:first-child, td:first-child {
-  border-right: 2px solid #ffc107; /* Yellow border for a splash of color */
+  border-right: 2px solid #ffc107; 
 }
