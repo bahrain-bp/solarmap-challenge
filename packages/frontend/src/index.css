@@ -92,34 +92,20 @@ body {
   line-height: 1.6;
 }
 
-/* Navbar styles */
-.navbar {
-  padding: 20px;
-  display: flex;
-  align-items: center;
-  max-width: 3800px;
-  margin: 0 auto;
-  border-bottom: 1px solid #f2f2f2;
+/* navbar styles */
+#navbar_item {
+  color: rgb(249, 249, 249); /* Sets the default text color to navy blue */
 }
 
-.navbar h1 {
-  color: #FFD700; 
-}
-
-.navbar .links a {
-  margin-left: 16px;
-  text-decoration: none;
-  padding: 6px;
-  color: white; 
-}
-
-.navbar .links a:hover {
-  color: #FFD700; 
+/* Hover state with yellow color */
+#navbar_item:hover {
+  color: yellow; /* Changes text color to yellow on hover */
 }
 
 /* Content styles */
 .content {
  max-width: 3800px; 
+
   margin: 40px auto;
   padding: 20px;
 }
