@@ -69,7 +69,7 @@ button:focus-visible {
 } */
 
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
-
+@import 'bootstrap/dist/css/bootstrap.min.css';
 /* base styles */
 :root {
   --primary-color: #007bff; /* Blue for primary actions */
@@ -97,9 +97,9 @@ body {
   padding: 20px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  background-color: #0A3A60; 
-  color: white;
+  max-width: 3800px;
+  margin: 0 auto;
+  border-bottom: 1px solid #f2f2f2;
 }
 
 .navbar h1 {
@@ -119,7 +119,7 @@ body {
 
 /* Content styles */
 .content {
-  max-width: 1500px ; 
+ max-width: 3800px; 
   margin: 40px auto;
   padding: 20px;
 }
