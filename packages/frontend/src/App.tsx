@@ -9,8 +9,8 @@ function App() {
       <div className="App">
         <Navbar />
         <div className="content">
-          <h1>Welcome to SolarMap</h1>
-          <p>This is a solar map app</p>
+          {/* <h1>Welcome to SolarMap</h1>
+          <p>This is a solar map app</p> */}
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/About" element={<About />} />
