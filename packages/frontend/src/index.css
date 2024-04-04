@@ -199,8 +199,8 @@ th {
 }
 
 .about-container ul li::before {
-  content: "⚡"; /* Or any other symbol you're using */
-  color: #ffc107; /* Yellow color for the bullet symbol */
+  content: "☀️"; /* Sun symbol for list */
+  color: #ffc107; /* Yellow color for the bullet symbol (Just in case) */
   position: absolute;
   left: 0;
   font-size: 18px;
