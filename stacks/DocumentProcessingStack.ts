@@ -5,7 +5,7 @@ export function DocumentProcessingStack({ stack }: StackContext) {
     // Creating Queue Service
 
     const documentsQueue = new Queue(stack, "Document-Queue", {
-        // consumer: "...",
+        consumer: "packages/functions/src/process-pdf-lambda.handler",
         cdk: {
             queue: {
                 // fifo: true,
@@ -18,8 +18,8 @@ export function DocumentProcessingStack({ stack }: StackContext) {
 
     // Creating S3 Bucket
 
-    const artificatsBucket = new Bucket(stack, "Artificats-Bucket", {
-        name: stack.stage + '-s3-for-artificats',
+    const artificatsBucket = new Bucket(stack, "Artifacts-Bucket", {
+        name: stack.stage + '-s3-for-artifacts',
         blockPublicACLs: true,
         notifications: {
             myNotification: {
