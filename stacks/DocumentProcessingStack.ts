@@ -1,11 +1,15 @@
-import { Bucket, Queue, StackContext } from "sst/constructs";
+import { Function, Bucket, Queue, StackContext } from "sst/constructs";
+import * as iam from 'aws-cdk-lib/aws-iam';
+
 
 export function DocumentProcessingStack({ stack }: StackContext) {
+
+    const documentsFunction = new Function(stack, "Function", { handler: "packages/functions/src/process-pdf-lambda.handler" });
 
     // Creating Queue Service
 
     const documentsQueue = new Queue(stack, "Document-Queue", {
-        consumer: "packages/functions/src/process-pdf-lambda.handler",
+        consumer: documentsFunction,
         cdk: {
             queue: {
                 // fifo: true,
@@ -15,6 +19,15 @@ export function DocumentProcessingStack({ stack }: StackContext) {
             }
         }
     });
+
+
+    documentsFunction.attachPermissions(["s3", "dynamodb", "sqs"]);
+    // Allow Lambda function to call Textract analyzeDocument
+    documentsFunction.addToRolePolicy(new iam.PolicyStatement({
+        actions: ['textract:AnalyzeDocument'],
+        resources: ['*'] // Adjust resource pattern as needed
+    }));
+
 
     // Creating S3 Bucket
 
@@ -36,6 +49,6 @@ export function DocumentProcessingStack({ stack }: StackContext) {
     stack.addOutputs({
         QueueARN: documentsQueue.queueArn,
         Bucket: artificatsBucket.bucketName,
-      });
+    });
 
 }

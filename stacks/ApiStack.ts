@@ -19,7 +19,7 @@ export function ApiStack({ stack }: StackContext) {
             // Sample TypeScript lambda function
             "POST /": "packages/functions/src/lambda.main",
             // TypeScript lambda function for MEWA bill document processing 
-            "POST /process-pdf": "packages/functions/src/process-pdf-lambda.handler",
+            // "POST /process-pdf": "packages/functions/src/process-pdf-lambda.handler",
             // Sample Pyhton lambda function
             "GET /": {
                 function: {
