@@ -29,7 +29,7 @@ export default {
       app.stack(DBStack)
       .stack(ApiStack)
       .stack(FrontendStack)
-      .stack(DocumentProcessingStack);
+      /* .stack(DocumentProcessingStack) */;
     }
   }
 } satisfies SSTConfig;
