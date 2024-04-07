@@ -1,7 +1,18 @@
+import logo from "../assets/logo.png";
+import SolarPanelBackground from "../assets/SolarPanelBackground.jpg";
+import SolarGif from "../assets/SolarGif.gif";
+import SolarGif2 from "../assets/SolarGif2.gif";
+import SolarGif3 from "../assets/SolarGif3.gif";
+import SolarGif4 from "../assets/SolarGif4.gif";
+import Team1 from "../assets/Team1.jpg";
+import Team2 from "../assets/Team2.jpg";
+import Team3 from "../assets/Team3.jpg";
+import Team4 from "../assets/Team4.jpg";
+import Team5 from "../assets/Team5.jpg";
 export default function Home() {
   return (
     <>
-    {/* Image Slider */}
+      {/* Image Slider */}
       <div id="slides" className="carousel slide" data-ride="carousel">
         <ul className="carousel-indicators">
           <li data-target="#slides" data-slide-to="0" className="active"></li>
@@ -26,57 +37,234 @@ export default function Home() {
           </div>
         </div>
       </div>
-{/* Jumbotron */}
+      {/* Jumbotron */}
       <div className="container-fluid">
         <div className="row jumbotron">
           <div className="col-xs-12 col-sm-12 col-md-9 col-lg-9 col-xl-10">
             <p className="lead" style={{ fontSize: "32px" }}>
-Solar Map is a smart solar panel calculator tool that helps estimate the potential cost and savings of installing solar panels on a property. 
-By inputting factors such as location, energy usage, and roof space, users can quickly assess the feasibility and financial benefits of transitioning to solar energy.</p>
+              Solar Map is a smart solar panel calculator tool that helps estimate the potential cost and savings of installing solar panels on a property.
+              By inputting factors such as location, energy usage, and roof space, users can quickly assess the feasibility and financial benefits of transitioning to solar energy.</p>
           </div>
           <div className="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-2">
-            <a href="#"><button type="button" className="btn btn-outline-secondary btn-lg" style={{ fontSize: "32px"}}>Calculator</button></a>
-          </div>"
+            <a href="#"><button type="button" className="btn btn-outline-secondary btn-lg" style={{ fontSize: "32px" }}>Calculator</button></a>
+          </div>
         </div>
       </div>
-{/* Welcome */}
-<div className="container-fluid padding">
-  <div className="row welcome text-center">
-    <div className="col-12">
-      <h1 className="display-4">A Guide to Solar Map Installation across the Kingdom of Bahrain.</h1>
-      <hr />
-      <div className="col-12">
-        <p className="lead" style={{ fontSize: "24px"}}>Solar Map is a smart solar panel calculator tool that helps estimate the potential cost and savings of installing solar panels on a property. By inputting factors such as location, energy usage, and roof space, users can quickly assess the feasibility and financial benefits of transitioning to solar energy.
-Our solar map calculator is designed to help you identify the best installation options for your solar property. With a wide range of features, including location, energy usage, and roof space, our solar map calculator can provide you with a comprehensive analysis of your solar property's potential.
-Whether you're a homeowner looking to install solar panels, a business owner looking to expand their business, or a general investor looking to invest in solar energy, our solar map calculator is here to help you make informed decisions.
-With our solar map calculator, you can easily input your property's location, energy usage, and roof space, and our solar map calculator will provide you with a comprehensive analysis of your property's potential solar energy savings.</p>
+      {/* Welcome */}
+      <div className="container-fluid padding">
+        <div className="row welcome text-center">
+          <div className="col-12">
+            <h1 className="display-4">A Guide to Solar Map Installation across the Kingdom of Bahrain.</h1>
+            <hr />
+            <div className="col-12">
+              <p className="lead" style={{ fontSize: "24px" }}>Solar Map is a smart solar panel calculator tool that helps estimate the potential cost and savings of installing solar panels on a property. By inputting factors such as location, energy usage, and roof space, users can quickly assess the feasibility and financial benefits of transitioning to solar energy.
+                Our solar map calculator is designed to help you identify the best installation options for your solar property. With a wide range of features, including location, energy usage, and roof space, our solar map calculator can provide you with a comprehensive analysis of your solar property's potential.
+                Whether you're a homeowner looking to install solar panels, a business owner looking to expand their business, or a general investor looking to invest in solar energy, our solar map calculator is here to help you make informed decisions.
+                With our solar map calculator, you can easily input your property's location, energy usage, and roof space, and our solar map calculator will provide you with a comprehensive analysis of your property's potential solar energy savings.</p>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</div>
-{/* Three Column Section */}
-<div className="container-fluid padding">
-  <div className="row text-center padding">
-    <div className="col-xs-12 col-sm-6 col-md-4">
-      <i className="fas fa-code"></i>
-      <h3>Easy to Use</h3>
-      <p>A seamless solution for users.</p>
+      {/* Three Column Section */}
+      <div className="container-fluid padding">
+        <div className="row text-center padding">
+          <div className="col-xs-12 col-sm-6 col-md-4">
+            <i className="fas fa-code"></i>
+            <h3>Easy to Use</h3>
+            <p>A seamless solution for users.</p>
+          </div>
+
+          <div className="col-xs-12 col-sm-6 col-md-4">
+            <i className="fas fa-bold"></i>
+            <h3>Automated</h3>
+            <p>A quick and on-the-go experience.</p>
+          </div>
+
+          <div className="col-xs-12 col-md-4">
+            <i className="fab fa-css3"></i>
+            <h3>Customized</h3>
+            <p>Tailored results for your needs.</p>
+          </div>
+        </div>
+      </div>
+      <hr className="my-4" />
+
+      {/* Two Column Section */}
+      <div className="container-fluid padding">
+        <div className="row padding">
+          <div className="col-lg-6">
+            <h2 style={{ textAlign: "center" }}>Guiding the Path to a Sustainable Future</h2>
+            <p style={{ fontSize: "22px" }}>Empowering homeowners with precision, our solar map harnesses sunlight's potential, guiding towards sustainable energy solutions, one roof at a time.</p>
+            <p style={{ fontSize: "22px" }}>"Our solar map: illuminating paths to renewable futures, calculating the sun's bounty for eco-conscious endeavors."</p>
+            <br />
+          </div>
+          <div className="col-lg-6">
+            <img src={SolarPanelBackground} className="img-fluid" alt="Solar Map" />
+          </div>
+        </div>
+        <a href="#" className="btn btn-primary">Explore Initiative</a>
       </div>
 
-      <div className="col-xs-12 col-sm-6 col-md-4">
-      <i className="fas fa-bold"></i>
-      <h3>Automated</h3>
-      <p>A quick and on-the-go experience.</p>
-      </div>
+      <hr className="my-4" />
 
-      <div className="col-xs-12 col-md-4">
-      <i className="fab fa-css3"></i>
-      <h3>Customized</h3>
-      <p>Tailored results for your needs.</p>
+      {/* Fixed Background */}
+      <figure>
+        <div className="fixed-wrap">
+          <div id="fixed">
+
+          </div>
+        </div>
+      </figure>
+
+      {/* Hidden Section */}
+      <br />
+      <div className="row text-center">
+        <button className="btn btn-outline-secondary" data-toggle="collapse" data-target="#gifs">
+          <h1 className="display-4">Discover More</h1>
+        </button>
       </div>
-    </div>
-  </div>
-  <hr className="my-4" />
-      </>
+      <br />
+
+      <div id="gifs" className="collapse">
+        <div className="container-fluid padding">
+          <div className="row text-center">
+            <div className="col-sm-6 col-md-3">
+              <img className="gif" src={SolarGif} />
+            </div>
+            <div className="col-sm-6 col-md-3">
+              <img className="gif" src={SolarGif2} />
+            </div>
+            <div className="col-sm-6 col-md-3">
+              <img className="gif" src={SolarGif3} />
+            </div>
+            <div className="col-sm-6 col-md-3">
+              <img className="gif" src={SolarGif4} />
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr className="my-4" />
+      {/* Meet the Team */}
+      <div className="container-fluid padding">
+        <div className="row welcome text-center">
+          <div className="col-12">
+            <h1 className="display-4">Meet the Team</h1>
+            <hr />
+          </div>
+        </div>
+      </div>
+      <br />
+
+      {/* Team Cards */}
+
+      <div className="container-fluid padding">
+        <div className="row padding">
+          <div className="col-md-4">
+            <div className="card">
+              <img className="card-img-top" src={Team1} />
+              <div className="card-body">
+                <h4 className="card-title">SpongeBob SquarePants</h4>
+                <p className="card-text">Fry Cook at the Krusty Krab: A cheerful sea sponge who lives in a pineapple under the sea, SpongeBob flips patties at the famous Krusty Krab while spreading joy.</p>
+                <a href="#" className="btn btn-outline-secondary">See Profile</a>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-4">
+            <div className="card">
+              <img className="card-img-top" src={Team4} />
+              <div className="card-body">
+                <h4 className="card-title">Tom and Jerry</h4>
+                <p className="card-text">Feline Nemesis and Mischievous Mouse: Tom, the diligent but often outsmarted cat, engages in endless antics with Jerry, the cunning mouse, in their timeless pursuit of one-upmanship.</p>
+                <a href="#" className="btn btn-outline-secondary">See Profile</a>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-4">
+            <div className="card">
+              <img className="card-img-top" src={Team3} />
+              <div className="card-body">
+                <h4 className="card-title">Powerpuff Girls</h4>
+                <p className="card-text">Blossom, Bubbles, and Buttercup: Sugar, spice, and everything nice, these three kindergarten-aged superheroes protect the city of Townsville from villains while navigating the challenges of growing up.</p>
+                <a href="#" className="btn btn-outline-secondary">See Profile</a>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-4">
+            <div className="card">
+              <img className="card-img-top" src={Team5} />
+              <div className="card-body">
+                <h4 className="card-title">Jake the Dog</h4>
+                <p className="card-text">Shape-shifting Companion and Adventurer: With the ability to stretch and morph his body into various forms, Jake, alongside his brother Finn, embarks on whimsical adventures throughout the Land of Ooo.</p>
+                <a href="#" className="btn btn-outline-secondary">See Profile</a>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-4">
+            <div className="card">
+              <img className="card-img-top" src={Team2} />
+              <div className="card-body">
+                <h4 className="card-title">Tweety and Sylvester</h4>
+                <p className="card-text">Canary and Puddy Tat Duo: Tweety, the yellow canary known for his innocent appearance but clever wit, constantly evades the clutches of Sylvester, the determined yet hapless cat, in their classic game of cat and bird.</p>
+                <a href="#" className="btn btn-outline-secondary">See Profile</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br />
+      <br />
+      {/* Connect Socials */}
+      <div className="container-fluid padding">
+        <div className="row text-center padding">
+          <div className="col-12">
+            <h2>Connect</h2>
+          </div>
+          <div className="col-12 social padding">
+            <a href="#"><i className="fab fa-facebook"></i></a>
+            <a href="#"><i className="fab fa-twitter"></i></a>
+            <a href="#"><i className="fab fa-google-plus-g"></i></a>
+            <a href="#"><i className="fab fa-instagram"></i></a>
+            <a href="#"><i className="fab fa-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+    <br />
+      {/* Footer */}
+      <footer style={{backgroundColor:"grey"}}>
+        <div className="container-fluid padding">
+          <div className="row text-center">
+            <div className="col-md-4">
+              <img src= {logo} style={{height: "100px"}}/>
+              <hr className="light" />
+              <p>555-555-555</p>
+              <p>email@email.com</p>
+              <p>Manama, Bahrain</p>
+          </div>
+          <div className="col-md-4">
+            <hr className="light" />
+            <h5>Our Hours</h5>
+            <hr className="light" />
+            <p>Monday-Friday: 9am-5pm</p>
+            <p>Saturday: 10am-2pm</p>
+            <p>Sunday: Closed</p>
+          </div>
+          <div className="col-md-4">
+          <hr className="light" />
+            <h5>Service Governates</h5>
+            <hr className="light" />
+            <p>Central Municpal</p>
+            <p>Muharraq Municpal</p>
+            <p>Northern Municpal</p>
+            <p>Southern Municpal</p>
+          </div>
+          <div className="col-12">
+            <hr className="light" />
+            <h5>&copy; 2024 Solar Map</h5>
+            <h5>solarmap.org.bh</h5>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </>
   );
 }
