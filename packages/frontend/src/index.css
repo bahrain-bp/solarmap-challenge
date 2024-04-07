@@ -1,4 +1,4 @@
-:root {
+/* :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -66,4 +66,214 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+} */
+
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+@import 'bootstrap/dist/css/bootstrap.min.css';
+/* base styles */
+:root {
+  --primary-color: #007bff; /* Blue for primary actions */
+  --secondary-color: #ffc107; /* Yellow for highlights */
+  --background-color: #f5faff; /* Light background */
+  --text-color: #213547; /* Dark blue for text */
+  --nav-height: 60px; /* Height for navbar */
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Quicksand", sans-serif;
+}
+
+body {
+  color: var(--text-color);
+  background-color: var(--background-color);
+  line-height: 1.6;
+}
+
+/* navbar styles */
+#navbar_item {
+  color: rgb(249, 249, 249); /* Sets the default text color to navy blue */
+}
+
+/* Hover state with yellow color */
+#navbar_item:hover {
+  color: yellow; /* Changes text color to yellow on hover */
+}
+
+/* Content styles */
+.content {
+ max-width: 3800px; 
+
+  margin: 40px auto;
+  padding: 20px;
+}
+
+/* Table styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+th, td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.search-and-filter {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.search-bar, .level-filter {
+  padding: 10px;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  width: 100%;
+}
+
+.search-bar {
+  margin-right: 10px;
+}
+
+
+.search-bar::placeholder {
+  color: #0A3A60;
+  opacity: 0.7;
+}
+
+.search-bar:focus {
+  box-shadow: 0 0 12px rgba(10, 58, 96, 0.8); 
+  border-color: #FFD700;
+}
+
+/* Footer and other styles here */
+
+.about-container {
+  min-height: 100vh;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f5faff; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.about-container h2 {
+  color: #007bff; 
+  margin-bottom: 15px;
+  font-size: 24px;
+  font-weight: bold;
+  border-bottom: 2px solid #ffc107; 
+  padding-bottom: 5px;
+  display: inline-block;
+}
+
+.about-container p, .about-container ul {
+  color: #333; 
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.about-container ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.about-container ul li {
+  margin-bottom: 10px;
+  position: relative;
+  padding-left: 20px;
+  font-weight: 500; 
+}
+
+.about-container ul li::before {
+  content: "⚡"; /* Or any other symbol you're using */
+  color: #ffc107; /* Yellow color for the bullet symbol */
+  position: absolute;
+  left: 0;
+  font-size: 18px;
+  margin-right: 20px; /* Adds space between the symbol and the text */
+}
+
+.section, .team {
+  margin-bottom: 25px;
+  padding: 15px;
+  background-color: #e9ecef;
+  border-radius: 5px;
+}
+
+/* Extra styling for emphasis */
+.about-container p {
+  text-align: justify; /* Justify paragraph text for a clean look */
+}
+
+/* Add a bit of interactivity */
+.about-container h2:hover {
+  color: #ffc107; /* Change heading color to yellow on hover */
+  cursor: pointer; /* Change cursor to indicate interactivity */
+}
+
+.section, .team {
+  margin-bottom: 25px;
+  padding: 15px;
+  background-color: #e9ecef; /* Light grey background for sections */
+  border-radius: 5px; /* Rounded corners for sections */
+}
+
+/* Styling for table */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+th, td {
+  border: 1px solid #007bff;
+  text-align: left;
+  padding: 12px;
+  background-color: white; 
+  transition: transform 0.3s ease, box-shadow 0.3s ease; 
+}
+
+th {
+  background-image: linear-gradient(to right, #007bff, #ffc107);
+  color: white;
+  position: relative; 
+}
+
+th::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 2px;
+  background: rgba(0,0,0,0.2);
+}
+
+tr:hover td {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+tr:nth-child(even) td {
+  background-color: #e9ecef;
+}
+
+th:first-child, td:first-child {
+  border-right: 2px solid #ffc107; 
 }

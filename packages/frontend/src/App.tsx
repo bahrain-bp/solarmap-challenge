@@ -1,43 +1,25 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import Navbar from './pages/Navbar'
+import Home from './pages/Home'
+import About from './pages/About'
+import Providers from './pages/Provider';
+import DocumentUpload from './pages/DocumentUpload';
+import { BrowserRouter, Route, Routes} from 'react-router-dom';
 
 function App() {
-  const [count, setCount] = useState("")
-
-  function onClick() {
-    console.log(import.meta.env.VITE_API_URL);
-    fetch(import.meta.env.VITE_API_URL, {
-      method: "POST",
-    })
-      .then((response) => response.text())
-      .then(setCount);
-  }
-
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <BrowserRouter>
+      <div className="App">
+        <Navbar />
+        <div className="content">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/About" element={<About />} />
+            <Route path="/Provider" element={<Providers />} />
+            <Route path="/DocumentUpload" element={<DocumentUpload />} />
+          </Routes>
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={onClick}>
-          count is {count ? count : "unknown"}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </BrowserRouter>
   )
 }
 

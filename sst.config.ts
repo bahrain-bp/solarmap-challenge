@@ -4,7 +4,6 @@ import { DBStack } from "./stacks/DBStack";
 import { ApiStack } from "./stacks/ApiStack";
 import { ImageBuilderForCodeCatalyst } from "./stacks/devops/ImageBuilderForCodeCatalyst";
 import { OIDCForGitHubCI } from "./stacks/devops/OIDCForGitHubCI";
-import { demoChallenge } from "./stacks/demo-challenge";
 
 export default {
   config(_input) {
@@ -26,11 +25,9 @@ export default {
       app.stack(OIDCForGitHubCI)
     }
     else {
-      app
-      //.stack(DBStack)
-      //.stack(ApiStack)
-      //.stack(FrontendStack);
-      .stack(demoChallenge);
+      app.stack(DBStack)
+      .stack(ApiStack)
+      .stack(FrontendStack);
     }
   }
 } satisfies SSTConfig;
