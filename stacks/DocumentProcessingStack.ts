@@ -27,6 +27,11 @@ export function DocumentProcessingStack({ stack }: StackContext) {
         actions: ['textract:AnalyzeDocument'],
         resources: ['*'] // Adjust resource pattern as needed
     }));
+    // Add the IAM policy to grant permission for calling Comprehend's DetectEntities action
+    documentsFunction.addToRolePolicy(new iam.PolicyStatement({
+        actions: ['comprehend:DetectEntities'],
+        resources: ['*'] // Adjust resource pattern as needed
+    }));
 
 
     // Creating S3 Bucket
