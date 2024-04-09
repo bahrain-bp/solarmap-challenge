@@ -28,8 +28,9 @@ export function ApiStack({ stack }: StackContext) {
                     timeout: "60 seconds",
                 }
             },
-        }
-    });
+            "GET /admin": "packages/functions/src/admin.main",
+            "GET /admin/users": "packages/functions/src/admin.users",
+    }});
 
     // cache policy to use with cloudfront as reverse proxy to avoid cors
     // https://dev.to/larswww/real-world-serverless-part-3-cloudfront-reverse-proxy-no-cors-cgj

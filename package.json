@@ -22,6 +22,8 @@
     "packages/*"
   ],
   "dependencies": {
+    "@aws-amplify/ui-react": "^6.1.6",
+    "aws-amplify": "^6.0.27",
     "jquery": "^3.7.1",
     "react-router-dom": "^6.22.3",
     "vite": "^5.2.7"

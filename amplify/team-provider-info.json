@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-solarmapchallenge-dev-e6235-authRole",
+      "UnauthRoleArn": "arn:aws:iam::211125369004:role/amplify-solarmapchallenge-dev-e6235-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::211125369004:role/amplify-solarmapchallenge-dev-e6235-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-solarmapchallenge-dev-e6235-deployment",
+      "UnauthRoleName": "amplify-solarmapchallenge-dev-e6235-unauthRole",
+      "StackName": "amplify-solarmapchallenge-dev-e6235",
+      "StackId": "arn:aws:cloudformation:us-east-1:211125369004:stack/amplify-solarmapchallenge-dev-e6235/555dcb00-f654-11ee-bba9-0e41e8f0b505",
+      "AmplifyAppId": "d2b1jj29wannrk"
+    },
+    "categories": {
+      "auth": {
+        "solarmapchallenged748e4ff": {}
+      }
+    }
+  }
+}
