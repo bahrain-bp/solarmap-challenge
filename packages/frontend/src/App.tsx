@@ -3,6 +3,8 @@ import Home from './pages/Home'
 import About from './pages/About'
 import Providers from './pages/Provider';
 import DocumentUpload from './pages/DocumentUpload';
+import Map from './pages/Map';
+
 import { BrowserRouter, Route, Routes} from 'react-router-dom';
 
 function App() {
@@ -16,6 +18,7 @@ function App() {
             <Route path="/About" element={<About />} />
             <Route path="/Provider" element={<Providers />} />
             <Route path="/DocumentUpload" element={<DocumentUpload />} />
+            <Route path="/Map" element={<Map />} />
           </Routes>
         </div>
       </div>
