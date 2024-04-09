@@ -9,14 +9,14 @@ export default function Home() {
         <label htmlFor="formFileMultiple" className="form-label">Multiple files input example</label>
         <input className="form-control" type="file" id="formFileMultiple" multiple />
       </div>
-      <div className="mb-3">
+      {/* <div className="mb-3">
         <label htmlFor="formFileDisabled" className="form-label">Disabled file input example</label>
         <input className="form-control" type="file" id="formFileDisabled" disabled />
       </div>
       <div className="mb-3">
         <label htmlFor="formFileSm" className="form-label">Small file input example</label>
         <input className="form-control form-control-sm" id="formFileSm" type="file" />
-      </div>
+      </div> */}
       <div>
         <label htmlFor="formFileLg" className="form-label">Large file input example</label>
         <input className="form-control form-control-lg" id="formFileLg" type="file" />

@@ -5,6 +5,7 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 export function DocumentProcessingStack({ stack }: StackContext) {
 
     const documentsFunction = new Function(stack, "Function", { handler: "packages/functions/src/process-pdf-lambda.handler" });
+    const uploadFunction = new Function(stack, "Function", { handler: "packages/functions/src/document-upload.handler" });
 
     // Creating Queue Service
 
@@ -34,6 +35,7 @@ export function DocumentProcessingStack({ stack }: StackContext) {
     }));
 
 
+
     // Creating S3 Bucket
 
     const artificatsBucket = new Bucket(stack, "Artifacts-Bucket", {
@@ -49,6 +51,15 @@ export function DocumentProcessingStack({ stack }: StackContext) {
         },
     });
 
+    // Define an IAM policy statement to allow PutObject action on the bucket
+    const s3PolicyStatement = new iam.PolicyStatement({
+        actions: ['s3:PutObject'],
+        resources: [artificatsBucket.bucketArn + '/*'], // Allow PutObject action on all objects in the bucket
+    });
+
+    // Add the IAM policy statement to the Lambda function's execution role
+    uploadFunction.addToRolePolicy(s3PolicyStatement);
+
     // Output Results 
 
     stack.addOutputs({
@@ -56,4 +67,5 @@ export function DocumentProcessingStack({ stack }: StackContext) {
         Bucket: artificatsBucket.bucketName,
     });
 
+    return { artificatsBucket };
 }
