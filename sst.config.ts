@@ -27,9 +27,9 @@ export default {
     }
     else {
       app.stack(DBStack)
+      /*.stack(DocumentProcessingStack)*/ // Initialize "DocumentProcessingStack" stack before "ApiStack" stack (Dependency)
       .stack(ApiStack)
-      .stack(FrontendStack)
-      /* .stack(DocumentProcessingStack) */;
+      .stack(FrontendStack);
     }
   }
 } satisfies SSTConfig;

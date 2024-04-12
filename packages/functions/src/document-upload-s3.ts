@@ -1,41 +1,30 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { DocumentProcessingStack } from '../../../stacks/DocumentProcessingStack.js';
-import { use } from "sst/constructs";
-import * as AWS from 'aws-sdk';
+import dotenv from 'dotenv'
+import aws from 'aws-sdk'
+import crypto from 'crypto'
+import { promisify } from "util"
+const randomBytes = promisify(crypto.randomBytes)
 
-const s3 = new AWS.S3();
-const documentProcessingStack = use(DocumentProcessingStack);
+const bucketName = process.env.BUCKET_NAME;
 
-export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
-  const bucketName = documentProcessingStack.artificatsBucket.bucketName; // bucket name
+const s3 = new aws.S3({
+  signatureVersion: 'v4'
+})
 
-  try {
-    const body = JSON.parse(event.body || '');
-    const { fileName, fileData, fileType } = body;
+export async function handler() {
+  const rawBytes = await randomBytes(16)
+  const imageName = rawBytes.toString('hex')
 
-    const s3Params: AWS.S3.PutObjectRequest = {
-      Bucket: bucketName,
-      Key: `${Date.now().toString()}-${fileName}`, // Use a unique key for each file
-      Body: Buffer.from(fileData, 'base64'), // File data in base64 format
-      ContentType: fileType
-    };
-
-    const uploadResult = await s3.upload(s3Params).promise();
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        message: 'File uploaded successfully',
-        location: uploadResult.Location
-      })
-    };
-  } catch (error) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({
-        message: 'Error uploading file',
-        error: error.message
-      })
-    };
-  }
+  const params = ({
+    Bucket: bucketName,
+    Key: imageName,
+    Expires: 60
+  })
+  
+  const uploadURL = await s3.getSignedUrlPromise('putObject', params)
+  
+  return {
+    statusCode: 200,
+    body: JSON.stringify({ url: uploadURL })
+  };
+  
 }
