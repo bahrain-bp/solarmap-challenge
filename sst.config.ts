@@ -5,6 +5,7 @@ import { ApiStack } from "./stacks/ApiStack";
 import { ImageBuilderForCodeCatalyst } from "./stacks/devops/ImageBuilderForCodeCatalyst";
 import { OIDCForGitHubCI } from "./stacks/devops/OIDCForGitHubCI";
 import { DocumentProcessingStack } from "./stacks/DocumentProcessingStack";
+import { MapStack } from "./stacks/MapStack";
 
 export default {
   config(_input) {
@@ -29,7 +30,8 @@ export default {
       app.stack(DBStack)
       .stack(ApiStack)
       .stack(FrontendStack)
-      /* .stack(DocumentProcessingStack) */;
+      .stack(DocumentProcessingStack)
+      .stack(MapStack);
     }
   }
 } satisfies SSTConfig;
