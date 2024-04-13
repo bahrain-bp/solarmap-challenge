@@ -45,7 +45,19 @@ export function DocumentProcessingStack({ stack }: StackContext) {
                 type: "queue",
                 queue: documentsQueue,
                 events: ["object_created"],
-              /*  filters: [{ prefix: "uploads/" }, { suffix: ".pdf" }], */
+                filters: [{ prefix: "uploads/" }, { suffix: ".pdf" }],
+            },
+            pdfNotification: {
+                type: "queue",
+                queue: documentsQueue,
+                events: ["object_created"],
+                filters: [{ prefix: "uploads/" }, { suffix: ".png" }],
+            },
+            jpgNotification: {
+                type: "queue",
+                queue: documentsQueue,
+                events: ["object_created"],
+                filters: [{ prefix: "uploads/" }, { suffix: ".jpeg" }],
             },
         },
     });

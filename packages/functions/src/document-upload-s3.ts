@@ -1,30 +1,36 @@
-import dotenv from 'dotenv'
-import aws from 'aws-sdk'
-import crypto from 'crypto'
-import { promisify } from "util"
-const randomBytes = promisify(crypto.randomBytes)
+import aws from 'aws-sdk';
 
 const bucketName = process.env.BUCKET_NAME;
 
 const s3 = new aws.S3({
   signatureVersion: 'v4'
-})
+});
 
-export async function handler() {
-  const rawBytes = await randomBytes(16)
-  const imageName = rawBytes.toString('hex')
+export async function handler(event: { body: string; }) {
+  const { contentType } = JSON.parse(event.body); // Assuming fileType is sent in the request body
 
-  const params = ({
+  const randomMultiplier = Math.floor(Math.random() * 1000); // Random multiplier
+  let fileName = `uploads/uploaded-file-${new Date().toISOString().slice(0,10).replace(/-/g,"")}-${Date.now() * randomMultiplier}`;
+
+  // Add appropriate file extension based on the fileType
+  if (contentType === 'application/pdf') {
+    fileName += '.pdf';
+  } else if (contentType === 'image/png') {
+    fileName += '.png';
+  } else if (contentType === 'image/jpeg') {
+    fileName += '.jpeg';
+  } // Add more else if conditions for other file types if needed
+
+  const params = {
     Bucket: bucketName,
-    Key: imageName,
+    Key: fileName,
     Expires: 60
-  })
+  };
   
-  const uploadURL = await s3.getSignedUrlPromise('putObject', params)
+  const uploadURL = await s3.getSignedUrlPromise('putObject', params);
   
   return {
     statusCode: 200,
     body: JSON.stringify({ url: uploadURL })
   };
-  
 }
