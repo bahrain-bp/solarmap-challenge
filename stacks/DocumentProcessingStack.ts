@@ -41,19 +41,19 @@ export function DocumentProcessingStack({ stack }: StackContext) {
         name: stack.stage + '-s3-for-artifacts',
         blockPublicACLs: true,
         notifications: {
-            myNotification: {
+            pdfNotification: {
                 type: "queue",
                 queue: documentsQueue,
                 events: ["object_created"],
                 filters: [{ prefix: "uploads/" }, { suffix: ".pdf" }],
             },
-            pdfNotification: {
+            pngNotification: {
                 type: "queue",
                 queue: documentsQueue,
                 events: ["object_created"],
                 filters: [{ prefix: "uploads/" }, { suffix: ".png" }],
             },
-            jpgNotification: {
+            jpegNotification: {
                 type: "queue",
                 queue: documentsQueue,
                 events: ["object_created"],
