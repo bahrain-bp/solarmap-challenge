@@ -32,11 +32,14 @@ const DocumentUploadWithParent: React.FC = () => {
                 handleListen(fileUrl);
 
                 // Display the uploaded file
+                
+                /*
                 const link = document.createElement("a");
                 link.href = fileUrl;
                 link.target = "_blank";
                 link.innerText = "Uploaded File";
                 document.body.appendChild(link);
+                */
 
                 // Clear any previous error messages
                 setErrorMessage("");
