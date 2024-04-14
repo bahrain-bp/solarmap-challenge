@@ -3,11 +3,11 @@ import SolarGif from "../assets/SolarGif.gif";
 import SolarGif2 from "../assets/SolarGif2.gif";
 import SolarGif3 from "../assets/SolarGif3.gif";
 import SolarGif4 from "../assets/SolarGif4.gif";
-import Team1 from "../assets/Team1.jpg";
-import Team2 from "../assets/Team2.jpg";
-import Team3 from "../assets/Team3.jpg";
-import Team4 from "../assets/Team4.jpg";
-import Team5 from "../assets/Team5.jpg";
+// import Team1 from "../assets/Team1.jpg";
+// import Team2 from "../assets/Team2.jpg";
+// import Team3 from "../assets/Team3.jpg";
+// import Team4 from "../assets/Team4.jpg";
+// import Team5 from "../assets/Team5.jpg";
 export default function Home() {
   return (
     <>
