@@ -95,70 +95,75 @@ const Providers = () => {
   });
 
   return (
-    <div className="container-fluid">
-      <div  className="jumbotron jumbotron-fluid" style={{ backgroundImage: `url(${solarprovider})` }}>
-        <div className="container">
-          <h1 className="display-4">Solar PV Consultants and Contractors</h1>
-          <p className="lead">
-            A comprehensive list of solar PV consultants and contractors in Bahrain. Search by name or filter by level to find your ideal solar energy expert.
-          </p>
+    <>
+      <div id="aboutHero" className="carousel slide" data-ride="carousel">
+        <div className="carousel-inner">
+          <div className="carousel-item active">
+            <img className="d-block w-100"  alt="Solar Panels" style={{ height: "500px", backgroundImage: `url(${solarprovider})`  }} />
+            <div className="carousel-caption d-none d-md-block">
+              <h1 className="display-3" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.6)' }}>Solar PV Consultants and Contractors</h1>
+              <p className="lead" style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.5)' }}>A comprehensive list of solar PV consultants and contractors in Bahrain. Search by name or filter by level to find your ideal solar energy expert.</p>
+            </div>
+          </div>
         </div>
       </div>
-      
-      <LevelsSection />
-      
-      <div className="container">
-        <div className="d-flex justify-content-between mb-3">
-          <input
-            type="text"
-            placeholder="Search for a provider..."
-            onChange={(e) => setSearchTerm(e.target.value)}
-            value={searchTerm}
-            className="form-control mr-2"
-          />
-          <select
-            onChange={(e) => setFilterLevel(e.target.value)}
-            value={filterLevel}
-            className="form-control"
-          >
-            <option value="">All Levels</option>
-            <option value="A">Level A</option>
-            <option value="B">Level B</option>
-            <option value="C">Level C</option>
-            <option value="D">Level D</option>
-          </select>
-        </div>
 
-        {isLoading ? (
+      <br />
+
+        <LevelsSection />
+
+        <div className="container">
+          <div className="d-flex justify-content-between mb-3">
+            <input
+              type="text"
+              placeholder="Search for a provider..."
+              onChange={(e) => setSearchTerm(e.target.value)}
+              value={searchTerm}
+              className="form-control mr-2"
+            />
+            <select
+              onChange={(e) => setFilterLevel(e.target.value)}
+              value={filterLevel}
+              className="form-control"
+            >
+              <option value="">All Levels</option>
+              <option value="A">Level A</option>
+              <option value="B">Level B</option>
+              <option value="C">Level C</option>
+              <option value="D">Level D</option>
+            </select>
+          </div>
+
+          {isLoading ? (
             <div className="loading-container">
               <div className="spinner"></div>
             </div>
-        ) : (
-          <table className="table">
-            <thead className="custom-thead-dark">
-              <tr>
-                <th>Name</th>
-                <th>Level</th>
-                <th>CRPEP Number</th>
-                <th>Contact Information</th>
-                <th>Fax</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredConsultants.map((consultant, index) => (
-                <tr key={index}>
-                  <td>{consultant.name}</td>
-                  <td>{consultant.level}</td>
-                  <td>{consultant.crep_num}</td>
-                  <td>{consultant.contact_info}</td>
-                  <td>{consultant.fax}</td>
+          ) : (
+            <table className="table">
+              <thead className="custom-thead-dark">
+                <tr>
+                  <th>Name</th>
+                  <th>Level</th>
+                  <th>CRPEP Number</th>
+                  <th>Contact Information</th>
+                  <th>Fax</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
-    </div>
+              </thead>
+              <tbody>
+                {filteredConsultants.map((consultant, index) => (
+                  <tr key={index}>
+                    <td>{consultant.name}</td>
+                    <td>{consultant.level}</td>
+                    <td>{consultant.crep_num}</td>
+                    <td>{consultant.contact_info}</td>
+                    <td>{consultant.fax}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+    </>
   );
 };
 

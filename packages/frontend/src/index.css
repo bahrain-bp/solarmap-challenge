@@ -372,14 +372,14 @@ tr:nth-child(even) td {
   background-color: #e9ecef;
 }
 
-.jumbotron {
+/* .jumbotron {
   position: relative;
-  color: white;
+  color: rgb(255, 255, 255);
   background: url('../assets/solarprovider.jpg') no-repeat center center;
   background-size: cover;
-}
+} */
 
-.jumbotron::before {
+/* .jumbotron::before {
   content: '';
   position: absolute;
   top: 0;
@@ -388,9 +388,9 @@ tr:nth-child(even) td {
   left: 0;
   background-color: rgba(0, 0, 0, 0.5); 
   z-index: 1;
-}
+} */
 
-.jumbotron .container {
+/* .jumbotron .container {
   position: relative;
   z-index: 2;
-}
+} */
