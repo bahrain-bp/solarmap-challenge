@@ -1,4 +1,3 @@
-import logo from "../assets/logo.png";
 import SolarPanelBackground from "../assets/SolarPanelBackground.jpg";
 import SolarGif from "../assets/SolarGif.gif";
 import SolarGif2 from "../assets/SolarGif2.gif";
@@ -23,8 +22,8 @@ export default function Home() {
           <div className="carousel-item">
             <img className="d-block w-100" src="https://static.vecteezy.com/system/resources/previews/001/235/998/non_2x/solar-panel-cell-on-dramatic-sunset-sky-background-free-photo.jpg" style={{ height: "1200px" }} alt="First slide" />
             <div className="carousel-caption">
-              <h1 className="display-2" style={{ fontSize: "86px" }}>Solar Map</h1>
-              <h3>Welcome to Your Solar Journey</h3>
+              <h1 className="display-2" style={{ fontSize: "86px", textShadow: '2px 2px 4px rgba(0,0,0,0.6)' }}>Solar Map</h1>
+              <h3 style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.5)' }}>Welcome to Your Solar Journey</h3>
               <button type="button" className="btn btn-outline-light btn-lg">Learn More</button>
               <button type="button" className="btn btn-outline-primary btn-lg">Get Started</button>
             </div>
@@ -144,7 +143,7 @@ export default function Home() {
         </div>
       </div>
       <hr className="my-4" />
-      {/* Meet the Team */}
+      {/* Meet the Team
       <div className="container-fluid padding">
         <div className="row welcome text-center">
           <div className="col-12">
@@ -153,64 +152,59 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <br />
+      <br /> */}
 
-      {/* Team Cards */}
-
-      <div className="container-fluid padding">
-        <div className="row padding">
-          <div className="col-md-4">
-            <div className="card">
-              <img className="card-img-top" src={Team1} />
-              <div className="card-body">
-                <h4 className="card-title">SpongeBob SquarePants</h4>
-                <p className="card-text">Fry Cook at the Krusty Krab: A cheerful sea sponge who lives in a pineapple under the sea, SpongeBob flips patties at the famous Krusty Krab while spreading joy.</p>
-                <a href="#" className="btn btn-outline-secondary">See Profile</a>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-4">
-            <div className="card">
-              <img className="card-img-top" src={Team4} />
-              <div className="card-body">
-                <h4 className="card-title">Tom and Jerry</h4>
-                <p className="card-text">Feline Nemesis and Mischievous Mouse: Tom, the diligent but often outsmarted cat, engages in endless antics with Jerry, the cunning mouse, in their timeless pursuit of one-upmanship.</p>
-                <a href="#" className="btn btn-outline-secondary">See Profile</a>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-4">
-            <div className="card">
-              <img className="card-img-top" src={Team3} />
-              <div className="card-body">
-                <h4 className="card-title">Powerpuff Girls</h4>
-                <p className="card-text">Blossom, Bubbles, and Buttercup: Sugar, spice, and everything nice, these three kindergarten-aged superheroes protect the city of Townsville from villains while navigating the challenges of growing up.</p>
-                <a href="#" className="btn btn-outline-secondary">See Profile</a>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-4">
-            <div className="card">
-              <img className="card-img-top" src={Team5} />
-              <div className="card-body">
-                <h4 className="card-title">Jake the Dog</h4>
-                <p className="card-text">Shape-shifting Companion and Adventurer: With the ability to stretch and morph his body into various forms, Jake, alongside his brother Finn, embarks on whimsical adventures throughout the Land of Ooo.</p>
-                <a href="#" className="btn btn-outline-secondary">See Profile</a>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-4">
-            <div className="card">
-              <img className="card-img-top" src={Team2} />
-              <div className="card-body">
-                <h4 className="card-title">Tweety and Sylvester</h4>
-                <p className="card-text">Canary and Puddy Tat Duo: Tweety, the yellow canary known for his innocent appearance but clever wit, constantly evades the clutches of Sylvester, the determined yet hapless cat, in their classic game of cat and bird.</p>
-                <a href="#" className="btn btn-outline-secondary">See Profile</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+{/* Team Section with Cards
+<div className="container">
+                <h2 className="display-4 text-center">Meet Our Team</h2>
+                <div className="row">
+                    <div className="col-md-4">
+                        <div className="card">
+                            <img src={Team1} className="card-img-top" alt="Husain Basem" />
+                            <div className="card-body">
+                                <h5 className="card-title">Husain Basem</h5>
+                                <p className="card-text">System Architect</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-md-4">
+                        <div className="card">
+                            <img src={Team2} className="card-img-top" alt="Suhaib Rajab" />
+                            <div className="card-body">
+                                <h5 className="card-title">Suhaib Rajab</h5>
+                                <p className="card-text">Business Analyst</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-md-4">
+                        <div className="card">
+                            <img src={Team3} className="card-img-top" alt="Mahdi Alebrahim" />
+                            <div className="card-body">
+                                <h5 className="card-title">Mahdi Alebrahim</h5>
+                                <p className="card-text">Tech Lead</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-md-4">
+                        <div className="card">
+                            <img src={Team4} className="card-img-top" alt="Sayed Qassim" />
+                            <div className="card-body">
+                                <h5 className="card-title">Sayed Qassim</h5>
+                                <p className="card-text">Developer</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-md-4">
+                        <div className="card">
+                            <img src={Team5} className="card-img-top" alt="Amira Alawadhi" />
+                            <div className="card-body">
+                                <h5 className="card-title">Amira Alawadhi</h5>
+                                <p className="card-text">Project Manager</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> */}
       <br />
       <br />
       {/* Connect Socials */}
@@ -229,42 +223,7 @@ export default function Home() {
         </div>
       </div>
     <br />
-      {/* Footer */}
-      <footer style={{backgroundColor:"grey"}}>
-        <div className="container-fluid padding">
-          <div className="row text-center">
-            <div className="col-md-4">
-              <img src= {logo} style={{height: "100px"}}/>
-              <hr className="light" />
-              <p>555-555-555</p>
-              <p>email@email.com</p>
-              <p>Manama, Bahrain</p>
-          </div>
-          <div className="col-md-4">
-            <hr className="light" />
-            <h5>Our Hours</h5>
-            <hr className="light" />
-            <p>Monday-Friday: 9am-5pm</p>
-            <p>Saturday: 10am-2pm</p>
-            <p>Sunday: Closed</p>
-          </div>
-          <div className="col-md-4">
-          <hr className="light" />
-            <h5>Service Governates</h5>
-            <hr className="light" />
-            <p>Central Municpal</p>
-            <p>Muharraq Municpal</p>
-            <p>Northern Municpal</p>
-            <p>Southern Municpal</p>
-          </div>
-          <div className="col-12">
-            <hr className="light" />
-            <h5>&copy; 2024 Solar Map</h5>
-            <h5>solarmap.org.bh</h5>
-            </div>
-          </div>
-        </div>
-      </footer>
+      
     </>
   );
 }
