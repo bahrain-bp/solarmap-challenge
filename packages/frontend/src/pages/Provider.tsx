@@ -96,17 +96,15 @@ const Providers = () => {
 
   return (
     <>
-      <div id="aboutHero" className="carousel slide" data-ride="carousel">
         <div className="carousel-inner">
           <div className="carousel-item active">
-            <img className="d-block w-100"  alt="Solar Panels" style={{ height: "500px", backgroundImage: `url(${solarprovider})`  }} />
+            <img className="d-block w-100"  alt="Solar Panels" style={{ height: "500px"}} src={solarprovider}/>
             <div className="carousel-caption d-none d-md-block">
               <h1 className="display-3" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.6)' }}>Solar PV Consultants and Contractors</h1>
               <p className="lead" style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.5)' }}>A comprehensive list of solar PV consultants and contractors in Bahrain. Search by name or filter by level to find your ideal solar energy expert.</p>
             </div>
           </div>
         </div>
-      </div>
 
       <br />
 
