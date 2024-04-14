@@ -35,7 +35,7 @@ export async function up(db) {
  * Tears down the database schema.
  * @param db {Kysely<any>}
  */
-async function down(db) {
+export async function down(db) {
 
   await db.schema.dropTableIfExists('consultant');
   await db.schema.dropTableIfExists('contractor');
