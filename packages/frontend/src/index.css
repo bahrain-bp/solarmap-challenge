@@ -111,28 +111,42 @@ body {
   padding: 20px;
 }
 
-/* Table styles */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 20px 0;
+/* Loading Animation */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  position: relative;
 }
 
-th, td {
-  padding: 12px 15px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
+.loading-container::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 50px;
+  height: 50px;
+  margin-top: -25px; /* Half the height to center it */
+  margin-left: -25px; /* Half the width to center it */
+  border-radius: 50%;
+  border-top: 2px solid #0a5198;
+  border-right: 2px solid transparent;
+  animation: spin 1s linear infinite;
 }
 
-th {
-  background-color: var(--primary-color);
-  color: white;
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
+
 
 .search-and-filter {
   display: flex;
   justify-content: space-between;
   margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 .search-bar, .level-filter {
@@ -233,25 +247,113 @@ th {
   border-radius: 5px; /* Rounded corners for sections */
 }
 
-/* Styling for table */
+/*styles for levels*/
+
+.levels-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 2;
+}
+
+.level-detail {
+  position: relative;
+  margin: 0 15px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  z-index: 1;
+}
+
+.level-detail:hover {
+  transform: translateY(-5px);
+}
+
+.level-kw {
+  background-color: #f5a623;
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  font-size: 1em;
+  font-weight: bold;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px; /* Set a fixed height */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.level-info {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background-color: white;
+  color: #333;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+  transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+}
+
+.level-kw, .level-info {
+  width: 220px;
+  box-sizing: border-box;
+}
+
+.level-detail:hover .level-info {
+  visibility: visible;
+  opacity: 1;
+  transform: translateX(-50%) translateY(0); 
+  z-index: 1050;
+}
+
+.level-info::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  background-color: white;
+  width: 20px;
+  height: 20px;
+  box-shadow: -3px -3px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Table styles */
+.custom-thead-dark th {
+  background-color: #0a5198; 
+  color: white;
+}
+
 table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
   margin-top: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
 }
 
 th, td {
-  border: 1px solid #007bff;
+  border: 1px solid #dfe4ea;
   text-align: left;
   padding: 12px;
   background-color: white; 
   transition: transform 0.3s ease, box-shadow 0.3s ease; 
+  z-index: auto;
 }
 
 th {
-  background-image: linear-gradient(to right, #007bff, #ffc107);
+  background-color: #ffffff;
   color: white;
   position: relative; 
 }
@@ -266,15 +368,29 @@ th::after {
   background: rgba(0,0,0,0.2);
 }
 
-tr:hover td {
-  transform: translateY(-2px);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-
 tr:nth-child(even) td {
   background-color: #e9ecef;
 }
 
-th:first-child, td:first-child {
-  border-right: 2px solid #ffc107; 
-}
+/* .jumbotron {
+  position: relative;
+  color: rgb(255, 255, 255);
+  background: url('../assets/solarprovider.jpg') no-repeat center center;
+  background-size: cover;
+} */
+
+/* .jumbotron::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5); 
+  z-index: 1;
+} */
+
+/* .jumbotron .container {
+  position: relative;
+  z-index: 2;
+} */

@@ -4,20 +4,22 @@ import { CacheHeaderBehavior, CachePolicy } from "aws-cdk-lib/aws-cloudfront";
 import { Duration } from "aws-cdk-lib/core";
 
 export function ApiStack({ stack }: StackContext) {
+   
 
-    const {table} = use(DBStack);
-    
+    const { db } = use(DBStack);
     // Create the HTTP API
     const api = new Api(stack, "Api", {
         defaults: {
             function: {
-                // Bind the table name to our API
-                bind: [table],
+                bind: [db],
+                
             },
         },
         routes: {
             // Sample TypeScript lambda function
             "POST /": "packages/functions/src/lambda.main",
+            "GET /consultants": "packages/functions/src/fetchConsultants.handler",
+            "GET /contractors": "packages/functions/src/fetchContractors.handler",
             // TypeScript lambda function for MEWA bill document processing 
             // "POST /process-pdf": "packages/functions/src/process-pdf-lambda.handler",
             // Sample Pyhton lambda function
