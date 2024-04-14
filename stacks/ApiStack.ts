@@ -1,23 +1,25 @@
 import { Api, StackContext, use } from "sst/constructs";
 import { DBStack } from "./DBStack";
 import { CacheHeaderBehavior, CachePolicy } from "aws-cdk-lib/aws-cloudfront";
-import { Duration } from "aws-cdk-lib/core";
+import { Duration } from "aws-cdk-lib";
 
 export function ApiStack({ stack }: StackContext) {
+   
 
-    const {table} = use(DBStack);
-    
+    const { db } = use(DBStack);
     // Create the HTTP API
     const api = new Api(stack, "Api", {
         defaults: {
             function: {
-                // Bind the table name to our API
-                bind: [table],
+                bind: [db],
+                runtime: "nodejs16.x",  // Updated runtime
             },
         },
         routes: {
             // Sample TypeScript lambda function
             "POST /": "packages/functions/src/lambda.main",
+            "GET /consultants": "packages/functions/src/fetchConsultants.handler",
+            "GET /contractors": "packages/functions/src/fetchContractors.handler",
             // TypeScript lambda function for MEWA bill document processing 
             // "POST /process-pdf": "packages/functions/src/process-pdf-lambda.handler",
             // Sample Pyhton lambda function
