@@ -1,9 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import Modal from 'react-modal';
 import solarprovider from "../assets/solarprovider.jpg";
-
-Modal.setAppElement('#root');
 
 const API_BASE_URL = "https://un8sm6ux9g.execute-api.us-east-1.amazonaws.com";
 

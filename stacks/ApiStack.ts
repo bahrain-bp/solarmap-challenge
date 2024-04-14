@@ -1,7 +1,7 @@
 import { Api, StackContext, use } from "sst/constructs";
 import { DBStack } from "./DBStack";
 import { CacheHeaderBehavior, CachePolicy } from "aws-cdk-lib/aws-cloudfront";
-import { Duration } from "aws-cdk-lib";
+import { Duration } from "aws-cdk-lib/core";
 
 export function ApiStack({ stack }: StackContext) {
    
@@ -12,7 +12,7 @@ export function ApiStack({ stack }: StackContext) {
         defaults: {
             function: {
                 bind: [db],
-                runtime: "nodejs16.x",  // Updated runtime
+                
             },
         },
         routes: {
