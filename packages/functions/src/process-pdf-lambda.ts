@@ -1,6 +1,7 @@
 import * as AWS from 'aws-sdk';
 
 const textract = new AWS.Textract();
+const comprehend = new AWS.Comprehend();
 
 export const handler = async (event: any): Promise<any> => {
   try {
@@ -23,7 +24,6 @@ export const handler = async (event: any): Promise<any> => {
       };
 
       const textractResult = await textract.analyzeDocument(textractParams).promise();
-      console.log('Textract result:', textractResult);
 
       // Extract information from the Textract result
       const blocks = textractResult.Blocks;
@@ -33,13 +33,14 @@ export const handler = async (event: any): Promise<any> => {
         const extractedText = textBlocks.map(block => block.Text);
         console.log('Extracted text:', extractedText);
 
-        // Log the tables extracted from the document
-        const tableBlocks = blocks.filter(block => block.BlockType === 'TABLE');
-        console.log('Number of tables:', tableBlocks.length);
+        // Use AWS Comprehend to analyze the extracted text
+        const comprehendParams: AWS.Comprehend.DetectEntitiesRequest = {
+          LanguageCode: 'en', // Adjust language code as per your text
+          Text: extractedText.join('\n')
+        };
 
-        // Log the forms extracted from the document
-        const formBlocks = blocks.filter(block => block.BlockType === 'KEY_VALUE_SET');
-        console.log('Number of forms:', formBlocks.length);
+        const comprehendResult = await comprehend.detectEntities(comprehendParams).promise();
+        console.log('Comprehend result:', comprehendResult);
       }
     }
 

@@ -3,7 +3,7 @@ const Navbar = () => {
     return (    
 
         <nav className="navbar navbar-expand-lg navbar-light" style={{backgroundColor: '#073763'}}>
-            <a href="#" className="d-block w-200"><img src={logo} style={{paddingLeft: '25px', paddingRight:'50px', height: '55px'}}/> </a>
+            <a href="/" className="d-block w-200"><img src={logo} style={{paddingLeft: '25px', paddingRight:'50px', height: '55px'}}/> </a>
             <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span className="navbar-toggler-icon"></span>
             </button>
@@ -20,6 +20,9 @@ const Navbar = () => {
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" id="navbar_item" href="/DocumentUpload">Document Upload</a>
+                    </li>
+                    <li className="nav-item">
+                        <a className="nav-link" id="navbar_item" href="/Map">Map</a>
                     </li>
                     {/* <li className="nav-item dropdown">
                         <a className="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
