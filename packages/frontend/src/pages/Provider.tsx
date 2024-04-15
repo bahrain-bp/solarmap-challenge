@@ -1,116 +1,167 @@
-import {useState} from 'react';
-import '/src/index.css'; 
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import solarprovider from "../assets/solarprovider.jpg";
 
-type Provider = {
+const API_BASE_URL = "https://un8sm6ux9g.execute-api.us-east-1.amazonaws.com";
+
+interface Consultant {
   name: string;
   level: string;
-  crpepNumber: string;
-  phone: string;
-  fax: string;
+  crep_num: string;
+  contact_info: string;
+  fax: number | null;
+}
+
+interface LevelInfo {
+  contractors: string;
+  consultants: string;
+}
+
+const levelsInfo: Record<string, LevelInfo> = {
+  '20': {
+    contractors: 'D/C/B/A',
+    consultants: 'C/A',
+  },
+  '100': {
+    contractors: 'C/B/A',
+    consultants: 'C/A',
+  },
+  '1000': {
+    contractors: 'B/A',
+    consultants: 'A OR C+B',
+  },
+  '>1000': {
+    contractors: 'A',
+    consultants: 'A OR C+B',
+  },
 };
 
-const allProviders: Provider[] = [
-  { name: 'Ansari Engineering Services', level: 'A', crpepNumber: 'BN/34', phone: '175545454', fax: '175354545' },
-  { name: 'Bahrain Engineering Bureau', level: 'A', crpepNumber: 'BN/80', phone: '17545454', fax: '1725445445' },
-  { name: 'SJM Electromechanical Engineering Bureau', level: 'B', crpepNumber: 'BN/177', phone: '17382264', fax: '17382267' },
-  { name: 'Sunergy Solar Panels W.L.L.', level: 'B', crpepNumber: 'BN/218', phone: '17536000', fax: '17536666' },
-];
-
-const Providers = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterLevel, setFilterLevel] = useState('');
-
-  const filteredProviders = allProviders.filter(provider => {
-    return (
-      (filterLevel ? provider.level === filterLevel : true) &&
-      provider.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  });
-
-  const hasFilteredResults = filteredProviders.length > 0;
-  const showLevelA = !filterLevel || filterLevel === 'A';
-  const showLevelB = !filterLevel || filterLevel === 'B';
+const LevelDetails = ({ level, details }: { level: string; details: LevelInfo }) => {
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <div>        
-      <h1>Solar PV Consultants</h1>
-      <p>
-        This is a list of all solar PV consultants in Bahrain. You can search for a provider by name or filter by level.
-      </p>                 
-      <div className="search-and-filter">
-        <input
-          type="text"
-          placeholder="Search for a provider..."
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="search-bar"
-        />
-        <select
-          onChange={(e) => setFilterLevel(e.target.value)}
-          className="level-filter"
-          defaultValue=""
-        >
-          <option value="">All Levels</option>
-          <option value="A">Level A</option>
-          <option value="B">Level B</option>
-        </select>
-      </div>
-      
-      {showLevelA && hasFilteredResults && (
-        <>
-          <h2>List of Enrolled LEVEL-A Solar PV Consultants</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Level</th>
-                <th>CRPEP Number</th>
-                <th>Phone</th>
-                <th>Fax</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredProviders.filter(p => p.level === 'A').map((provider, index) => (
-                <tr key={index}>
-                  <td>{provider.name}</td>
-                  <td>{provider.level}</td>
-                  <td>{provider.crpepNumber}</td>
-                  <td>{provider.phone}</td>
-                  <td>{provider.fax}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </>
-      )}
-
-      {showLevelB && hasFilteredResults && (
-        <>
-          <h2>List of Enrolled LEVEL-B Solar PV Consultants</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Level</th>
-                <th>CRPEP Number</th>
-                <th>Phone</th>
-                <th>Fax</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredProviders.filter(p => p.level === 'B').map((provider, index) => (
-                <tr key={index}>
-                  <td>{provider.name}</td>
-                  <td>{provider.level}</td>
-                  <td>{provider.crpepNumber}</td>
-                  <td>{provider.phone}</td>
-                  <td>{provider.fax}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </>
+    <div
+      className="level-detail"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div className="level-kw">{level} kW</div>
+      {isHovered && (
+        <div className="level-info">
+          <div><strong>Contractors:</strong> {details.contractors}</div>
+          <div><strong>Consultants:</strong> {details.consultants}</div>
+        </div>
       )}
     </div>
+  );
+};
+
+const LevelsSection = () => {
+  return (
+    <div className="levels-section">
+      {Object.entries(levelsInfo).map(([level, details]) => (
+        <LevelDetails key={level} level={level} details={details} />
+      ))}
+    </div>
+  );
+};
+
+const Providers = () => {
+  const [consultants, setConsultants] = useState<Consultant[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterLevel, setFilterLevel] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchConsultants = async () => {
+      setIsLoading(true);
+      try {
+        const response = await axios.get(`${API_BASE_URL}/consultants`);
+        setConsultants(response.data);
+      } catch (error) {
+        console.error('Error fetching consultants:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchConsultants();
+  }, [searchTerm, filterLevel]);
+
+  const filteredConsultants = consultants.filter(consultant => {
+    const matchesLevel = filterLevel ? consultant.level === filterLevel : true;
+    const matchesSearchTerm = consultant.name.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesLevel && matchesSearchTerm;
+  });
+
+  return (
+    <>
+        <div className="carousel-inner">
+          <div className="carousel-item active">
+            <img className="d-block w-100"  alt="Solar Panels" style={{ height: "500px"}} src={solarprovider}/>
+            <div className="carousel-caption d-none d-md-block">
+              <h1 className="display-3" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.6)' }}>Solar PV Consultants and Contractors</h1>
+              <p className="lead" style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.5)' }}>A comprehensive list of solar PV consultants and contractors in Bahrain. Search by name or filter by level to find your ideal solar energy expert.</p>
+            </div>
+          </div>
+        </div>
+
+      <br />
+
+        <LevelsSection />
+
+        <div className="container">
+          <div className="d-flex justify-content-between mb-3">
+            <input
+              type="text"
+              placeholder="Search for a provider..."
+              onChange={(e) => setSearchTerm(e.target.value)}
+              value={searchTerm}
+              className="form-control mr-2"
+            />
+            <select
+              onChange={(e) => setFilterLevel(e.target.value)}
+              value={filterLevel}
+              className="form-control"
+            >
+              <option value="">All Levels</option>
+              <option value="A">Level A</option>
+              <option value="B">Level B</option>
+              <option value="C">Level C</option>
+              <option value="D">Level D</option>
+            </select>
+          </div>
+
+          {isLoading ? (
+            <div className="loading-container">
+              <div className="spinner"></div>
+            </div>
+          ) : (
+            <table className="table">
+              <thead className="custom-thead-dark">
+                <tr>
+                  <th>Name</th>
+                  <th>Level</th>
+                  <th>CRPEP Number</th>
+                  <th>Contact Information</th>
+                  <th>Fax</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredConsultants.map((consultant, index) => (
+                  <tr key={index}>
+                    <td>{consultant.name}</td>
+                    <td>{consultant.level}</td>
+                    <td>{consultant.crep_num}</td>
+                    <td>{consultant.contact_info}</td>
+                    <td>{consultant.fax}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+    </>
   );
 };
 
