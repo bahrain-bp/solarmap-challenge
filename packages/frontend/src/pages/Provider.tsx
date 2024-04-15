@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 import solarprovider from "../assets/solarprovider.jpg";
+import exportString from "../api_url";
 
-const API_BASE_URL = "https://un8sm6ux9g.execute-api.us-east-1.amazonaws.com";
+const apiurl: string = exportString();
+
+const API_BASE_URL = apiurl;
 
 interface Consultant {
   name: string;
@@ -181,7 +184,7 @@ const Providers = () => {
             {activeTab === 'consultants' && (
               <div className="tab-pane active">
                 <table className="table table-hover">
-                  <thead className='custom-thead-dark'>
+                  <thead className='custom-thead-dark' >
                     <tr>
                       <th scope="col">Name</th>
                       <th scope="col">Level</th>
