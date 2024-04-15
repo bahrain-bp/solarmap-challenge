@@ -5,11 +5,12 @@ import Providers from './pages/Provider';
 import DocumentUpload from './pages/DocumentUpload';
 import Map from './pages/Map';
 import logo from "./assets/logo.png";
-
+import Login from "./containers/Login.tsx";
 import { BrowserRouter, Route, Routes} from 'react-router-dom';
 
 function App() {
   return (
+    
     <BrowserRouter>
       <div className="App">
         <Navbar />
@@ -20,6 +21,7 @@ function App() {
             <Route path="/Provider" element={<Providers />} />
             <Route path="/DocumentUpload" element={<DocumentUpload />} />
             <Route path="/Map" element={<Map />} />
+            <Route path="/login" element={<Login />} />
           </Routes>
         </div>
         {/* Footer */}

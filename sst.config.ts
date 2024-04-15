@@ -2,6 +2,7 @@ import { SSTConfig } from "sst";
 import { FrontendStack } from "./stacks/FrontendStack";
 import { DBStack } from "./stacks/DBStack";
 import { ApiStack } from "./stacks/ApiStack";
+import { AuthStack } from "./stacks/AuthStack";
 import { ImageBuilderForCodeCatalyst } from "./stacks/devops/ImageBuilderForCodeCatalyst";
 import { OIDCForGitHubCI } from "./stacks/devops/OIDCForGitHubCI";
 import { DocumentProcessingStack } from "./stacks/DocumentProcessingStack";
@@ -29,7 +30,8 @@ export default {
       app.stack(DBStack)
       .stack(ApiStack)
       .stack(FrontendStack)
-      /* .stack(DocumentProcessingStack) */;
+      /* .stack(DocumentProcessingStack) */
+      .stack(AuthStack);
     }
   }
 } satisfies SSTConfig;
