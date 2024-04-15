@@ -1,10 +1,10 @@
 // DocumentUploadWithParent.tsx
 import React, { useState } from "react";
-import uploadImage from "../uploadFile";
+import uploadFile from "../uploadFile";
 
 type ListenFunction = (url: string) => void;
 
-const DocumentUploadWithParent: React.FC = () => {
+const DocumentUpload: React.FC = () => {
   const [uploadedFileUrl, setUploadedFileUrl] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
 
@@ -19,6 +19,7 @@ const DocumentUploadWithParent: React.FC = () => {
     const file = fileInput.files ? fileInput.files[0] : null;
 
     if (file) {
+      setErrorMessage("");
       try {
         // Extract file type from the file name or MIME type
         const fileType = file.type.split("/")[1]; // Extracting the file extension from the MIME type
@@ -26,7 +27,7 @@ const DocumentUploadWithParent: React.FC = () => {
           throw new Error("Invalid file type. Please select a PNG, JPEG, or PDF file.");
         }
 
-        const fileUrl = await uploadImage(file, file.type);
+        const fileUrl = await uploadFile(file, file.type);
 
         // Call the listen function with the necessary parameter
         handleListen(fileUrl);
@@ -59,15 +60,22 @@ const DocumentUploadWithParent: React.FC = () => {
     <>
       <form id="fileForm" onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label htmlFor="formFileLg" className="form-label">Upload File:</label>
+          <h4> To get accurate and precise solar panel installation results matching your needs</h4>
+          <br />
+          <label htmlFor="formFileLg" className="form-label">Upload Your MEWA Bill Document File:</label>
           <input className="form-control" id="formFileLg" type="file" accept=".pdf, .png, .jpeg" />
-          <p>Acceptable files are *.pdf, *.png, and *.jpeg</p>
+          <p style={{ fontSize: "12px" }}>Acceptable files are *.pdf, *.png, and *.jpeg</p>
         </div>
         <button className="btn btn-primary" type="submit">Upload</button>
         {errorMessage && <div className="alert alert-danger mt-3">{errorMessage}</div>}
       </form>
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <p>Example of Document:</p>
+        <img style={{ height: "600px" }} src="https://imgv2-2-f.scribdassets.com/img/document/638375183/original/44c2ab4867/1710903548?v=1" />
+      </div>
+
     </>
   );
 };
 
-export default DocumentUploadWithParent;
+export default DocumentUpload;
