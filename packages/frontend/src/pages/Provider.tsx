@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import solarprovider from "../assets/solarprovider.jpg";
 
 const API_BASE_URL = "https://un8sm6ux9g.execute-api.us-east-1.amazonaws.com";
@@ -87,10 +86,21 @@ const Providers = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const consultantResponse = await axios.get(`${API_BASE_URL}/consultants`);
-        const contractorResponse = await axios.get(`${API_BASE_URL}/contractors`);
-        setConsultants(consultantResponse.data);
-        setContractors(contractorResponse.data);
+        const consultantResponse = await fetch(`${API_BASE_URL}/consultants`);
+        const contractorResponse = await fetch(`${API_BASE_URL}/contractors`);
+        
+        if (!consultantResponse.ok) {
+          throw new Error('Failed to fetch consultants');
+        }
+        if (!contractorResponse.ok) {
+          throw new Error('Failed to fetch contractors');
+        }
+
+        const consultantsData = await consultantResponse.json();
+        const contractorsData = await contractorResponse.json();
+
+        setConsultants(consultantsData);
+        setContractors(contractorsData);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -100,7 +110,6 @@ const Providers = () => {
 
     fetchData();
   }, []);
-
   const filteredConsultants = consultants.filter(consultant => {
     const matchesLevel = filterLevel ? consultant.level === filterLevel : true;
     const matchesSearchTerm = consultant.name.toLowerCase().includes(searchTerm.toLowerCase());
