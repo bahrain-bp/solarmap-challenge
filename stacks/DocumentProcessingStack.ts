@@ -5,7 +5,7 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 export function DocumentProcessingStack({ stack }: StackContext) {
 
     const documentsFunction = new Function(stack, "Function", { handler: "packages/functions/src/process-pdf-lambda.handler",
-    timeout: "120 seconds", memorySize: 256, retryAttempts: 1, /*runtime: "python3.11"*/});
+   /* timeout: "120 seconds",*/ memorySize: 256, retryAttempts: 1, /*runtime: "python3.11"*/});
 
     // Creating Queue Service
 
