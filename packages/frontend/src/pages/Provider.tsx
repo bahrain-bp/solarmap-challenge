@@ -12,6 +12,14 @@ interface Consultant {
   fax: number | null;
 }
 
+interface Contractor {
+  name: string;
+  level: string;
+  license_num: string;
+  contact_info: string;
+  fax: number | null;
+}
+
 interface LevelInfo {
   contractors: string;
   consultants: string;
@@ -56,6 +64,7 @@ const LevelDetails = ({ level, details }: { level: string; details: LevelInfo })
   );
 };
 
+
 const LevelsSection = () => {
   return (
     <div className="levels-section">
@@ -68,25 +77,29 @@ const LevelsSection = () => {
 
 const Providers = () => {
   const [consultants, setConsultants] = useState<Consultant[]>([]);
+  const [contractors, setContractors] = useState<Contractor[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterLevel, setFilterLevel] = useState('');
+  const [activeTab, setActiveTab] = useState('consultants');
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const fetchConsultants = async () => {
+    const fetchData = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get(`${API_BASE_URL}/consultants`);
-        setConsultants(response.data);
+        const consultantResponse = await axios.get(`${API_BASE_URL}/consultants`);
+        const contractorResponse = await axios.get(`${API_BASE_URL}/contractors`);
+        setConsultants(consultantResponse.data);
+        setContractors(contractorResponse.data);
       } catch (error) {
-        console.error('Error fetching consultants:', error);
+        console.error('Error fetching data:', error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchConsultants();
-  }, [searchTerm, filterLevel]);
+    fetchData();
+  }, []);
 
   const filteredConsultants = consultants.filter(consultant => {
     const matchesLevel = filterLevel ? consultant.level === filterLevel : true;
@@ -94,73 +107,123 @@ const Providers = () => {
     return matchesLevel && matchesSearchTerm;
   });
 
+  const filteredContractors = contractors.filter(contractor => {
+    const matchesLevel = filterLevel ? contractor.level === filterLevel : true;
+    const matchesSearchTerm = contractor.name.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesLevel && matchesSearchTerm;
+  });
+
   return (
     <>
-        <div className="carousel-inner">
-          <div className="carousel-item active">
-            <img className="d-block w-100"  alt="Solar Panels" style={{ height: "500px"}} src={solarprovider}/>
-            <div className="carousel-caption d-none d-md-block">
-              <h1 className="display-3" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.6)' }}>Solar PV Consultants and Contractors</h1>
-              <p className="lead" style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.5)' }}>A comprehensive list of solar PV consultants and contractors in Bahrain. Search by name or filter by level to find your ideal solar energy expert.</p>
-            </div>
+      <div className="carousel-inner">
+        <div className="carousel-item active">
+          <img className="d-block w-100" alt="Solar Panels" style={{ height: "500px"}} src={solarprovider}/>
+          <div className="carousel-caption d-none d-md-block">
+            <h1 className="display-3" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.6)' }}>Solar PV Consultants and Contractors</h1>
+            <p className="lead" style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.5)' }}>
+              A comprehensive list of solar PV consultants and contractors in Bahrain. Search by name or filter by level to find your ideal solar energy expert.
+            </p>
           </div>
         </div>
+      </div>
+      <LevelsSection />
 
-      <br />
-
-        <LevelsSection />
-
-        <div className="container">
-          <div className="d-flex justify-content-between mb-3">
-            <input
-              type="text"
-              placeholder="Search for a provider..."
-              onChange={(e) => setSearchTerm(e.target.value)}
-              value={searchTerm}
-              className="form-control mr-2"
-            />
-            <select
-              onChange={(e) => setFilterLevel(e.target.value)}
-              value={filterLevel}
-              className="form-control"
-            >
-              <option value="">All Levels</option>
-              <option value="A">Level A</option>
-              <option value="B">Level B</option>
-              <option value="C">Level C</option>
-              <option value="D">Level D</option>
-            </select>
-          </div>
-
-          {isLoading ? (
-            <div className="loading-container">
-              <div className="spinner"></div>
-            </div>
-          ) : (
-            <table className="table">
-              <thead className="custom-thead-dark">
-                <tr>
-                  <th>Name</th>
-                  <th>Level</th>
-                  <th>CRPEP Number</th>
-                  <th>Contact Information</th>
-                  <th>Fax</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredConsultants.map((consultant, index) => (
-                  <tr key={index}>
-                    <td>{consultant.name}</td>
-                    <td>{consultant.level}</td>
-                    <td>{consultant.crep_num}</td>
-                    <td>{consultant.contact_info}</td>
-                    <td>{consultant.fax}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+      <div className="container">
+        <div className="d-flex justify-content-between mb-3">
+          <input
+            type="text"
+            placeholder="Search for a provider..."
+            onChange={(e) => setSearchTerm(e.target.value)}
+            value={searchTerm}
+            className="form-control mr-2"
+          />
+          <select
+            onChange={(e) => setFilterLevel(e.target.value)}
+            value={filterLevel}
+            className="form-control"
+          >
+            <option value="">All Levels</option>
+            <option value="A">Level A</option>
+            <option value="B">Level B</option>
+            <option value="C">Level C</option>
+            <option value="D">Level D</option>
+          </select>
         </div>
+
+        <ul className="nav nav-tabs">
+          <li className="nav-item">
+            <a className={`nav-link ${activeTab === 'consultants' ? 'active' : ''}`}
+               onClick={() => setActiveTab('consultants')}>Consultants</a>
+          </li>
+          <li className="nav-item">
+            <a className={`nav-link ${activeTab === 'contractors' ? 'active' : ''}`}
+               onClick={() => setActiveTab('contractors')}>Contractors</a>
+          </li>
+        </ul>
+
+        {isLoading ? (
+          <div className="loading-container">
+            <div className="spinner-border text-primary" role="status">
+              <span className="sr-only">Loading...</span>
+            </div>
+          </div>
+        ) : (
+          <div className="tab-content">
+            {activeTab === 'consultants' && (
+              <div className="tab-pane active">
+                <table className="table table-hover">
+                  <thead className='custom-thead-dark'>
+                    <tr>
+                      <th scope="col">Name</th>
+                      <th scope="col">Level</th>
+                      <th scope="col">CRPEP Number</th>
+                      <th scope="col">Contact Information</th>
+                      <th scope="col">Fax</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredConsultants.map((consultant, index) => (
+                      <tr key={index}>
+                        <td>{consultant.name}</td>
+                        <td>{consultant.level}</td>
+                        <td>{consultant.crep_num}</td>
+                        <td>{consultant.contact_info}</td>
+                        <td>{consultant.fax}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+            {activeTab === 'contractors' && (
+              <div className="tab-pane active">
+                <table className="table table-hover">
+                  <thead className='custom-thead-dark'>
+                    <tr>
+                      <th scope="col">Name</th>
+                      <th scope="col">Level</th>
+                      <th scope="col">License Number</th>
+                      <th scope="col">Contact Information</th>
+                      <th scope="col">Fax</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredContractors.map((contractor, index) => (
+                      <tr key={index}>
+                        <td>{contractor.name}</td>
+                        <td>{contractor.level}</td>
+                        <td>{contractor.license_num}</td>
+                        <td>{contractor.contact_info}</td>
+                        <td>{contractor.fax}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                  </table>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </>
   );
 };
