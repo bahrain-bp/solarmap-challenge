@@ -5,7 +5,7 @@ import uploadFile from "../uploadFile";
 type ListenFunction = (url: string) => void;
 
 const DocumentUpload: React.FC = () => {
-  const [uploadedFileUrl, setUploadedFileUrl] = useState<string>("");
+  const [, setUploadedFileUrl] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const handleListen: ListenFunction = (url) => {
