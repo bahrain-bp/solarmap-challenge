@@ -10,7 +10,7 @@ import { BrowserRouter, Route, Routes} from 'react-router-dom';
 
 function App() {
   const identityPoolId = "us-east-1:3a802d07-d77b-4b1d-9b5f-efea30622397"; // Cognito Identity Pool ID
-  const mapName = "sayedqassim-dev-map"; // Amazon Location Service Map Name
+  const mapName = "devs-map"; // Amazon Location Service Map Name
 
   return (
     <BrowserRouter>
