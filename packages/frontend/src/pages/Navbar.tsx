@@ -21,14 +21,14 @@ const Navbar = () => {
                     <li className="nav-item">
                         <a className="nav-link" id="navbar_item" href="/DocumentUpload">Document Upload</a>
                     </li>
-                    <li className="nav-item">
+                    {/* <li className="nav-item">
                         <a className="nav-link" id="navbar_item" href="/Map">Map</a>
-                    </li>
+                    </li> */}
                     <li className="nav-item">
                         <a className="nav-link" id="navbar_item" href="/EducationalResources">Educational Resources</a>
                   </li>
                   <li className="nav-item">
-                        <a className="nav-link" id="navbar_item" href="/MapV2">MapV2</a>
+                        <a className="nav-link" id="navbar_item" href="/MapV2">Calculator</a>
                     </li>
                     {/* <li className="nav-item dropdown">
                         <a className="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
