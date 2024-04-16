@@ -41,10 +41,10 @@ const EducationalResources = () => {
   if (error) return <div className="alert alert-danger" role="alert">Error: {error}</div>;
 
   return (
-    <div className="container mt-4">
+    <>
       <div className="carousel-inner">
         <div className="carousel-item active">
-          <img className="d-block w-100" alt="Educational Resources" style={{ height: "500px"}} src={EduRes}/>
+          <img className="d-block w-100" alt="Educational Resources" style={{ height: "500px" }} src={EduRes}/>
           <div className="carousel-caption d-none d-md-block">
             <h1 className="display-3" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.6)' }}>Educational Resources</h1>
             <p className="lead" style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.5)' }}>
@@ -53,31 +53,33 @@ const EducationalResources = () => {
           </div>
         </div>
       </div>
-      {resources.length > 0 ? (
-        <div className="row">
-          {resources.map((resource) => (
-            <div key={resource.resource_id} className="col-md-4 mb-4">
-              <div className="card h-100">
-                {resource.resource_img && (
-                  <img
-                    src={`data:image/jpeg;base64,${resource.resource_img}`}
-                    alt={resource.title}
-                    className="card-img-top"
-                  />
-                )}
-                <div className="card-body">
-                  <h5 className="card-title">{resource.title}</h5>
-                  <p className="card-text">{resource.body}</p>
-                  {resource.resource_url && <a href={resource.resource_url} className="btn btn-primary">Learn More</a>}
+      <div className="container mt-4">
+        {resources.length > 0 ? (
+          <div className="row">
+            {resources.map((resource) => (
+              <div key={resource.resource_id} className="col-md-4 mb-4">
+                <div className="card h-100">
+                  {resource.resource_img && (
+                    <img
+                      src={`data:image/jpeg;base64,${resource.resource_img}`}
+                      alt={resource.title}
+                      className="card-img-top"
+                    />
+                  )}
+                  <div className="card-body">
+                    <h5 className="card-title">{resource.title}</h5>
+                    <p className="card-text">{resource.body}</p>
+                    {resource.resource_url && <a href={resource.resource_url} className="btn btn-primary">Learn More</a>}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p className="text-center">No resources found.</p>
-      )}
-    </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-center">No resources found.</p>
+        )}
+      </div>
+    </>
   );
 };
 
