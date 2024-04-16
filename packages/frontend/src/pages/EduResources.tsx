@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import exportString from "../api_url";
+import EduRes from "../assets/Educationalresources.jpg";
 
 const apiurl: string = exportString();
 const API_BASE_URL = apiurl;
@@ -41,7 +42,17 @@ const EducationalResources = () => {
 
   return (
     <div className="container mt-4">
-      <h1 className="mb-4 text-center">Educational Resources</h1>
+      <div className="carousel-inner">
+        <div className="carousel-item active">
+          <img className="d-block w-100" alt="Educational Resources" style={{ height: "500px"}} src={EduRes}/>
+          <div className="carousel-caption d-none d-md-block">
+            <h1 className="display-3" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.6)' }}>Educational Resources</h1>
+            <p className="lead" style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.5)' }}>
+              Explore our comprehensive database of educational materials. Search by topic or type to find your resources.
+            </p>
+          </div>
+        </div>
+      </div>
       {resources.length > 0 ? (
         <div className="row">
           {resources.map((resource) => (
