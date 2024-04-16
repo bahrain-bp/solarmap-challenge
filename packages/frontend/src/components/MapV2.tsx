@@ -1,5 +1,5 @@
 // MapV2.tsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import maplibregl from 'maplibre-gl';
 import { withIdentityPoolId } from "@aws/amazon-location-utilities-auth-helper";
 import SolarPanelCalculator from './SolarPanelCalculator';
