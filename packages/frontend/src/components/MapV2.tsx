@@ -33,7 +33,49 @@ const InitializeMap: React.FC<InitializeMapProps> = ({ identityPoolId, mapName }
         ...authHelper.getMapAuthenticationOptions(),
       });
       map.addControl(new maplibregl.NavigationControl(), "top-left");
+    
+      // Add 3D buildings after the map loads
+      map.on('load', () => {
+        // Insert the layer beneath any symbol layer.
+      
+      
+        map.addSource('openmaptiles', {
+          url: `https://api.maptiler.com/tiles/v3/tiles.json?key=UGho1CzUl0HDsQMTTKJ0`,
+          type: 'vector',
+        });
+      
+        map.addLayer(
+          {
+            'id': '3d-buildings',
+            'source': 'openmaptiles',
+            'source-layer': 'building',
+            'type': 'fill-extrusion',
+            'minzoom': 15,
+            'paint': {
+              'fill-extrusion-color': [
+                'interpolate',
+                ['linear'],
+                ['get', 'render_height'], 0, 'lightgray', 200, 'royalblue', 400, 'lightblue'
+              ],
+              'fill-extrusion-height': [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                15,
+                0,
+                16,
+                ['get', 'render_height']
+              ],
+              'fill-extrusion-base': ['case',
+                ['>=', ['get', 'zoom'], 16],
+                ['get', 'render_min_height'], 0
+              ]
+            }
+          },
+        );
+      });
     };
+      
 
     initializeMap();
 
