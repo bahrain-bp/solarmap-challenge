@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from "react";
 
 const SolarPanelCalculator: React.FC = () => {
   const [rooftopSize, setRooftopSize] = useState<number>(0);
   const [fillPercentage, setFillPercentage] = useState<number>(50); // Initial fill percentage
   const [electricityUsage, setElectricityUsage] = useState<number>(0);
   const [subsidized, setSubsidized] = useState<boolean>(false);
-  const [latitude, setLatitude] = useState<number | null>(null);
-  const [longitude, setLongitude] = useState<number | null>(null);
   const [numPanels, setNumPanels] = useState<number>(0);
   const [installationCost, setInstallationCost] = useState<number>(0);
   const [electricityCost, setElectricityCost] = useState<number>(0);
@@ -70,22 +68,6 @@ const SolarPanelCalculator: React.FC = () => {
     setRoiYears(roiYears);
   };
 
-  // Function to set latitude and longitude on map click
-  const setUpMapClickListener = () => {
-    const mapElement = document.getElementById('map');
-    if (mapElement) {
-      mapElement.addEventListener('click', (event) => {
-        const { lngLat } = event as any;
-        setLatitude(lngLat.lat);
-        setLongitude(lngLat.lng);
-      });
-    }
-  };
-
-  // Call the function to set up map click listener when component mounts
-  useEffect(() => {
-    setUpMapClickListener();
-  }, []);
 
   return (
     <div style={{ position: 'absolute', top: 0, left: 0, zIndex: 999, width: '300px', padding: '15px' }}>
