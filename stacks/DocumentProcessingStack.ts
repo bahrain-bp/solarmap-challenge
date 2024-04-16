@@ -4,7 +4,8 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 
 export function DocumentProcessingStack({ stack }: StackContext) {
 
-    const documentsFunction = new Function(stack, "Function", { handler: "packages/functions/src/process-pdf-lambda.handler" });
+    const documentsFunction = new Function(stack, "Function", { handler: "packages/functions/src/process-pdf-lambda.handler",
+   /* timeout: "120 seconds",*/ memorySize: 256, retryAttempts: 1, /*runtime: "python3.11"*/});
 
     // Creating Queue Service
 
@@ -24,12 +25,12 @@ export function DocumentProcessingStack({ stack }: StackContext) {
     documentsFunction.attachPermissions(["s3", "dynamodb", "sqs"]);
     // Allow Lambda function to call Textract analyzeDocument
     documentsFunction.addToRolePolicy(new iam.PolicyStatement({
-        actions: ['textract:AnalyzeDocument'],
+        actions: ['textract:*'],
         resources: ['*'] // Adjust resource pattern as needed
     }));
     // Add the IAM policy to grant permission for calling Comprehend's DetectEntities action
     documentsFunction.addToRolePolicy(new iam.PolicyStatement({
-        actions: ['comprehend:DetectEntities'],
+        actions: ['comprehend:*'],
         resources: ['*'] // Adjust resource pattern as needed
     }));
 
@@ -40,11 +41,23 @@ export function DocumentProcessingStack({ stack }: StackContext) {
         name: stack.stage + '-s3-for-artifacts',
         blockPublicACLs: true,
         notifications: {
-            myNotification: {
+            pdfNotification: {
                 type: "queue",
                 queue: documentsQueue,
                 events: ["object_created"],
-                filters: [/*{ prefix: "imports/" },*/ { suffix: ".pdf" }],
+                filters: [{ prefix: "uploads/" }, { suffix: ".pdf" }],
+            },
+            pngNotification: {
+                type: "queue",
+                queue: documentsQueue,
+                events: ["object_created"],
+                filters: [{ prefix: "uploads/" }, { suffix: ".png" }],
+            },
+            jpegNotification: {
+                type: "queue",
+                queue: documentsQueue,
+                events: ["object_created"],
+                filters: [{ prefix: "uploads/" }, { suffix: ".jpeg" }],
             },
         },
     });
@@ -56,4 +69,5 @@ export function DocumentProcessingStack({ stack }: StackContext) {
         Bucket: artificatsBucket.bucketName,
     });
 
+    return { artificatsBucket };
 }

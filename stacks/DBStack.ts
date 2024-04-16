@@ -40,7 +40,9 @@ export function DBStack({ stack, app }: StackContext) {
                 value: db.clusterIdentifier,
                 exportName: dbClusterIdentifierOutputName,
             },
+            
         });
+        return {db}
     } else {
         // Import the existing secret from the exported value
         const existing_secret = secretsManager.Secret.fromSecretCompleteArn(stack, "ExistingSecret", Fn.importValue(dbSecretArnOutputName));
@@ -60,5 +62,5 @@ export function DBStack({ stack, app }: StackContext) {
         });
     }
 
-    return {table};
+    return {db};
 }
