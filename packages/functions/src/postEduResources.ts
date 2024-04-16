@@ -1,8 +1,6 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
-import { S3 } from 'aws-sdk';
 import { SQL } from "./sql";
 
-const s3 = new S3();
 
 export const handler: APIGatewayProxyHandler = async (event) => {
     if (!event.body) {
@@ -14,33 +12,23 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     
     const { title, body, resource_url, resource_img } = JSON.parse(event.body as string);
 
-    const bucketName = 'educational-resources-image';
-    let imageUrl = null;
-
     try {
+        let imageBlob = null;
+
         // Only process the image if it's provided
         if (resource_img) {
-            const buffer = Buffer.from(resource_img, 'base64');
-            const imageKey = `images/${Date.now()}-resource.jpg`;
-        
-            // Upload the image to S3
-            await s3.putObject({
-                Bucket: bucketName,
-                Key: imageKey,
-                Body: buffer,
-                ContentType: 'image/jpeg', 
-            }).promise();
-
-            imageUrl = `https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/${imageKey}`;
+            // Convert base64 string to binary data
+            imageBlob = Buffer.from(resource_img, 'base64');
         }
 
+        // Assuming SQL.DB is configured and connected
         await SQL.DB
             .insertInto('educational_resource')
             .values({
                 title: title,
                 body: body,
                 resource_url: resource_url,
-                resource_img: imageUrl 
+                resource_img: imageBlob  // Storing the BLOB directly in the database
             })
             .execute();
 
@@ -48,7 +36,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
         return {
             statusCode: 201,
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: 'Resource added successfully', imageUrl: imageUrl }),
+            body: JSON.stringify({ message: 'Resource added successfully' }),
         };
     } catch (error) {
         console.error('Error during operation:', error);

@@ -3,8 +3,9 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Providers from './pages/Provider';
 import DocumentUpload from './pages/DocumentUpload';
+import EducationalResources from './pages/EduResources';
 import Footer from './pages/Footer'
-import Map from './pages/Map'
+// import Map from './pages/Map'
 import MapV2 from './components/MapV2'; // Import InitializeMap component
 import { BrowserRouter, Route, Routes} from 'react-router-dom';
 
@@ -22,11 +23,13 @@ function App() {
             <Route path="/About" element={<About />} />
             <Route path="/Provider" element={<Providers />} />
             <Route path="/DocumentUpload" element={<DocumentUpload />} />
-            <Route path="/Map" element={<Map />} />
+            {/* <Route path="/Map" element={<Map />} /> */}
+            <Route path="/EducationalResources" element={<EducationalResources />} />
             <Route path="/MapV2" element={<MapV2 identityPoolId={identityPoolId} mapName={mapName} />} />
           </Routes>
         </div>
-        < Footer />
+        {/* Footer */}
+        <Footer />
       </div>
     </BrowserRouter>
   )

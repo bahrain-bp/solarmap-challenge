@@ -1,4 +1,5 @@
 import logo from "../assets/logo.png";
+
 export const Footer = () => {
     return (    
 <footer style={{backgroundColor:"grey"}}>
