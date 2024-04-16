@@ -1,5 +1,5 @@
 import logo from "./assets/logo.png";
-export const Navbar = () => {
+export const Footer = () => {
     return (    
 <footer style={{backgroundColor:"grey"}}>
         <div className="container-fluid padding">
