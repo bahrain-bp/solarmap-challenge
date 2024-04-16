@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import maplibregl from 'maplibre-gl';
+import maplibregl, { LngLat, LngLatBounds } from 'maplibre-gl';
 import { withIdentityPoolId } from "@aws/amazon-location-utilities-auth-helper";
 
 
@@ -17,11 +17,18 @@ const InitializeMap: React.FC<InitializeMapProps> = ({ identityPoolId, mapName }
       // Create an authentication helper instance using credentials from Cognito
       const authHelper = await withIdentityPoolId(identityPoolId);
 
+      // Set a bounds to Bahrain, Bahrain
+      let bound = new LngLatBounds(
+        new LngLat(50.3, 25.5357),
+        new LngLat(50.8120, 26.3870)
+      );
+
       // Initialize the map
       const map = new maplibregl.Map({
         container: "map",
-        center: [-123.115898, 49.295868],
+        center: [50.5860, 26.15],
         zoom: 10,
+        maxBounds: bound,
         style: `https://maps.geo.${region}.amazonaws.com/maps/v0/maps/${mapName}/style-descriptor`,
         ...authHelper.getMapAuthenticationOptions(),
       });
