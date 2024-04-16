@@ -9,7 +9,7 @@ import * as cdk from "aws-cdk-lib";
 
 export function MapStack({ stack }: StackContext) {
   const mapName =
-    stack.stage === "prod" ? "production-map" : stack.stage + "devs-map";
+    stack.stage === "prod" ? "production-map" : stack.stage + "-devs-map";
   const cfnMap = new CfnMap(stack, "Map", {
     configuration: {
       style: "RasterHereExploreSatellite",
