@@ -69,8 +69,8 @@ const DocumentUpload: React.FC = () => {
         <button className="btn btn-primary" type="submit">Upload</button>
         {errorMessage && <div className="alert alert-danger mt-3">{errorMessage}</div>}
       </form>
+      <p style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>Example of Document:</p>
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-        <p>Example of Document:</p>
         <img style={{ height: "600px" }} src="https://imgv2-2-f.scribdassets.com/img/document/638375183/original/44c2ab4867/1710903548?v=1" />
       </div>
 
