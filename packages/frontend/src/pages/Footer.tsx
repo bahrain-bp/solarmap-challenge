@@ -1,8 +1,8 @@
 import logo from "../assets/logo.png";
-const Footer = () => {
 
-    return (   
-        <footer style={{backgroundColor:"grey"}}>
+export const Footer = () => {
+    return (    
+<footer style={{backgroundColor:"grey"}}>
         <div className="container-fluid padding">
           <div className="row text-center">
             <div className="col-md-4">
@@ -37,7 +37,7 @@ const Footer = () => {
           </div>
         </div>
       </footer>
-    )
-}
+    );
+};
 
 export default Footer;

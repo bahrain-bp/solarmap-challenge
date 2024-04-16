@@ -1,12 +1,19 @@
-// DocumentUploadWithParent.tsx
 import React, { useState } from "react";
 import uploadFile from "../uploadFile";
 
 type ListenFunction = (url: string) => void;
 
+// Function to append content to the document body
+export const appendToDocumentBody = (content: string) => {
+  const element = document.createElement("div");
+  element.innerText = content;
+  document.body.appendChild(element);
+};
+
 const DocumentUpload: React.FC = () => {
   const [, setUploadedFileUrl] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [successMessage, setSuccessMessage] = useState<string>("");
 
   const handleListen: ListenFunction = (url) => {
     setUploadedFileUrl(url);
@@ -17,6 +24,9 @@ const DocumentUpload: React.FC = () => {
 
     const fileInput = document.querySelector("#formFileLg") as HTMLInputElement;
     const file = fileInput.files ? fileInput.files[0] : null;
+
+    setErrorMessage(""); // Reset error message
+    setSuccessMessage(""); // Reset success message
 
     if (file) {
       setErrorMessage("");
@@ -32,8 +42,6 @@ const DocumentUpload: React.FC = () => {
         // Call the listen function with the necessary parameter
         handleListen(fileUrl);
 
-        // Display the uploaded file
-
         /*
         const link = document.createElement("a");
         link.href = fileUrl;
@@ -41,6 +49,9 @@ const DocumentUpload: React.FC = () => {
         link.innerText = "Uploaded File";
         document.body.appendChild(link);
         */
+
+        // Display success message
+        setSuccessMessage("File uploaded successfully!");
 
         // Clear any previous error messages
         setErrorMessage("");
@@ -60,7 +71,7 @@ const DocumentUpload: React.FC = () => {
     <>
       <form id="fileForm" onSubmit={handleSubmit}>
         <div className="mb-3">
-          <h4> To get accurate and precise solar panel installation results matching your needs</h4>
+          <h4>To get accurate and precise solar panel installation results matching your needs</h4>
           <br />
           <label htmlFor="formFileLg" className="form-label">Upload Your MEWA Bill Document File:</label>
           <input className="form-control" id="formFileLg" type="file" accept=".pdf, .png, .jpeg" />
@@ -68,12 +79,13 @@ const DocumentUpload: React.FC = () => {
         </div>
         <button className="btn btn-primary" type="submit">Upload</button>
         {errorMessage && <div className="alert alert-danger mt-3">{errorMessage}</div>}
+        {successMessage && <div className="alert alert-success mt-3">{successMessage}</div>}
       </form>
+      <br />
       <p style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>Example of Document:</p>
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-        <img style={{ height: "600px" }} src="https://imgv2-2-f.scribdassets.com/img/document/638375183/original/44c2ab4867/1710903548?v=1" />
+        <img style={{ height: "600px" }} src="https://imgv2-2-f.scribdassets.com/img/document/638375183/original/44c2ab4867/1710903548?v=1" alt="Example document" />
       </div>
-
     </>
   );
 };
