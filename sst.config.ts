@@ -27,7 +27,8 @@ export default {
       app.stack(OIDCForGitHubCI)
     }
     else {
-      app.stack(DBStack)
+      app
+      .stack(DBStack)
       .stack(ApiStack)
       .stack(FrontendStack)
       .stack(DocumentProcessingStack)
