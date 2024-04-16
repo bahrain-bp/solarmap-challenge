@@ -3,6 +3,13 @@ import uploadFile from "../uploadFile";
 
 type ListenFunction = (url: string) => void;
 
+// Function to append content to the document body
+export const appendToDocumentBody = (content: string) => {
+  const element = document.createElement("div");
+  element.innerText = content;
+  document.body.appendChild(element);
+};
+
 const DocumentUpload: React.FC = () => {
   const [, setUploadedFileUrl] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -20,7 +27,7 @@ const DocumentUpload: React.FC = () => {
 
     setErrorMessage(""); // Reset error message
     setSuccessMessage(""); // Reset success message
-    
+
     if (file) {
       setErrorMessage("");
       try {
