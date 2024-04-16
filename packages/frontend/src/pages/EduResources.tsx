@@ -37,9 +37,6 @@ const EducationalResources = () => {
     fetchResources();
   }, []);
 
-  if (isLoading) return <div className="text-center"><div className="spinner-border text-primary" role="status"><span className="sr-only">Loading...</span></div></div>;
-  if (error) return <div className="alert alert-danger" role="alert">Error: {error}</div>;
-
   return (
     <>
       <div className="carousel-inner">
@@ -53,32 +50,46 @@ const EducationalResources = () => {
           </div>
         </div>
       </div>
-      <div className="container mt-4">
-        {resources.length > 0 ? (
-          <div className="row">
-            {resources.map((resource) => (
-              <div key={resource.resource_id} className="col-md-4 mb-4">
-                <div className="card h-100">
-                  {resource.resource_img && (
-                    <img
-                      src={`data:image/jpeg;base64,${resource.resource_img}`}
-                      alt={resource.title}
-                      className="card-img-top"
-                    />
-                  )}
-                  <div className="card-body">
-                    <h5 className="card-title">{resource.title}</h5>
-                    <p className="card-text">{resource.body}</p>
-                    {resource.resource_url && <a href={resource.resource_url} className="btn btn-primary">Learn More</a>}
+      {isLoading && (
+        <div className="text-center">
+          <div className="spinner-border text-primary" role="status">
+            <span className="sr-only">Loading...</span>
+          </div>
+        </div>
+      )}
+      {error && (
+        <div className="alert alert-danger" role="alert">
+          Error: {error}
+        </div>
+      )}
+      {!isLoading && !error && (
+        <div className="container mt-4">
+          {resources.length > 0 ? (
+            <div className="row">
+              {resources.map((resource) => (
+                <div key={resource.resource_id} className="col-md-4 mb-4">
+                  <div className="card h-100">
+                    {resource.resource_img && (
+                      <img
+                        src={`data:image/jpeg;base64,${resource.resource_img}`}
+                        alt={resource.title}
+                        className="card-img-top"
+                      />
+                    )}
+                    <div className="card-body">
+                      <h5 className="card-title">{resource.title}</h5>
+                      <p className="card-text">{resource.body}</p>
+                      {resource.resource_url && <a href={resource.resource_url} className="btn btn-primary">Learn More</a>}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-center">No resources found.</p>
-        )}
-      </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-center">No resources found.</p>
+          )}
+        </div>
+      )}
     </>
   );
 };
