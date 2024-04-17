@@ -10,8 +10,8 @@ import MapV2 from './components/MapV2'; // Import InitializeMap component
 import { BrowserRouter, Route, Routes} from 'react-router-dom';
 
 function App() {
-  const identityPoolId = "us-east-1:3a802d07-d77b-4b1d-9b5f-efea30622397"; // Cognito Identity Pool ID
-  const mapName = "devs-map"; // Amazon Location Service Map Name
+  const identityPoolId = import.meta.env.VITE_IDENTITY_POOL_ID; // Cognito Identity Pool ID
+  const mapName = import.meta.env.VITE_MAP_NAME; // Amazon Location Service Map Name
 
   return (
     <BrowserRouter>

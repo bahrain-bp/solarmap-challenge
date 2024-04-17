@@ -9,10 +9,13 @@ import { HttpOrigin } from "aws-cdk-lib/aws-cloudfront-origins";
 
 import { StaticSite, StackContext, use } from "sst/constructs";
 import { ApiStack } from "./ApiStack";
+import { MapStack } from "./MapStack";
 
-export function FrontendStack({ stack }: StackContext) {
+export function FrontendStack({ stack, app }: StackContext) {
 
   const {api, apiCachePolicy} = use(ApiStack);
+  const { mapName, identityPoolId } = use(MapStack);
+
   
   // Deploy our React app
   const site = new StaticSite(stack, "ReactSite", {
@@ -21,6 +24,10 @@ export function FrontendStack({ stack }: StackContext) {
     buildOutput: "dist",
     environment: {
       VITE_API_URL: api.url,
+      VITE_APP_REGION: app.region,
+      VITE_MAP_NAME: mapName,
+      VITE_IDENTITY_POOL_ID: identityPoolId,
+
     },
     cdk: {
       distribution: {
