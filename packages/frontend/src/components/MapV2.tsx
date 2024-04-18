@@ -1,8 +1,8 @@
-// MapV2.tsx
 import React, { useEffect } from 'react';
 import maplibregl, { LngLat, LngLatBounds } from 'maplibre-gl';
 import { withIdentityPoolId } from "@aws/amazon-location-utilities-auth-helper";
 import SolarPanelCalculator from './SolarPanelCalculator';
+import MapboxDraw from '@mapbox/mapbox-gl-draw';
 
 interface MapV2Props {
   identityPoolId: string;
@@ -25,23 +25,20 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
       const map = new maplibregl.Map({
         container: "map",
         center: [50.5860, 26.15],
-        
         zoom: 10,
         maxBounds: bound,
         style: `https://maps.geo.${region}.amazonaws.com/maps/v0/maps/${mapName}/style-descriptor`,
         ...authHelper.getMapAuthenticationOptions(),
       });
-    
+
       // Add 3D buildings after the map loads
       map.on('load', () => {
         // Insert the layer beneath any symbol layer.
-      
-      
         map.addSource('openmaptiles', {
           url: `https://api.maptiler.com/tiles/v3/tiles.json?key=UGho1CzUl0HDsQMTTKJ0`,
           type: 'vector',
         });
-      
+
         map.addLayer(
           {
             'id': '3d-buildings',
@@ -71,11 +68,32 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
             }
           },
         );
+
+        // Add draw functionality
+        const draw = new MapboxDraw({
+          displayControlsDefault: true,
+          // controls: {
+          //   polygon: true,
+          //   trash: true,
+          //   point: true,
+          //   line_string: true,
+          //   combine_features: true,
+          //   uncombine_features: true,
+          // },
+        });
+
+        map.addControl(draw as any); // ('top-left', 'top-right', 'bottom-left', 'bottom-right')
+
+        // Event listener to get drawn features
+        map.on('draw.create', (event) => {
+          const polygon = event.features[0].geometry;
+          console.log('Polygon coordinates:', polygon.coordinates);
+          // Polygon coordinates: [[[50.5860, 26.15], [50.5860, 26.15], [50.5860, 26.15], [50.5860, 26.15]]]
+        });
       });
 
-      map.addControl(new maplibregl.NavigationControl(), "top-right");
+      map.addControl(new maplibregl.NavigationControl(), "bottom-right");
     };
-      
 
     initializeMap();
 
