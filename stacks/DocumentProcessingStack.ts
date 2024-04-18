@@ -4,8 +4,26 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 
 export function DocumentProcessingStack({ stack }: StackContext) {
 
-    const documentsFunction = new Function(stack, "Function", { handler: "packages/functions/src/process-pdf-lambda.handler",
-   /* timeout: "120 seconds",*/ memorySize: 256, retryAttempts: 1, /*runtime: "python3.11"*/});
+    const filterFunction = new Function(stack, "filterFunction", { handler: "packages/functions/src/filter-pdf-lambda.handler",
+    /* timeout: "120 seconds",*/ memorySize: 256, retryAttempts: 1, /*runtime: "python3.11"*/});
+
+    
+    const filterQueue = new Queue(stack, "Filter-Queue", {
+        consumer: filterFunction,
+        cdk: {
+            queue: {
+                // fifo: true,
+                // contentBasedDeduplication: true,
+                queueName: stack.stage + '-queue-for-filter'/*.fifo*/,
+                //visibilityTimeout: Duration.seconds(5),
+            },
+        },
+    });
+    
+
+    const documentsFunction = new Function(stack, "documentsFunction", { handler: "packages/functions/src/process-pdf-lambda.handler",
+   /* timeout: "120 seconds",*/ memorySize: 256, retryAttempts: 1, environment: { QUEUE_URL: filterQueue.queueUrl,} /*runtime: "python3.11"*/});
+
 
     // Creating Queue Service
 
@@ -61,6 +79,10 @@ export function DocumentProcessingStack({ stack }: StackContext) {
             },
         },
     });
+
+
+ 
+
 
     // Output Results 
 

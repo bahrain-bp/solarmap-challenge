@@ -2,10 +2,14 @@ import * as AWS from 'aws-sdk';
 
 const textract = new AWS.Textract();
 const comprehend = new AWS.Comprehend();
+const sqs = new AWS.SQS();
+const queue_URL = process.env.QUEUE_URL; // Access queue URL from environment
 
 export const handler = async (event: any): Promise<any> => {
   try {
+
     // Extract bucket name and file name from the SQS event
+
     const records = event.Records;
     for (const record of records) {
       const body = JSON.parse(record.body);
@@ -31,7 +35,8 @@ export const handler = async (event: any): Promise<any> => {
         // Log the text extracted from the document
         const textBlocks = blocks.filter(block => block.BlockType === 'LINE');
         const extractedText = textBlocks.map(block => block.Text);
-        console.log('Extracted text:', extractedText);
+        //console.log('Extracted text:', extractedText);
+
 
         // Use AWS Comprehend to analyze the extracted text
         const comprehendParams: AWS.Comprehend.DetectEntitiesRequest = {
@@ -40,7 +45,18 @@ export const handler = async (event: any): Promise<any> => {
         };
 
         const comprehendResult = await comprehend.detectEntities(comprehendParams).promise();
-        console.log('Comprehend result:', comprehendResult);
+        // console.log('Comprehend result:', comprehendResult);
+
+        // Send extracted text to SQS queue
+        const sqsParams: AWS.SQS.SendMessageRequest = {
+          // @ts-ignore
+          QueueUrl: queue_URL,
+          MessageBody: JSON.stringify({ extractedText }) // Send extracted text as JSON object
+        };
+
+        await sqs.sendMessage(sqsParams).promise();
+        // console.log('Extracted text sent to SQS queue');
+
       }
     }
 
