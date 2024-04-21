@@ -18,7 +18,7 @@ export const handler = async (event: any): Promise<any> => {
 
       // Run the file through AWS Textract
       const textractParams: AWS.Textract.AnalyzeDocumentRequest = {
-        FeatureTypes: ['TABLES', 'FORMS'],
+        FeatureTypes: ['FORMS'],
         Document: {
           S3Object: {
             Bucket: bucketName,
@@ -27,31 +27,36 @@ export const handler = async (event: any): Promise<any> => {
         }
       };
 
-      const textractResult = await textract.analyzeDocument(textractParams).promise();
+  // Assuming textractResult contains the result from Textract
+
+const textractResult = await textract.analyzeDocument(textractParams).promise();
+
 
       // Extract information from the Textract result
       const blocks = textractResult.Blocks;
       if (blocks) {
-        // Log the text extracted from the document
+       // Log the text extracted from the document
+       // console.log('Extracted text from document:', blocks);
         const textBlocks = blocks.filter(block => block.BlockType === 'LINE');
+       // console.log('Text blocks:', textBlocks);
         const extractedText = textBlocks.map(block => block.Text);
-        //console.log('Extracted text:', extractedText);
+       // console.log('Extracted text:', extractedText);
 
 
         // Use AWS Comprehend to analyze the extracted text
-        const comprehendParams: AWS.Comprehend.DetectEntitiesRequest = {
-          LanguageCode: 'en', // Adjust language code as per your text
-          Text: extractedText.join('\n')
-        };
+        // const comprehendParams: AWS.Comprehend.DetectEntitiesRequest = {
+        //   LanguageCode: 'en', // Adjust language code as per your text
+        //   Text: extractedText.join('\n')
+        // };
 
-        const comprehendResult = await comprehend.detectEntities(comprehendParams).promise();
+        // const comprehendResult = await comprehend.detectEntities(comprehendParams).promise();
         // console.log('Comprehend result:', comprehendResult);
 
         // Send extracted text to SQS queue
         const sqsParams: AWS.SQS.SendMessageRequest = {
           // @ts-ignore
           QueueUrl: queue_URL,
-          MessageBody: JSON.stringify({ extractedText }) // Send extracted text as JSON object
+          MessageBody: JSON.stringify({ textractResult }) // Send extracted text as JSON object
         };
 
         await sqs.sendMessage(sqsParams).promise();
