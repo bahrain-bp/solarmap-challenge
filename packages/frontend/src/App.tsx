@@ -8,12 +8,15 @@ import Footer from './pages/Footer'
 // import Map from './pages/Map'
 import MapV2 from './components/MapV2'; // Import InitializeMap component
 import { BrowserRouter, Route, Routes} from 'react-router-dom';
+import { Authenticator } from '@aws-amplify/ui-react';
 
 function App() {
   const identityPoolId = import.meta.env.VITE_IDENTITY_POOL_ID; // Cognito Identity Pool ID
   const mapName = import.meta.env.VITE_MAP_NAME; // Amazon Location Service Map Name
+  console.log(process.env.REGION, process.env.USER_POOL_ID, process.env.USER_POOL_APP_CLIENT_ID);
 
   return (
+    <Authenticator>
     <BrowserRouter>
       <div className="App">
         <Navbar />
@@ -32,6 +35,7 @@ function App() {
         <Footer />
       </div>
     </BrowserRouter>
+    </Authenticator>
   )
 }
 

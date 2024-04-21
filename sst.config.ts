@@ -6,6 +6,7 @@ import { ImageBuilderForCodeCatalyst } from "./stacks/devops/ImageBuilderForCode
 import { OIDCForGitHubCI } from "./stacks/devops/OIDCForGitHubCI";
 import { DocumentProcessingStack } from "./stacks/DocumentProcessingStack";
 import { MapStack } from "./stacks/MapStack";
+import { AuthStack } from "./stacks/AuthStack"
 
 export default {
   config(_input) {
@@ -31,7 +32,8 @@ export default {
       .stack(DocumentProcessingStack) // Initialize "DocumentProcessingStack" stack before "ApiStack" stack (Dependency)
       .stack(ApiStack)
       .stack(MapStack)
-      .stack(FrontendStack);
+      .stack(FrontendStack)
+      .stack(AuthStack)
     }
   }
 } satisfies SSTConfig;
