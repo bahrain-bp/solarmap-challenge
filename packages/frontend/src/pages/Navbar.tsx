@@ -30,6 +30,9 @@ const Navbar = () => {
                   <li className="nav-item">
                         <a className="nav-link" id="navbar_item" href="/MapV2">Calculator</a>
                     </li>
+                    <li className="nav-item">
+                        <a className="nav-link" id="navbar_item" href="/QuickSightDashboard">Business dashboard</a>
+                    </li>
                     {/* <li className="nav-item dropdown">
                         <a className="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Dropdown link

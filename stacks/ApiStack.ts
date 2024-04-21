@@ -30,7 +30,7 @@ export function ApiStack({ stack }: StackContext) {
             "GET /resources": "packages/functions/src/fetchEduResources.handler",
             "POST /resources": "packages/functions/src/postEduResources.handler",
             "DELETE /resources/{resource_id}": "packages/functions/src/deleteEduResources.handler",
-
+            
             // TypeScript lambda function for MEWA bill document processing 
             // "POST /process-pdf": "packages/functions/src/process-pdf-lambda.handler",
             "POST /upload": {
@@ -51,6 +51,17 @@ export function ApiStack({ stack }: StackContext) {
                     handler: "packages/functions/src/sample-python-lambda/lambda.main",
                     runtime: "python3.11",
                     timeout: "60 seconds",
+                }
+            },
+            "GET /BusinessDashboard": {
+                function: {
+                    handler: "packages/functions/src/AnonymousEmbedFunction.handler",
+                    permissions: [new PolicyStatement({
+                        actions: ['quicksight:GenerateEmbedUrlForAnonymousUser'],
+                        resources: ['arn:aws:quicksight:*:*:namespace/default' , 'arn:aws:quicksight:*:*:dashboard/5c860b60-5e39-4a81-857e-4283698b93b2'
+                        ],
+                        
+                    })],
                 }
             },
         }
