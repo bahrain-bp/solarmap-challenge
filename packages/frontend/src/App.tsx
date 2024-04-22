@@ -9,11 +9,13 @@ import Footer from './pages/Footer'
 import MapV2 from './components/MapV2'; // Import InitializeMap component
 import { BrowserRouter, Route, Routes} from 'react-router-dom';
 import { Authenticator } from '@aws-amplify/ui-react';
+import "@aws-amplify/ui-react/styles.css";
+
+
 function App() {
   const identityPoolId = import.meta.env.VITE_IDENTITY_POOL_ID; // Cognito Identity Pool ID
   const mapName = import.meta.env.VITE_MAP_NAME; // Amazon Location Service Map Name
-  console.log(process.env.USER_POOL_ID);
-  console.log(process.env.USER_POOL_CLIENT_ID);
+
   return (
     <Authenticator>
     <BrowserRouter>
