@@ -1,0 +1,101 @@
+{
+  "auth": {
+    "solarmapchallengee2860e5b": {
+      "customAuth": false,
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito",
+      "serviceType": "imported"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_auth_solarmapchallengee2860e5b_allowUnauthenticatedIdentities": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "solarmapchallengee2860e5b"
+        }
+      ]
+    },
+    "AMPLIFY_auth_solarmapchallengee2860e5b_authRoleArn": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "solarmapchallengee2860e5b"
+        }
+      ]
+    },
+    "AMPLIFY_auth_solarmapchallengee2860e5b_authRoleName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "solarmapchallengee2860e5b"
+        }
+      ]
+    },
+    "AMPLIFY_auth_solarmapchallengee2860e5b_identityPoolId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "solarmapchallengee2860e5b"
+        }
+      ]
+    },
+    "AMPLIFY_auth_solarmapchallengee2860e5b_identityPoolName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "solarmapchallengee2860e5b"
+        }
+      ]
+    },
+    "AMPLIFY_auth_solarmapchallengee2860e5b_nativeClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "solarmapchallengee2860e5b"
+        }
+      ]
+    },
+    "AMPLIFY_auth_solarmapchallengee2860e5b_unauthRoleArn": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "solarmapchallengee2860e5b"
+        }
+      ]
+    },
+    "AMPLIFY_auth_solarmapchallengee2860e5b_unauthRoleName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "solarmapchallengee2860e5b"
+        }
+      ]
+    },
+    "AMPLIFY_auth_solarmapchallengee2860e5b_userPoolId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "solarmapchallengee2860e5b"
+        }
+      ]
+    },
+    "AMPLIFY_auth_solarmapchallengee2860e5b_userPoolName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "solarmapchallengee2860e5b"
+        }
+      ]
+    },
+    "AMPLIFY_auth_solarmapchallengee2860e5b_webClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "solarmapchallengee2860e5b"
+        }
+      ]
+    }
+  }
+}

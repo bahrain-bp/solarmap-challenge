@@ -1,0 +1,54 @@
+{
+  "providers": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-solarmapchallenge-dev-c6ebf-authRole",
+      "UnauthRoleArn": "arn:aws:iam::211125369004:role/amplify-solarmapchallenge-dev-c6ebf-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::211125369004:role/amplify-solarmapchallenge-dev-c6ebf-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-solarmapchallenge-dev-c6ebf-deployment",
+      "UnauthRoleName": "amplify-solarmapchallenge-dev-c6ebf-unauthRole",
+      "StackName": "amplify-solarmapchallenge-dev-c6ebf",
+      "StackId": "arn:aws:cloudformation:us-east-1:211125369004:stack/amplify-solarmapchallenge-dev-c6ebf/aac44d10-fb24-11ee-9d4f-0affcc5037ad",
+      "AmplifyAppId": "dhwnrghwcx77s"
+    }
+  },
+  "auth": {
+    "solarmapchallengee2860e5b": {
+      "service": "Cognito",
+      "serviceType": "imported",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false,
+      "output": {
+        "UserPoolId": "us-east-1_h0klyV1Fh",
+        "UserPoolName": "Suhaib-codecatalyst-sst-app-Auth",
+        "AppClientID": "3olj46jq032k608urtfsvr5s56",
+        "AppClientIDWeb": "3olj46jq032k608urtfsvr5s56",
+        "IdentityPoolId": "us-east-1:df87831b-c0d8-4793-a5b0-ee9adae507eb",
+        "IdentityPoolName": "Suhaib-codecatalyst-sst-app-Auth"
+      },
+      "frontendAuthConfig": {
+        "socialProviders": [],
+        "usernameAttributes": [
+          "EMAIL"
+        ],
+        "signupAttributes": [],
+        "passwordProtectionSettings": {
+          "passwordPolicyMinLength": 8,
+          "passwordPolicyCharacters": [
+            "REQUIRES_LOWERCASE",
+            "REQUIRES_UPPERCASE",
+            "REQUIRES_NUMBERS",
+            "REQUIRES_SYMBOLS"
+          ]
+        },
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
+      "lastPushTimeStamp": "2024-04-15T13:03:10.022Z"
+    }
+  }
+}
