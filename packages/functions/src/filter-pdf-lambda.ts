@@ -61,6 +61,7 @@ export const handler = async (event: any): Promise<any> => {
   try {
     const sqsMessageBody = JSON.parse(event.Records[0].body);
     const textractResult = sqsMessageBody.textractResult;
+    const combinedText = sqsMessageBody.combinedText;
 
     const key_map: Record<string, Block> = {};
     const value_map: Record<string, Block> = {};
@@ -79,7 +80,8 @@ export const handler = async (event: any): Promise<any> => {
     });
 
     const kvs = getRelationships(key_map, value_map, block_map);
-    console.log("kvs", kvs);
+    console.log("Address:", combinedText);
+    console.log("Data:", kvs);
     /*
     ["key":"value",...,"key":"value"]
     */

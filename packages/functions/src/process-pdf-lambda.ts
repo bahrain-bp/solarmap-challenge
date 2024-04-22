@@ -6,6 +6,7 @@ const sqs = new AWS.SQS();
 const queue_URL = process.env.QUEUE_URL; // Access queue URL from environment
 
 export const handler = async (event: any): Promise<any> => {
+
   try {
 
     // Extract bucket name and file name from the SQS event
@@ -27,40 +28,58 @@ export const handler = async (event: any): Promise<any> => {
         }
       };
 
-  // Assuming textractResult contains the result from Textract
+      // Assuming textractResult contains the result from Textract
 
-const textractResult = await textract.analyzeDocument(textractParams).promise();
+      const textractResult = await textract.analyzeDocument(textractParams).promise();
 
 
       // Extract information from the Textract result
       const blocks = textractResult.Blocks;
       if (blocks) {
-       // Log the text extracted from the document
-       // console.log('Extracted text from document:', blocks);
+        // Log the text extracted from the document
+        // console.log('Extracted text from document:', blocks);
         const textBlocks = blocks.filter(block => block.BlockType === 'LINE');
-       // console.log('Text blocks:', textBlocks);
+        // console.log('Text blocks:', textBlocks);
         const extractedText = textBlocks.map(block => block.Text);
-       // console.log('Extracted text:', extractedText);
+        // console.log('Extracted text:', extractedText);
 
 
         // Use AWS Comprehend to analyze the extracted text
-        // const comprehendParams: AWS.Comprehend.DetectEntitiesRequest = {
-        //   LanguageCode: 'en', // Adjust language code as per your text
-        //   Text: extractedText.join('\n')
-        // };
-
-        // const comprehendResult = await comprehend.detectEntities(comprehendParams).promise();
-        // console.log('Comprehend result:', comprehendResult);
-
-        // Send extracted text to SQS queue
-        const sqsParams: AWS.SQS.SendMessageRequest = {
-          // @ts-ignore
-          QueueUrl: queue_URL,
-          MessageBody: JSON.stringify({ textractResult }) // Send extracted text as JSON object
+        const comprehendParams: AWS.Comprehend.DetectEntitiesRequest = {
+          LanguageCode: 'en', // Adjust language code as per your text
+          Text: extractedText.join('\n')
         };
 
-        await sqs.sendMessage(sqsParams).promise();
-        // console.log('Extracted text sent to SQS queue');
+        const comprehendResult = await comprehend.detectEntities(comprehendParams).promise();
+        // console.log('Comprehend result:', comprehendResult);
+
+
+
+        // Check if comprehendResult is defined and contains Entities
+        if (comprehendResult && comprehendResult.Entities) {
+          const otherEntitiesText: string[] = comprehendResult.Entities
+              .filter((entity: any) => entity.Type === 'OTHER')
+              .slice(0, 4)
+              .map((entity: any) => entity.Text.replace(/\d+\n/, ''))
+              .filter((text: string | undefined) => text !== undefined) as string[];
+      
+          const combinedText: string = otherEntitiesText.join(' ');
+      
+          // Send extracted text to SQS queue
+          const sqsParams: AWS.SQS.SendMessageRequest = {
+            // @ts-ignore
+            QueueUrl: queue_URL,
+            MessageBody: JSON.stringify({ textractResult, combinedText }) // Send extracted text as JSON object
+          };
+
+          await sqs.sendMessage(sqsParams).promise();
+          // console.log('Extracted text sent to SQS queue');
+          // console.log('Combined text:', combinedText);
+
+        } else {
+          console.log("No entities found.");
+        }
+
 
       }
     }
