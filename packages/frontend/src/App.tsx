@@ -8,11 +8,12 @@ import Footer from './pages/Footer'
 // import Map from './pages/Map'
 import MapV2 from './components/MapV2'; // Import InitializeMap component
 import { BrowserRouter, Route, Routes} from 'react-router-dom';
-
+console.log(import.meta.env.VITE_USER_POOL_CLIENT_ID);
+console.log(import.meta.env.VITE_APP_REGION);
+console.log(import.meta.env.VITE_USER_POOL_ID);
 function App() {
   const identityPoolId = import.meta.env.VITE_IDENTITY_POOL_ID; // Cognito Identity Pool ID
   const mapName = import.meta.env.VITE_MAP_NAME; // Amazon Location Service Map Name
-
   return (
     <BrowserRouter>
       <div className="App">
