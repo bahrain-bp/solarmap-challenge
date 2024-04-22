@@ -13,7 +13,7 @@ function App() {
   const identityPoolId = import.meta.env.VITE_IDENTITY_POOL_ID; // Cognito Identity Pool ID
   const mapName = import.meta.env.VITE_MAP_NAME; // Amazon Location Service Map Name
   console.log(process.env.USER_POOL_ID);
-  console.log(process.env.USER_POOL_WEB_CLIENT_ID);
+  console.log(process.env.USER_POOL_CLIENT_ID);
   return (
     <Authenticator>
     <BrowserRouter>
