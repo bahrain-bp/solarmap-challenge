@@ -1,4 +1,14 @@
 import logo from "../assets/logo.png";
+import { signOut } from 'aws-amplify/auth';
+
+async function handleSignOut() {
+    try {
+      await signOut({ global: true });
+    } catch (error) {
+      console.log('error signing out: ', error);
+    }
+  }
+
 const Navbar = () => {
     return (    
 
@@ -30,6 +40,9 @@ const Navbar = () => {
                   <li className="nav-item">
                         <a className="nav-link" id="navbar_item" href="/MapV2">Calculator</a>
                     </li>
+                    <li className="nav-item">
+                        <a className="nav-link" id="navbar_item" onClick={handleSignOut}>Logout</a>
+                        </li>
                     {/* <li className="nav-item dropdown">
                         <a className="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Dropdown link
@@ -40,6 +53,7 @@ const Navbar = () => {
                             <a className="dropdown-item" href="#">Something else here</a>
                         </div>
                     </li> */}
+                    
                 </ul>
             </div>
         </nav>
