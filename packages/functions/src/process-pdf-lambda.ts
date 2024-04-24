@@ -58,18 +58,30 @@ export const handler = async (event: any): Promise<any> => {
         // Check if comprehendResult is defined and contains Entities
         if (comprehendResult && comprehendResult.Entities) {
           const otherEntitiesText: string[] = comprehendResult.Entities
-              .filter((entity: any) => entity.Type === 'OTHER')
-              .slice(0, 4)
-              .map((entity: any) => entity.Text.replace(/\d+\n/, ''))
-              .filter((text: string | undefined) => text !== undefined) as string[];
-      
+            .filter((entity: any) => entity.Type === 'OTHER')
+            .slice(0, 4)
+            .map((entity: any) => entity.Text.replace(/\d+\n/, ''))
+            .filter((text: string | undefined) => text !== undefined) as string[];
+
           const combinedText: string = otherEntitiesText.join(' ');
-      
+
+          // Extract the text from the 17th quantity entity and format it
+          const electricityEntityText: string | undefined = comprehendResult.Entities
+            .filter((entity: any) => entity.Type === 'QUANTITY')
+            .map((entity: any) => {
+              const text: string = entity.Text;
+              // Replace the newline character followed by numbers with an empty string
+              return text.replace(/\n\d+/, '');
+            })
+            .filter((text: string) => text.trim() !== '')[18]; // Select the 19th element (index 18)
+
+
+
           // Send extracted text to SQS queue
           const sqsParams: AWS.SQS.SendMessageRequest = {
             // @ts-ignore
             QueueUrl: queue_URL,
-            MessageBody: JSON.stringify({ textractResult, combinedText }) // Send extracted text as JSON object
+            MessageBody: JSON.stringify({ textractResult, combinedText, electricityEntityText }) // Send extracted text as JSON object
           };
 
           await sqs.sendMessage(sqsParams).promise();
@@ -79,6 +91,7 @@ export const handler = async (event: any): Promise<any> => {
         } else {
           console.log("No entities found.");
         }
+
 
 
       }

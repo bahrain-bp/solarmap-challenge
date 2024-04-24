@@ -65,6 +65,13 @@ export const handler = async (event: any): Promise<any> => {
     const sqsMessageBody = JSON.parse(event.Records[0].body);
     const textractResult = sqsMessageBody.textractResult;
     const combinedText = sqsMessageBody.combinedText;
+    const electricitySupply = sqsMessageBody.electricityEntityText;
+
+    console.log("Address:", combinedText);
+
+    const formattedElectricitySupply = parseInt(electricitySupply.replace(/\skWh/, ''));
+    console.log('Maximum Electricity Power Supply:', formattedElectricitySupply);
+
 
     const key_map: Record<string, Block> = {};
     const value_map: Record<string, Block> = {};
@@ -83,7 +90,7 @@ export const handler = async (event: any): Promise<any> => {
     });
 
     const kvs = getRelationships(key_map, value_map, block_map);
-    // console.log("Address:", combinedText);
+    
     console.log("Data:", kvs);
     /*
     ["key":"value",...,"key":"value"]
@@ -128,7 +135,7 @@ export const handler = async (event: any): Promise<any> => {
     // console.log(subsidized);
 
     // Check if all required fields are provided
-    if (!propertyId || !formattedIssueDate || !monthlyBill || !secondReading || !rate || !subsidized) {
+    if (!propertyId || !formattedIssueDate || !monthlyBill || !secondReading || !rate || !subsidized || !formattedElectricitySupply) {
       return {
         statusCode: 400,
         body: JSON.stringify({ error: 'Missing required fields in the request body' }),
@@ -136,17 +143,17 @@ export const handler = async (event: any): Promise<any> => {
     }
 
     // Insert the new vehicle into the database
-    await SQL.DB
-      .insertInto("ewabill")
-      .values({
-        property_id: propertyId,
-        issue_date: formattedIssueDate,
-        monthly_bill: monthlyBill,
-        electricity_supply: 1800,
-        rate: rate,
-        usage: secondReading,
-      })
-      .execute();
+    // await SQL.DB
+    //   .insertInto("ewabill")
+    //   .values({
+    //     property_id: propertyId,
+    //     issue_date: formattedIssueDate,
+    //     monthly_bill: monthlyBill,
+    //     electricity_supply: formattedElectricitySupply,
+    //     rate: rate,
+    //     usage: secondReading,
+    //   })
+    //   .execute();
 
     return {
       statusCode: 200,
