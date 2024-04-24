@@ -65,12 +65,4 @@ new CfnOutput(stack, "UserPoolId", {
 new CfnOutput(stack, "UserPoolClientId", {
   value: userPoolClient.userPoolClientId || "",
 });
-  
-  // Show the API endpoint and other info in the output
-  stack.addOutputs({
-    ApiEndpoint: api.url,
-    UserPoolId: auth.userPoolId,
-    UserPoolClientId: auth.userPoolClientId,
-    SiteUrl: site.url,
-  });
 }

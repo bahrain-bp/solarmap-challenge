@@ -7,8 +7,8 @@ import { Amplify } from 'aws-amplify';
 Amplify.configure({
   Auth: {
     Cognito:{
-      userPoolId: "us-east-1_QpFyNeiol",
-      userPoolClientId: "3h3ute414vt7iv3vi1qmibotj7",
+      userPoolId: process.env.USER_POOL_ID,
+      userPoolClientId: process.env.USER_POOL_CLIENT_ID,
     }
   },
   API: {
