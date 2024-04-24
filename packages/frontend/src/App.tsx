@@ -8,9 +8,9 @@ import Footer from './pages/Footer'
 // import Map from './pages/Map'
 import MapV2 from './components/MapV2'; // Import InitializeMap component
 import { BrowserRouter, Route, Routes} from 'react-router-dom';
-import { withAuthenticator } from '@aws-amplify/ui-react';
 import "@aws-amplify/ui-react/styles.css";
 import QuickSightDashboard from './components/QuickSightDashboard';
+import { Authenticator } from './components/Authenticator';
 
 
 function App() {
@@ -18,6 +18,7 @@ function App() {
   const mapName = import.meta.env.VITE_MAP_NAME; // Amazon Location Service Map Name
 
   return (
+    <Authenticator>
     <BrowserRouter>
       <div className="App">
         <Navbar />
@@ -37,7 +38,8 @@ function App() {
         <Footer />
       </div>
     </BrowserRouter>
+    </Authenticator>
   )
 }
 
-export default withAuthenticator(App, { hideSignUp: true });
+export default App;
