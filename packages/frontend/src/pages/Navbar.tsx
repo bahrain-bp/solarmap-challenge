@@ -31,6 +31,9 @@ const Navbar = () => {
                         <a className="nav-link" id="navbar_item" href="/MapV2">Calculator</a>
                     </li>
                     <li className="nav-item">
+                        <a className="nav-link" id="navbar_item" href="/CarbonEmissionsCalculator">Carbon Calculator</a>
+                    </li>
+                    <li className="nav-item">
                         <a className="nav-link" id="navbar_item" href="/QuickSightDashboard">Business dashboard</a>
                     </li>
                     {/* <li className="nav-item dropdown">

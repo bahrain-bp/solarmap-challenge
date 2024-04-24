@@ -9,6 +9,7 @@ import Footer from './pages/Footer'
 import MapV2 from './components/MapV2'; // Import InitializeMap component
 import { BrowserRouter, Route, Routes} from 'react-router-dom';
 import QuickSightDashboard from './components/QuickSightDashboard';
+import CarbonFootprintCalculator from './pages/CarbonEmissionsCalculator';
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/About" element={<About />} />
             <Route path="/Provider" element={<Providers />} />
+            <Route path="/CarbonEmissionsCalculator" element={<CarbonFootprintCalculator />} />
             <Route path="/DocumentUpload" element={<DocumentUpload />} />
             <Route path="/QuickSightDashboard" element={<QuickSightDashboard />} />
             {/* <Route path="/Map" element={<Map />} /> */}
