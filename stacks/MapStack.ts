@@ -8,7 +8,7 @@ import { StackContext } from "sst/constructs";
 import * as cdk from "aws-cdk-lib";
 
 export function MapStack({ stack }: StackContext) {
-  const existingDomainName = "d36no989weouwx.cloudfront.net";
+  const existingDomainName = "https://d36no989weouwx.cloudfront.net/*";
   const mapName =
     stack.stage === "prod" ? "production-map" : stack.stage + "-devs-map";
   
