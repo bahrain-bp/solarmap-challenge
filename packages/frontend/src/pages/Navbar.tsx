@@ -1,4 +1,3 @@
-import React from 'react';
 import logo from "../assets/logo.png";
 import { signOut } from 'aws-amplify/auth';
 import Button from '@mui/material/Button';
@@ -22,7 +21,10 @@ const NavButton = styled(Button)({
     marginRight: '20px',  // Add right margin for spacing
 });
 
+
+
 const Navbar = () => {
+    
     return (
         <nav className="navbar navbar-expand-lg navbar-light" style={{ backgroundColor: '#073763' }}>
             <a href="/" className="d-block w-200">
@@ -56,7 +58,7 @@ const Navbar = () => {
                     </li>
                 </ul>
                 <NavButton variant="outlined" onClick={handleSignOut}>
-                    Logout
+                 Logout
                 </NavButton>
             </div>
         </nav>
