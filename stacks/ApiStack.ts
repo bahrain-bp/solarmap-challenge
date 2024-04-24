@@ -6,7 +6,7 @@ import { DocumentProcessingStack } from "./DocumentProcessingStack";
 import { PolicyStatement } from "aws-cdk-lib/aws-iam";
 
 export function ApiStack({ stack }: StackContext) {
-   
+
 
     // const { table } = use(DBStack);
     const documentProcessingStack = use(DocumentProcessingStack);
@@ -19,7 +19,7 @@ export function ApiStack({ stack }: StackContext) {
         defaults: {
             function: {
                 bind: [db],
-                
+
             },
         },
         routes: {
@@ -30,7 +30,7 @@ export function ApiStack({ stack }: StackContext) {
             "GET /resources": "packages/functions/src/fetchEduResources.handler",
             "POST /resources": "packages/functions/src/postEduResources.handler",
             "DELETE /resources/{resource_id}": "packages/functions/src/deleteEduResources.handler",
-            
+
             // TypeScript lambda function for MEWA bill document processing 
             // "POST /process-pdf": "packages/functions/src/process-pdf-lambda.handler",
             "POST /upload": {
@@ -55,15 +55,31 @@ export function ApiStack({ stack }: StackContext) {
             },
             "GET /BusinessDashboard": {
                 function: {
-                    handler: "packages/functions/src/AnonymousEmbedFunction.handler",
+                    handler: "packages/functions/src/AnonymousEmbedDashboardFunction.handler",
                     permissions: [new PolicyStatement({
-                        actions: ['quicksight:GenerateEmbedUrlForAnonymousUser'],
-                        resources: ['arn:aws:quicksight:*:*:namespace/default' , 'arn:aws:quicksight:*:*:dashboard/5c860b60-5e39-4a81-857e-4283698b93b2'
+                        actions: ['quicksight:*'],
+                        resources: ['arn:aws:quicksight:*:*:namespace/default', 'arn:aws:quicksight:*:*:dashboard/8260f2dc-bd4e-4c32-b8ce-0b6568c824cf',
+                            'arn:aws:quicksight:us-east-1:211125369004:topic/XUb6hHYJsspOO27IIwHYM2eEKi6bWL1n', 'arn:aws:quicksight:us-east-1:211125369004:topic/9z9ugAtwlWsNWdWDEJBU73Mtbo3j7RBF'
                         ],
-                        
+
                     })],
                 }
             },
+            "GET /BusinessQSearchBar": {
+                function: {
+                    handler: "packages/functions/src/AnonymousEmbedQSearchBarFunction.handler",
+                    permissions: [new PolicyStatement({
+                        actions: ['quicksight:*'],
+                        resources: ['arn:aws:quicksight:*:*:namespace/default',
+                            'arn:aws:quicksight:*:*:dashboard/8260f2dc-bd4e-4c32-b8ce-0b6568c824cf',
+                            'arn:aws:quicksight:us-east-1:211125369004:topic/XUb6hHYJsspOO27IIwHYM2eEKi6bWL1n',
+                            'arn:aws:quicksight:us-east-1:211125369004:topic/9z9ugAtwlWsNWdWDEJBU73Mtbo3j7RBF'
+                        ],
+
+                    })],
+                }
+            },
+
         }
     });
 
