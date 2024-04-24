@@ -1,3 +1,6 @@
+import { SQL } from "./sql";
+import moment from 'moment';
+
 interface Block {
   Id: string;
   BlockType: string;
@@ -80,13 +83,77 @@ export const handler = async (event: any): Promise<any> => {
     });
 
     const kvs = getRelationships(key_map, value_map, block_map);
-    console.log("Address:", combinedText);
+    // console.log("Address:", combinedText);
     console.log("Data:", kvs);
     /*
     ["key":"value",...,"key":"value"]
     */
-    
-    return { statusCode: 200, body: 'Processing complete' + JSON.stringify({ kvs }) }// Include kvs in the response body };
+
+    // Parse vehicle details from the request body
+    const propertyId = 5;
+
+
+    const issueDateStr = kvs['Issue Date: ']; // Extract the value associated with the key 'Issue Date:'
+    // console.log('Issue Date:', issueDateStr)
+    const issueDate = moment(issueDateStr, 'DD/MM/YYYY');
+    // Format the date as YYYY-MM-DD
+    const formattedIssueDate = issueDate.format('YYYY-MM-DD');
+    // console.log('Formatted Issue Date:', formattedIssueDate);
+
+
+
+
+    const BD = parseFloat(kvs['BD ']);
+    const rate = parseFloat(kvs['Rate ']);
+    const monthlyBill = BD * ((rate * 10) + 1); // Float
+    // console.log('BD:', BD);
+    // console.log('Rate:', rate);
+    // console.log('Monthly Bill:', monthlyBill);
+
+
+    const usage = kvs['Actual '];
+    // Split the value string by space
+    const parts = usage.split(' ');
+    // Get the last element of the array
+    const secondReading = parseInt(parts[1]); // Integer
+    // console.log(secondReading);
+
+
+    let subsidized = false; // Boolean
+    if (kvs.hasOwnProperty('Non Domestic ')) {
+      subsidized = true;
+    } else {
+      subsidized = false;
+    }
+    // console.log(subsidized);
+
+    // Check if all required fields are provided
+    if (!propertyId || !formattedIssueDate || !monthlyBill || !secondReading || !rate || !subsidized) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: 'Missing required fields in the request body' }),
+      };
+    }
+
+    // Insert the new vehicle into the database
+    await SQL.DB
+      .insertInto("ewabill")
+      .values({
+        property_id: propertyId,
+        issue_date: formattedIssueDate,
+        monthly_bill: monthlyBill,
+        electricity_supply: 1800,
+        rate: rate,
+        usage: secondReading,
+      })
+      .execute();
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ message: 'Document inserted successfully' + 'Processing complete' + JSON.stringify({ kvs }) }), // Include kvs in the response body
+    };
+
+
   } catch (error) {
     console.error('Error processing document:', error);
     return { statusCode: 500, body: 'Error processing document' };
