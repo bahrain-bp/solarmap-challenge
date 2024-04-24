@@ -68,9 +68,10 @@ export const handler = async (event: any): Promise<any> => {
     const electricitySupply = sqsMessageBody.electricityEntityText;
 
     console.log("Address:", combinedText);
-
+    console.log('Maximum Electricity Power Supply:', electricitySupply);
+    
     const formattedElectricitySupply = parseInt(electricitySupply.replace(/\skWh/, ''));
-    console.log('Maximum Electricity Power Supply:', formattedElectricitySupply);
+    
 
 
     const key_map: Record<string, Block> = {};
