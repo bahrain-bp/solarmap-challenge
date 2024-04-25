@@ -11,11 +11,36 @@ import { BrowserRouter, Route, Routes} from 'react-router-dom';
 import "@aws-amplify/ui-react/styles.css";
 import QuickSightDashboard from './components/QuickSightDashboard';
 import { Authenticator } from './components/Authenticator';
+import { fetchUserAttributes } from '@aws-amplify/auth';
+import { useEffect, useState } from 'react';
+
+
+
 
 
 function App() {
   const identityPoolId = import.meta.env.VITE_IDENTITY_POOL_ID; // Cognito Identity Pool ID
   const mapName = import.meta.env.VITE_MAP_NAME; // Amazon Location Service Map Name
+
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  async function handleFetchUserAttributes() {
+    try {
+      const userAttributes = await fetchUserAttributes();
+      console.log(userAttributes);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    try {
+      handleFetchUserAttributes();
+      setIsAuthenticated(true);
+    } catch (error) {
+      console.log(error);
+    }
+  })
 
   return (
     <Authenticator>
