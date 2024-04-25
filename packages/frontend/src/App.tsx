@@ -10,6 +10,8 @@ import MapV2 from './components/MapV2'; // Import InitializeMap component
 import { BrowserRouter, Route, Routes} from 'react-router-dom';
 import QuickSightDashboard from './components/QuickSightDashboard';
 import CarbonFootprintCalculator from './pages/CarbonEmissionsCalculator';
+import Terms from './pages/Terms';
+import Privacy from './pages/Privacy';
 
 
 function App() {
@@ -31,6 +33,9 @@ function App() {
             {/* <Route path="/Map" element={<Map />} /> */}
             <Route path="/EducationalResources" element={<EducationalResources />} />
             <Route path="/MapV2" element={<MapV2 identityPoolId={identityPoolId} mapName={mapName} />} />
+            <Route path="/Terms" element={<Terms />} />
+            <Route path="/Privacy" element={<Privacy />} />
+
           </Routes>
         </div>
         {/* Footer */}
