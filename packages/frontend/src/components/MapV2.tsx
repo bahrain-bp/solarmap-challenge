@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+// MapV2.tsx
+import React, { useEffect, useState } from 'react';
 import maplibregl, { LngLat, LngLatBounds } from 'maplibre-gl';
 import { withIdentityPoolId } from "@aws/amazon-location-utilities-auth-helper";
 import SolarPanelCalculator from './SolarPanelCalculator';
@@ -10,12 +11,14 @@ interface MapV2Props {
 }
 
 const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
+  const [boxCoordinates, setBoxCoordinates] = useState<number[][] | null>(null);
+  
   useEffect(() => {
     const initializeMap = async () => {
       const region = identityPoolId.split(":")[0];
       const authHelper = await withIdentityPoolId(identityPoolId);
 
-      // Set a bounds to Bahrain, Bahrain
+      // Set bounds to Bahrain
       let bound = new LngLatBounds(
         new LngLat(50.3, 25.5357),
         new LngLat(50.8120, 26.3870)
@@ -72,23 +75,19 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
         // Add draw functionality
         const draw = new MapboxDraw({
           displayControlsDefault: true,
-          // controls: {
-          //   polygon: true,
-          //   trash: true,
-          //   point: true,
-          //   line_string: true,
-          //   combine_features: true,
-          //   uncombine_features: true,
-          // },
         });
 
-        map.addControl(draw as any); // ('top-left', 'top-right', 'bottom-left', 'bottom-right')
+        map.addControl(draw as any);
 
         // Event listener to get drawn features
         map.on('draw.create', (event) => {
           const polygon = event.features[0].geometry;
-          console.log('Polygon coordinates:', polygon.coordinates);
-          // Polygon coordinates: [[[50.5860, 26.15], [50.5860, 26.15], [50.5860, 26.15], [50.5860, 26.15]]]
+          const coordinates = polygon.coordinates[0];
+          console.log('Polygon coordinates:', coordinates);
+          if (coordinates.length === 5) {
+            // Assuming the drawn feature is a rectangle, set its coordinates
+            setBoxCoordinates(coordinates);
+          }
         });
       });
 
@@ -105,7 +104,13 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
   return (
     <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
       <SolarPanelCalculator />
-      <div id="map" style={{ width: '100%', height: '100%' }} />
+      <div id="map" style={{ width: '100%', height: '100%' }}>
+        {boxCoordinates && (
+          <div style={{ position: 'absolute', top: 0, left: 0, zIndex: 999 }}>
+            <h1>Box Coordinates: {JSON.stringify(boxCoordinates)}</h1>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
