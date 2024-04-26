@@ -13,7 +13,7 @@ import CarbonFootprintCalculator from './pages/CarbonEmissionsCalculator';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import DeleteEducationalResources from './pages/deleteEduResource';
-
+import AddEducationalResource from './pages/addEduResource';
 
 function App() {
   const identityPoolId = import.meta.env.VITE_IDENTITY_POOL_ID; // Cognito Identity Pool ID
@@ -34,6 +34,7 @@ function App() {
             {/* <Route path="/Map" element={<Map />} /> */}
             <Route path="/EducationalResources" element={<EducationalResources />} />
             <Route path="/deleteEduResource" element={<DeleteEducationalResources />} />
+            <Route path="/addEduResource" element={<AddEducationalResource />} />
             <Route path="/MapV2" element={<MapV2 identityPoolId={identityPoolId} mapName={mapName} />} />
             <Route path="/Terms" element={<Terms />} />
             <Route path="/Privacy" element={<Privacy />} />

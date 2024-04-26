@@ -60,7 +60,7 @@ const EducationalResources: React.FC = () => {
           <button type="button" className="btn btn-danger mx-2" onClick={() => navigate('/deleteEduResource')}>
             <i className="fas fa-trash-alt"></i> Delete Resource
           </button>
-          <button type="button" className="btn btn-primary mx-2">
+          <button type="button" className="btn btn-primary mx-2" onClick={() => navigate('/addEduResource')}>
             <i className="fas fa-plus"></i> Add Resource
           </button>
         </div>
