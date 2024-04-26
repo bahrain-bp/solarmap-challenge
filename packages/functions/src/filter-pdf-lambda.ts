@@ -67,12 +67,6 @@ export const handler = async (event: any): Promise<any> => {
     const combinedText = sqsMessageBody.combinedText;
     const electricitySupply = sqsMessageBody.electricityEntityText;
 
-    console.log("Address:", combinedText);
-    console.log('Maximum Electricity Power Supply:', electricitySupply);
-    
-    const formattedElectricitySupply = parseInt(electricitySupply.replace(/\skWh/, ''));
-    
-
 
     const key_map: Record<string, Block> = {};
     const value_map: Record<string, Block> = {};
@@ -97,6 +91,13 @@ export const handler = async (event: any): Promise<any> => {
     ["key":"value",...,"key":"value"]
     */
 
+
+    console.log("Address:", combinedText);
+    console.log('Maximum Electricity Power Supply:', electricitySupply);
+    
+    const formattedElectricitySupply = parseInt(electricitySupply.replace(/\skWh/, ''));
+    
+    
     // Parse vehicle details from the request body
     const propertyId = 5;
 
@@ -106,7 +107,7 @@ export const handler = async (event: any): Promise<any> => {
     const issueDate = moment(issueDateStr, 'DD/MM/YYYY');
     // Format the date as YYYY-MM-DD
     const formattedIssueDate = issueDate.format('YYYY-MM-DD');
-    // console.log('Formatted Issue Date:', formattedIssueDate);
+    console.log('Issue Date:', formattedIssueDate);
 
 
 
@@ -115,8 +116,8 @@ export const handler = async (event: any): Promise<any> => {
     const rate = parseFloat(kvs['Rate ']);
     const monthlyBill = BD * ((rate * 10) + 1); // Float
     // console.log('BD:', BD);
-    // console.log('Rate:', rate);
-    // console.log('Monthly Bill:', monthlyBill);
+    console.log('Rate:', rate, 'BD');
+    console.log('Monthly Bill:', monthlyBill, 'BD');
 
 
     const usage = kvs['Actual '];
@@ -124,7 +125,7 @@ export const handler = async (event: any): Promise<any> => {
     const parts = usage.split(' ');
     // Get the last element of the array
     const secondReading = parseInt(parts[1]); // Integer
-    // console.log(secondReading);
+    console.log('Usage:', secondReading, 'kWh');
 
 
     let subsidized = false; // Boolean
@@ -133,7 +134,7 @@ export const handler = async (event: any): Promise<any> => {
     } else {
       subsidized = false;
     }
-    // console.log(subsidized);
+    console.log('Subsidized:', subsidized);
 
     // Check if all required fields are provided
     if (!propertyId || !formattedIssueDate || !monthlyBill || !secondReading || !rate || !subsidized || !formattedElectricitySupply) {
