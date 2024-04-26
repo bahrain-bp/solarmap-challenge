@@ -11,8 +11,9 @@ interface MapV2Props {
 }
 
 const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
-  const [boxCoordinates, setBoxCoordinates] = useState<number[][] | null>(null);
-  
+  const [featureCoordinates, setFeatureCoordinates] = useState<number[][] | null>(null);
+  const [drawControl, setDrawControl] = useState<MapboxDraw | null>(null);
+
   useEffect(() => {
     const initializeMap = async () => {
       const region = identityPoolId.split(":")[0];
@@ -77,17 +78,16 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
           displayControlsDefault: true,
         });
 
+        setDrawControl(draw);
+
         map.addControl(draw as any);
 
         // Event listener to get drawn features
         map.on('draw.create', (event) => {
-          const polygon = event.features[0].geometry;
-          const coordinates = polygon.coordinates[0];
-          console.log('Polygon coordinates:', coordinates);
-          if (coordinates.length === 5) {
-            // Assuming the drawn feature is a rectangle, set its coordinates
-            setBoxCoordinates(coordinates);
-          }
+          const feature = event.features[0];
+          const coordinates = feature.geometry.type === 'Point' ? [feature.geometry.coordinates] : feature.geometry.coordinates[0];
+          console.log('Feature coordinates:', coordinates);
+          setFeatureCoordinates(coordinates);
         });
       });
 
@@ -101,13 +101,30 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
     };
   }, [identityPoolId, mapName]);
 
+  const handleDelete = () => {
+    if (drawControl) {
+      drawControl.deleteAll();
+      setFeatureCoordinates(null);
+    }
+  };
+
+  const handleSubmit = () => {
+    // Handle submission of feature coordinates
+    if (featureCoordinates) {
+      // Here you can submit the feature coordinates to your backend or perform any other action
+      console.log('Submitting feature coordinates:', featureCoordinates);
+    }
+  };
+
   return (
     <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
       <SolarPanelCalculator />
       <div id="map" style={{ width: '100%', height: '100%' }}>
-        {boxCoordinates && (
+        {featureCoordinates && (
           <div style={{ position: 'absolute', top: 0, left: 0, zIndex: 999 }}>
-            <h1>Box Coordinates: {JSON.stringify(boxCoordinates)}</h1>
+            <h1>Feature Coordinates: {JSON.stringify(featureCoordinates)}</h1>
+            <button onClick={handleSubmit}>Submit</button>
+            <button onClick={handleDelete}>Delete</button>
           </div>
         )}
       </div>
