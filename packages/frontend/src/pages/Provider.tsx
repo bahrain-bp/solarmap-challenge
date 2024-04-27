@@ -1,10 +1,5 @@
 import { useEffect, useState } from 'react';
 import solarprovider from "../assets/solarprovider.jpg";
-import exportString from "../api_url";
-
-const apiurl: string = exportString();
-
-const API_BASE_URL = apiurl;
 
 interface Consultant {
   name: string;
@@ -89,8 +84,8 @@ const Providers = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const consultantResponse = await fetch(`${API_BASE_URL}/consultants`);
-        const contractorResponse = await fetch(`${API_BASE_URL}/contractors`);
+        const consultantResponse = await fetch(`${import.meta.env.VITE_API_URL}/consultants`);
+        const contractorResponse = await fetch(`${import.meta.env.VITE_API_URL}/contractors`);
         
         if (!consultantResponse.ok) {
           throw new Error('Failed to fetch consultants');
