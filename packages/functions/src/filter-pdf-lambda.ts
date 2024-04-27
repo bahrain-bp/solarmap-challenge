@@ -1,7 +1,6 @@
 import { SQL } from "./sql";
 import moment from 'moment';
 
-let hasRun = false; // Flag variable to ensure the code runs only once
 
 interface Block {
   Id: string;
@@ -64,12 +63,6 @@ function getRelationships(keyMap: Record<string, Block>, valueMap: Record<string
 
 export const handler = async (event: any): Promise<any> => {
   try {
-
-    if (hasRun) {
-      return { statusCode: 400, body: JSON.stringify({ message: 'Code has already run once' }) };
-    }
-
-    hasRun = true; // Set the flag to true after the code execution
 
     const sqsMessageBody = JSON.parse(event.Records[0].body);
     const textractResult = sqsMessageBody.textractResult;
