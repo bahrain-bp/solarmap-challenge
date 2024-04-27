@@ -7,7 +7,7 @@ export function DocumentProcessingStack({ stack }: StackContext) {
     const { db } = use(DBStack);
     
     const filterFunction = new Function(stack, "filterFunction", { handler: "packages/functions/src/filter-pdf-lambda.handler",
-    /* timeout: "120 seconds",*/ memorySize: 256, retryAttempts: 1, /*runtime: "python3.11"*/});
+    /* timeout: "120 seconds",*/ memorySize: 256, retryAttempts: 0, /*runtime: "python3.11"*/});
 
     filterFunction.bind([db]);
     
@@ -25,7 +25,7 @@ export function DocumentProcessingStack({ stack }: StackContext) {
     
 
     const documentsFunction = new Function(stack, "documentsFunction", { handler: "packages/functions/src/process-pdf-lambda.handler",
-   /* timeout: "120 seconds",*/ memorySize: 256, retryAttempts: 1, environment: { QUEUE_URL: filterQueue.queueUrl,} /*runtime: "python3.11"*/});
+   /* timeout: "120 seconds",*/ memorySize: 256, retryAttempts: 0, environment: { QUEUE_URL: filterQueue.queueUrl,} /*runtime: "python3.11"*/});
 
 
     // Creating Queue Service
@@ -62,24 +62,24 @@ export function DocumentProcessingStack({ stack }: StackContext) {
         name: stack.stage + '-s3-for-artifacts',
         blockPublicACLs: true,
         notifications: {
-            pdfNotification: {
+            fileNotification: {
                 type: "queue",
                 queue: documentsQueue,
                 events: ["object_created"],
-                filters: [{ prefix: "uploads/" }, { suffix: ".pdf" }],
+                filters: [{ prefix: "uploads/" }/*, { suffix: ".pdf" }*/],
             },
-            pngNotification: {
-                type: "queue",
-                queue: documentsQueue,
-                events: ["object_created"],
-                filters: [{ prefix: "uploads/" }, { suffix: ".png" }],
-            },
-            jpegNotification: {
-                type: "queue",
-                queue: documentsQueue,
-                events: ["object_created"],
-                filters: [{ prefix: "uploads/" }, { suffix: ".jpeg" }],
-            },
+            // pngNotification: {
+            //     type: "queue",
+            //     queue: documentsQueue,
+            //     events: ["object_created"],
+            //     filters: [{ prefix: "uploads/" }, { suffix: ".png" }],
+            // },
+            // jpegNotification: {
+            //     type: "queue",
+            //     queue: documentsQueue,
+            //     events: ["object_created"],
+            //     filters: [{ prefix: "uploads/" }, { suffix: ".jpeg" }],
+            // },
         },
     });
 
