@@ -16,7 +16,8 @@ export function FrontendStack({ stack, app }: StackContext) {
   const {api, apiCachePolicy} = use(ApiStack);
   const { mapName, identityPoolId } = use(MapStack);
 
-  
+  const existingDistributionId = "EDEPL5WMAI026";
+  const existingDomainName = "d36no989weouwx.cloudfront.net";
   // Deploy our React app
   const site = new StaticSite(stack, "ReactSite", {
     path: "packages/frontend",
@@ -31,9 +32,10 @@ export function FrontendStack({ stack, app }: StackContext) {
     },
     cdk: {
       distribution: {
+        distributionId: existingDistributionId,
         additionalBehaviors: {
           "/api/*": {
-            origin: new HttpOrigin(Fn.parseDomainName(api.url), {
+            origin: new HttpOrigin(existingDomainName/*Fn.parseDomainName(api.url)*/, {
               originSslProtocols: [OriginSslPolicy.TLS_V1_2],
               protocolPolicy: OriginProtocolPolicy.HTTPS_ONLY,
             }),
