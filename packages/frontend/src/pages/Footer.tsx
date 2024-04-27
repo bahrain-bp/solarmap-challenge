@@ -8,8 +8,8 @@ export const Footer = () => {
             <div className="col-md-4">
               <img src= {logo} style={{height: "100px"}}/>
               <hr className="light" />
-              <p>555-555-555</p>
-              <p>email@email.com</p>
+              <a href="/Terms" className="link-light"><p>Terms of Service</p></a>
+              <a href="/Privacy" className="link-light"><p>Privacy Policy</p></a>
               <p>Manama, Bahrain</p>
           </div>
           <div className="col-md-4">

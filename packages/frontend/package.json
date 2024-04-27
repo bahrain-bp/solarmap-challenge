@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "amazon-quicksight-embedding-sdk": "^2.6.0",
     "aws-lambda": "^1.0.7",
     "bootstrap": "^5.3.3",
     "react": "^18.2.0",
