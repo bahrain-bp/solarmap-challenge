@@ -62,24 +62,24 @@ export function DocumentProcessingStack({ stack }: StackContext) {
         name: stack.stage + '-s3-for-artifacts',
         blockPublicACLs: true,
         notifications: {
-            fileNotification: {
+            pdfNotification: {
                 type: "queue",
                 queue: documentsQueue,
                 events: ["object_created"],
-                filters: [{ prefix: "uploads/" }/*, { suffix: ".pdf" }*/],
+                filters: [{ prefix: "uploads/" }, { suffix: ".pdf" }],
             },
-            // pngNotification: {
-            //     type: "queue",
-            //     queue: documentsQueue,
-            //     events: ["object_created"],
-            //     filters: [{ prefix: "uploads/" }, { suffix: ".png" }],
-            // },
-            // jpegNotification: {
-            //     type: "queue",
-            //     queue: documentsQueue,
-            //     events: ["object_created"],
-            //     filters: [{ prefix: "uploads/" }, { suffix: ".jpeg" }],
-            // },
+            pngNotification: {
+                type: "queue",
+                queue: documentsQueue,
+                events: ["object_created"],
+                filters: [{ prefix: "uploads/" }, { suffix: ".png" }],
+            },
+            jpegNotification: {
+                type: "queue",
+                queue: documentsQueue,
+                events: ["object_created"],
+                filters: [{ prefix: "uploads/" }, { suffix: ".jpeg" }],
+            },
         },
     });
 
