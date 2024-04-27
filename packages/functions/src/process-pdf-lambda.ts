@@ -1,5 +1,7 @@
 import * as AWS from 'aws-sdk';
 
+let hasRun = false; // Flag variable to ensure the code runs only once
+
 const textract = new AWS.Textract();
 const comprehend = new AWS.Comprehend();
 const sqs = new AWS.SQS();
@@ -8,6 +10,10 @@ const queue_URL = process.env.QUEUE_URL; // Access queue URL from environment
 export const handler = async (event: any): Promise<any> => {
 
   try {
+
+    if (hasRun) {
+      return { statusCode: 400, body: JSON.stringify({ message: 'Code has already run once' }) };
+    }
 
     // Extract bucket name and file name from the SQS event
 

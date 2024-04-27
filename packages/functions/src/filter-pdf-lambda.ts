@@ -1,6 +1,8 @@
 import { SQL } from "./sql";
 import moment from 'moment';
 
+let hasRun = false; // Flag variable to ensure the code runs only once
+
 interface Block {
   Id: string;
   BlockType: string;
@@ -62,6 +64,13 @@ function getRelationships(keyMap: Record<string, Block>, valueMap: Record<string
 
 export const handler = async (event: any): Promise<any> => {
   try {
+
+    if (hasRun) {
+      return { statusCode: 400, body: JSON.stringify({ message: 'Code has already run once' }) };
+    }
+
+    hasRun = true; // Set the flag to true after the code execution
+
     const sqsMessageBody = JSON.parse(event.Records[0].body);
     const textractResult = sqsMessageBody.textractResult;
     const combinedText = sqsMessageBody.combinedText;
@@ -97,9 +106,7 @@ export const handler = async (event: any): Promise<any> => {
     
     const formattedElectricitySupply = parseInt(electricitySupply.replace(/\skWh/, ''));
     
-    
-    // Parse vehicle details from the request body
-    const propertyId = 5;
+
 
 
     const issueDateStr = kvs['Issue Date: ']; // Extract the value associated with the key 'Issue Date:'
@@ -128,16 +135,16 @@ export const handler = async (event: any): Promise<any> => {
     console.log('Usage:', secondReading, 'kWh');
 
 
-    let subsidized = false; // Boolean
+    let isSubsidized = false; // Boolean
     if (kvs.hasOwnProperty('Non Domestic ')) {
-      subsidized = true;
+      isSubsidized = true;
     } else {
-      subsidized = false;
+      isSubsidized = false;
     }
-    console.log('Subsidized:', subsidized);
+    console.log('Subsidized:', isSubsidized);
 
     // Check if all required fields are provided
-    if (!propertyId || !formattedIssueDate || !monthlyBill || !secondReading || !rate || !subsidized || !formattedElectricitySupply) {
+    if (!combinedText || !formattedIssueDate || !monthlyBill || !secondReading || !rate || !isSubsidized || !formattedElectricitySupply) {
       return {
         statusCode: 400,
         body: JSON.stringify({ error: 'Missing required fields in the request body' }),
@@ -145,17 +152,18 @@ export const handler = async (event: any): Promise<any> => {
     }
 
     // Insert the new vehicle into the database
-    // await SQL.DB
-    //   .insertInto("ewabill")
-    //   .values({
-    //     property_id: propertyId,
-    //     issue_date: formattedIssueDate,
-    //     monthly_bill: monthlyBill,
-    //     electricity_supply: formattedElectricitySupply,
-    //     rate: rate,
-    //     usage: secondReading,
-    //   })
-    //   .execute();
+    await SQL.DB
+      .insertInto("ewabill")
+      .values({
+        issue_date: formattedIssueDate,
+        monthly_bill: monthlyBill,
+        electricity_supply: formattedElectricitySupply,
+        rate: rate,
+        usage: secondReading,
+        bill_address: combinedText,
+        subsidised: isSubsidized,
+      })
+      .execute();
 
     return {
       statusCode: 200,
