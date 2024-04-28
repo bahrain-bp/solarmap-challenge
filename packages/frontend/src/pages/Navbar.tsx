@@ -55,6 +55,10 @@ const Navbar = () => {
                     </li>
                     <li>
                         <a className="nav-link" href="/QuickSightDashboard" style={{ color: '#FFF' }}>Business dashboard</a>
+                        <a className="nav-link" id="navbar_item" href="/CarbonEmissionsCalculator">Carbon Calculator</a>
+                    </li>
+                    <li className="nav-item">
+                        <a className="nav-link" id="navbar_item" href="/QuickSightDashboard">Business dashboard</a>
                     </li>
                 </ul>
                 <NavButton variant="outlined" onClick={handleSignOut}>

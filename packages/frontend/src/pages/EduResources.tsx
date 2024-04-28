@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for button navigation
 import exportString from "../api_url";
 import EduRes from "../assets/Educationalresources.jpg";
 
@@ -10,13 +11,14 @@ interface EducationalResource {
   title: string;
   body: string;
   resource_url: string;
-  resource_img: string | null;  
+  resource_img: string | null;
 }
 
-const EducationalResources = () => {
+const EducationalResources: React.FC = () => {
   const [resources, setResources] = useState<EducationalResource[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate(); // Initialize navigate function
 
   useEffect(() => {
     const fetchResources = async () => {
@@ -25,7 +27,7 @@ const EducationalResources = () => {
         if (!response.ok) {
           throw new Error('Failed to fetch resources');
         }
-        const data = await response.json();
+        const data: EducationalResource[] = await response.json();
         setResources(data);
       } catch (err) {
         setError((err as Error).message);
@@ -48,6 +50,19 @@ const EducationalResources = () => {
               Explore our comprehensive database of educational materials. Search by topic or type to find your resources.
             </p>
           </div>
+        </div>
+      </div>
+      <div className="card text-center my-4">
+        <div className="card-header">
+          <strong>Manage Resources</strong>
+        </div>
+        <div className="card-body">
+          <button type="button" className="btn btn-danger mx-2" onClick={() => navigate('/deleteEduResource')}>
+            <i className="fas fa-trash-alt"></i> Delete Resource
+          </button>
+          <button type="button" className="btn btn-primary mx-2" onClick={() => navigate('/addEduResource')}>
+            <i className="fas fa-plus"></i> Add Resource
+          </button>
         </div>
       </div>
       {isLoading && (

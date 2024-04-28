@@ -7,10 +7,13 @@ interface QuickSightEmbedResponse {
 
 const QuickSightDashboard: React.FC = () => {
   const dashboardRef = useRef<HTMLDivElement>(null);
-  const [dashboardId] = useState<string>('5c860b60-5e39-4a81-857e-4283698b93b2');
+  const searchRef = useRef<HTMLDivElement>(null); // Reference for search container
+  const [dashboardId] = useState<string>('8260f2dc-bd4e-4c32-b8ce-0b6568c824cf');
   const [dashboardUrl, setDashboardUrl] = useState<string | null>(null);
+  const [searchUrl, setSearchUrl] = useState<string | null>(null);
   const [embeddingContext, setEmbeddingContext] = useState<EmbeddingContext | null>(null);
-  const [isEmbedded, setIsEmbedded] = useState<boolean>(false);
+  const [isSearchEmbedded, setIsSearchEmbedded] = useState<boolean>(false);
+  const [isDashboardEmbedded, setIsDashboardEmbedded] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchEmbedUrl = async () => {
@@ -18,6 +21,11 @@ const QuickSightDashboard: React.FC = () => {
         const response = await fetch(`${import.meta.env.VITE_API_URL}/BusinessDashboard`);
         const data: QuickSightEmbedResponse = await response.json();
         setDashboardUrl(data.EmbedUrl);
+
+        const searchResponse = await fetch(`${import.meta.env.VITE_API_URL}/BusinessQSearchBar`);
+        const searchData: QuickSightEmbedResponse = await searchResponse.json();
+        setSearchUrl(searchData.EmbedUrl);
+
       } catch (error) {
         console.error('Error fetching dashboard URL:', error);
       }
@@ -39,23 +47,46 @@ const QuickSightDashboard: React.FC = () => {
 
   useEffect(() => {
     const embedDashboard = async () => {
-      if (embeddingContext && dashboardRef.current && dashboardUrl && !isEmbedded) {
+      if (embeddingContext && dashboardRef.current && dashboardUrl && !isDashboardEmbedded) {
         const options = {
           url: dashboardUrl,
           container: dashboardRef.current,
           height: '1500px',
-          width: '100%',
+          width: '1850px',
         };
 
         await embeddingContext.embedDashboard(options);
-        setIsEmbedded(true);
+        setIsDashboardEmbedded(true);
       }
     };
 
     embedDashboard();
-  }, [embeddingContext, isEmbedded, dashboardUrl]);
+  }, [embeddingContext, isDashboardEmbedded, dashboardUrl]);
 
-  return <div ref={dashboardRef} className="quicksightDashboardContainer" />;
+  useEffect(() => {
+    const embedSearch = async () => {
+      if (embeddingContext && searchRef.current && searchUrl && !isSearchEmbedded) {
+        const options = {
+          url: searchUrl,
+          container: searchRef.current,
+          height: '50px',
+          width: '1850px',
+        };
+
+        await embeddingContext.embedQSearchBar(options);
+        setIsSearchEmbedded(true);
+      }
+    };
+
+    embedSearch();
+  }, [embeddingContext, isSearchEmbedded, searchUrl]);
+
+  return (
+    <>
+      <div ref={searchRef} className="quicksightSearchContainer" /> {/* Search Container */}
+      <div ref={dashboardRef} className="quicksightDashboardContainer" /> {/* Dashboard Container */}
+    </>
+  );
 };
 
 export default QuickSightDashboard;
