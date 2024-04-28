@@ -1,4 +1,4 @@
-import { Fn } from "aws-cdk-lib";
+import { Fn, aws_s3 as s3 } from "aws-cdk-lib";
 import {
   AllowedMethods,
   OriginProtocolPolicy,
@@ -6,6 +6,7 @@ import {
   ViewerProtocolPolicy,
 } from "aws-cdk-lib/aws-cloudfront";
 import { HttpOrigin } from "aws-cdk-lib/aws-cloudfront-origins";
+import  Origins  from "aws-cdk-lib/aws-cloudfront-origins";
 
 import { StaticSite, StackContext, use } from "sst/constructs";
 import { ApiStack } from "./ApiStack";
@@ -16,6 +17,7 @@ export function FrontendStack({ stack, app }: StackContext) {
   const {api, apiCachePolicy} = use(ApiStack);
   const { mapName, identityPoolId } = use(MapStack);
 
+  const myBucket = new s3.Bucket(stack, 'myBucket');
   
   // Deploy our React app
   const site = new StaticSite(stack, "ReactSite", {
@@ -44,8 +46,20 @@ export function FrontendStack({ stack, app }: StackContext) {
             allowedMethods: AllowedMethods.ALLOW_ALL,
             cachedMethods: AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
           },
+          "/api/admin/*": {
+            origin: new HttpOrigin(Fn.parseDomainName(api.url), {
+              originSslProtocols: [OriginSslPolicy.TLS_V1_2],
+              protocolPolicy: OriginProtocolPolicy.HTTPS_ONLY,
+            }),
+            viewerProtocolPolicy: ViewerProtocolPolicy.HTTPS_ONLY,
+            cachePolicy: {
+              cachePolicyId: apiCachePolicy.cachePolicyId,
+            },
+            allowedMethods: AllowedMethods.ALLOW_ALL,
+            cachedMethods: AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
+          },
         },
-      },
+        }
     }
   });
   
