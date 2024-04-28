@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import maplibregl from 'maplibre-gl';
+import maplibregl, { LngLatBoundsLike, LngLatLike } from 'maplibre-gl';
 import { withIdentityPoolId } from "@aws/amazon-location-utilities-auth-helper";
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Feature, Polygon } from 'geojson';
 import SolarPanelCalculator from './SolarPanelCalculator';
+import fs from 'fs';
 
 // Define coordinates array here
 let coordinates = [
@@ -104,6 +105,13 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
               setFeatureCoordinates([coordinates]);
               drawBoxAroundPoint(coordinates);
               setIsModalVisible(true); // Show modal after drawing the box
+
+              mapRef.current?.flyTo({
+                center: coordinates,
+                zoom: 17, // Set the desired zoom level here
+                essential: true // This ensures the transition is not interrupted
+              });
+
             }
           });
         });
@@ -174,10 +182,101 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
     }
   };
 
+  const reAddDrawControl = () => {
+    if (drawControl && mapRef.current) {
+      mapRef.current.addControl(drawControl as any);
+    }
+  };
+  
+  const reAddBoxLayer = () => {
+    if (coordinates[0].length && mapRef.current) {
+      const geojson: Feature<Polygon> = {
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'Polygon',
+          coordinates
+        }
+      };
+  
+      mapRef.current.addSource('box-source', {
+        type: 'geojson',
+        data: geojson
+      });
+  
+      mapRef.current.addLayer({
+        id: 'box-layer',
+        type: 'fill',
+        source: 'box-source',
+        layout: {},
+        paint: {
+          'fill-color': 'green',
+          'fill-opacity': 0.4
+        }
+      });
+    }
+  };
+
   const handleSubmit = () => {
     setIsModalVisible(false);
-    console.log("Coordinates containing the array:", coordinates);
+    // Hide or remove the draw control and any drawn features before capturing the image
+    if (drawControl) {
+      mapRef.current?.removeControl(drawControl as any);
+    }
+    if (mapRef.current?.getLayer('box-layer')) {
+      mapRef.current?.removeLayer('box-layer');
+      mapRef.current?.removeSource('box-source');
+    }
+  
+    mapRef.current?.once('render', () => {
+      const canvas = mapRef.current?.getCanvas();
+      if (!canvas) {
+        console.error('Canvas is not available.');
+        return;
+      }
+  
+      // Calculate bounding box in pixel coordinates on the canvas
+      const bounds = coordinates[0].map(coord => mapRef.current!.project(new maplibregl.LngLat(coord[0], coord[1])));
+      const minX = Math.min(...bounds.map(b => b.x));
+      const maxX = Math.max(...bounds.map(b => b.x));
+      const minY = Math.min(...bounds.map(b => b.y));
+      const maxY = Math.max(...bounds.map(b => b.y));
+  
+      // Create a new canvas to draw the cropped image
+      const width = maxX - minX;
+      const height = maxY - minY;
+      const croppedCanvas = document.createElement('canvas');
+      croppedCanvas.width = width;
+      croppedCanvas.height = height;
+      const ctx = croppedCanvas.getContext('2d');
+  
+      // Draw the cropped area onto the new canvas
+      ctx!.drawImage(canvas, minX, minY, width, height, 0, 0, width, height);
+      const dataUrl = croppedCanvas.toDataURL('image/png');
+  
+      // Convert the data URL to a Blob and save it
+      const byteString = atob(dataUrl.split(',')[1]);
+      const mimeString = dataUrl.split(',')[0].split(':')[1].split(';')[0];
+      const ab = new ArrayBuffer(byteString.length);
+      const ia = new Uint8Array(ab);
+      for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+      }
+      const blob = new Blob([ab], { type: mimeString });
+  
+      // Save the Blob locally
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = 'cropped_map.png'; // Update the file name
+      link.click();
+  
+      // Optionally re-add removed elements if needed
+      reAddDrawControl();
+      reAddBoxLayer();
+    });
   };
+  
+  
 
   const handleReset = () => {
     if (drawControl) {
