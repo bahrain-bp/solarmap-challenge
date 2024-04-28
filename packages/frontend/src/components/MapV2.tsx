@@ -128,6 +128,11 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
     }
   };
 
+  const handleSubmit = () => {
+    setIsModalVisible(false);
+    console.log(featureCoordinates);
+  };
+
   const handleReset = () => {
     if (drawControl) {
       drawControl.deleteAll();
@@ -158,7 +163,7 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
                 <p>Please confirm if your property is within the drawn box.</p>
               </div>
               <div className="modal-footer" style={{ padding: '10px' }}>
-                <button type="button" className="btn btn-primary" onClick={() => setIsModalVisible(false)}>Confirm</button>
+                <button type="button" className="btn btn-primary" onClick={handleSubmit}>Confirm</button>
                 <button type="button" className="btn btn-secondary" onClick={handleReset}>Reset</button>
               </div>
             </div>
