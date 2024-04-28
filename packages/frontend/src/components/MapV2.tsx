@@ -1,11 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
-import maplibregl, { LngLatBoundsLike, LngLatLike } from 'maplibre-gl';
 import { withIdentityPoolId } from "@aws/amazon-location-utilities-auth-helper";
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Feature, Polygon } from 'geojson';
+import maplibregl from 'maplibre-gl';
+import React, { useEffect, useRef, useState } from 'react';
 import SolarPanelCalculator from './SolarPanelCalculator';
-import fs from 'fs';
 
 // Define coordinates array here
 let coordinates = [
@@ -52,41 +51,41 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
         });
 
         mapRef.current.on('load', () => {
-             // Insert the layer beneath any symbol layer.
-        mapRef.current?.addSource('openmaptiles', {
-          url: `https://api.maptiler.com/tiles/v3/tiles.json?key=UGho1CzUl0HDsQMTTKJ0`,
-          type: 'vector',
-        });
+          // Insert the layer beneath any symbol layer.
+          mapRef.current?.addSource('openmaptiles', {
+            url: `https://api.maptiler.com/tiles/v3/tiles.json?key=UGho1CzUl0HDsQMTTKJ0`,
+            type: 'vector',
+          });
 
-        mapRef.current?.addLayer(
-          {
-            'id': '3d-buildings',
-            'source': 'openmaptiles',
-            'source-layer': 'building',
-            'type': 'fill-extrusion',
-            'minzoom': 15,
-            'paint': {
-              'fill-extrusion-color': [
-                'interpolate',
-                ['linear'],
-                ['get', 'render_height'], 0, 'lightgray', 200, 'royalblue', 400, 'lightblue'
-              ],
-              'fill-extrusion-height': [
-                'interpolate',
-                ['linear'],
-                ['zoom'],
-                15,
-                0,
-                16,
-                ['get', 'render_height']
-              ],
-              'fill-extrusion-base': ['case',
-                ['>=', ['get', 'zoom'], 16],
-                ['get', 'render_min_height'], 0
-              ]
-            }
-          },
-        );
+          mapRef.current?.addLayer(
+            {
+              'id': '3d-buildings',
+              'source': 'openmaptiles',
+              'source-layer': 'building',
+              'type': 'fill-extrusion',
+              'minzoom': 15,
+              'paint': {
+                'fill-extrusion-color': [
+                  'interpolate',
+                  ['linear'],
+                  ['get', 'render_height'], 0, 'lightgray', 200, 'royalblue', 400, 'lightblue'
+                ],
+                'fill-extrusion-height': [
+                  'interpolate',
+                  ['linear'],
+                  ['zoom'],
+                  15,
+                  0,
+                  16,
+                  ['get', 'render_height']
+                ],
+                'fill-extrusion-base': ['case',
+                  ['>=', ['get', 'zoom'], 16],
+                  ['get', 'render_min_height'], 0
+                ]
+              }
+            },
+          );
           const draw = new MapboxDraw({
             displayControlsDefault: false,
             controls: {
@@ -187,7 +186,7 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
       mapRef.current.addControl(drawControl as any);
     }
   };
-  
+
   const reAddBoxLayer = () => {
     if (coordinates[0].length && mapRef.current) {
       const geojson: Feature<Polygon> = {
@@ -198,12 +197,12 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
           coordinates
         }
       };
-  
+
       mapRef.current.addSource('box-source', {
         type: 'geojson',
         data: geojson
       });
-  
+
       mapRef.current.addLayer({
         id: 'box-layer',
         type: 'fill',
@@ -227,21 +226,21 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
       mapRef.current?.removeLayer('box-layer');
       mapRef.current?.removeSource('box-source');
     }
-  
+
     mapRef.current?.once('render', () => {
       const canvas = mapRef.current?.getCanvas();
       if (!canvas) {
         console.error('Canvas is not available.');
         return;
       }
-  
+
       // Calculate bounding box in pixel coordinates on the canvas
       const bounds = coordinates[0].map(coord => mapRef.current!.project(new maplibregl.LngLat(coord[0], coord[1])));
       const minX = Math.min(...bounds.map(b => b.x));
       const maxX = Math.max(...bounds.map(b => b.x));
       const minY = Math.min(...bounds.map(b => b.y));
       const maxY = Math.max(...bounds.map(b => b.y));
-  
+
       // Create a new canvas to draw the cropped image
       const width = maxX - minX;
       const height = maxY - minY;
@@ -249,11 +248,11 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
       croppedCanvas.width = width;
       croppedCanvas.height = height;
       const ctx = croppedCanvas.getContext('2d');
-  
+
       // Draw the cropped area onto the new canvas
       ctx!.drawImage(canvas, minX, minY, width, height, 0, 0, width, height);
       const dataUrl = croppedCanvas.toDataURL('image/png');
-  
+
       // Convert the data URL to a Blob and save it
       const byteString = atob(dataUrl.split(',')[1]);
       const mimeString = dataUrl.split(',')[0].split(':')[1].split(';')[0];
@@ -263,20 +262,21 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
         ia[i] = byteString.charCodeAt(i);
       }
       const blob = new Blob([ab], { type: mimeString });
-  
+      console.log('blob:', blob);
+      console.log('mime:', mimeString);
       // Save the Blob locally
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
       link.download = 'cropped_map.png'; // Update the file name
       link.click();
-  
+
       // Optionally re-add removed elements if needed
       reAddDrawControl();
       reAddBoxLayer();
     });
   };
-  
-  
+
+
 
   const handleReset = () => {
     if (drawControl) {
@@ -325,8 +325,8 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
       </div>
     </>
   );
-  
-};    
+
+};
 
 export default MapV2;
 
