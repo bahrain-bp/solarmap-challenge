@@ -12,16 +12,11 @@ import { BrowserRouter, Route, Routes, useNavigate} from 'react-router-dom';
 import "@aws-amplify/ui-react/styles.css";
 import { getCurrentUser } from 'aws-amplify/auth';
 import QuickSightDashboard from './components/QuickSightDashboard';
-<<<<<<< HEAD
 import { useEffect, useState } from 'react';
-=======
-import { Authenticator } from './components/Authenticator';
 import { fetchUserAttributes } from '@aws-amplify/auth';
-import { useEffect, useState } from 'react';
 
 
 
->>>>>>> f659227b86b18a773bc2c364644ec791fa66674d
 
 
 
