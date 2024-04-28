@@ -16,8 +16,6 @@ export function FrontendStack({ stack, app }: StackContext) {
 
   const {api, apiCachePolicy} = use(ApiStack);
   const { mapName, identityPoolId } = use(MapStack);
-
-  const myBucket = new s3.Bucket(stack, 'myBucket');
   
   // Deploy our React app
   const site = new StaticSite(stack, "ReactSite", {
