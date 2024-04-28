@@ -219,6 +219,12 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
   const handleSubmit = () => {
     setIsModalVisible(false);
     // Hide or remove the draw control and any drawn features before capturing the image
+      // Temporarily remove the 3D buildings layer
+  if (mapRef.current?.getLayer('3d-buildings')) {
+    mapRef.current.removeLayer('3d-buildings');
+    mapRef.current.removeSource('openmaptiles');
+  }
+
     if (drawControl) {
       mapRef.current?.removeControl(drawControl as any);
     }
@@ -300,8 +306,43 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
       // Optionally re-add removed elements if needed
       reAddDrawControl();
       reAddBoxLayer();
+   // Re-add 3D buildings layer if it was previously visible
+   if (!mapRef.current?.getLayer('3d-buildings')) {
+    // Add 3D buildings layer back to the map
+    mapRef.current?.addSource('openmaptiles', {
+      url: `https://api.maptiler.com/tiles/v3/tiles.json?key=UGho1CzUl0HDsQMTTKJ0`,
+      type: 'vector',
     });
-  };
+    mapRef.current?.addLayer({
+      'id': '3d-buildings',
+      'source': 'openmaptiles',
+      'source-layer': 'building',
+      'type': 'fill-extrusion',
+      'minzoom': 15,
+      'paint': {
+        'fill-extrusion-color': [
+          'interpolate',
+          ['linear'],
+          ['get', 'render_height'], 0, 'lightgray', 200, 'royalblue', 400, 'lightblue'
+        ],
+        'fill-extrusion-height': [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          15,
+          0,
+          16,
+          ['get', 'render_height']
+        ],
+        'fill-extrusion-base': ['case',
+          ['>=', ['get', 'zoom'], 16],
+          ['get', 'render_min_height'], 0
+        ]
+      }
+    });
+  }
+});
+};
 
 
 
