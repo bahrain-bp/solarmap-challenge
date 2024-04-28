@@ -21,7 +21,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
         return {
             statusCode: 200,
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: 'Carbon footprint deleted successfully' }),
+            body: JSON.stringify({ message: 'Consultant deleted successfully' }),
         };
     } catch (error) {
         console.error('Error during database operation:', error);

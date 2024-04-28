@@ -141,7 +141,9 @@ const Providers = () => {
           <strong>Manage Providers</strong>
         </div>
         <div className="card-body">
-         
+        <button type="button" className="btn btn-danger mx-2" onClick={() => navigate('/deleteConsultant')}>
+            <i className="fas fa-trash-alt"></i> Delete Consultant
+          </button>
           <button type="button" className="btn btn-primary mx-2" onClick={() => navigate('/addConsultants')}>
             <i className="fas fa-plus"></i> Add Consultant
           </button>
