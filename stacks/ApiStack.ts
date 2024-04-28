@@ -30,6 +30,7 @@ export function ApiStack({ stack }: StackContext) {
             "GET /resources": "packages/functions/src/fetchEduResources.handler",
             "POST /resources": "packages/functions/src/postEduResources.handler",
             "DELETE /resources/{resource_id}": "packages/functions/src/deleteEduResources.handler",
+            "GET /documents": "packages/functions/src/getDocumentsDetails.handler",
 
             // TypeScript lambda function for MEWA bill document processing 
             // "POST /process-pdf": "packages/functions/src/process-pdf-lambda.handler",
