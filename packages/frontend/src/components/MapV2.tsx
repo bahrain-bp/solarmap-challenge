@@ -270,6 +270,33 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
       link.download = 'cropped_map.png'; // Update the file name
       link.click();
 
+
+
+    /*
+
+    // Prepare the blob for sending
+    fetch(dataUrl)
+      .then(res => res.blob())
+      .then(blob => {
+        const formData = new FormData();
+        formData.append('file', blob, 'cropped_map.png');
+
+        // POST request to the server
+        fetch('api/analyze', {
+          method: 'POST',
+          body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Success:', data);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+      });
+
+    */  
+
       // Optionally re-add removed elements if needed
       reAddDrawControl();
       reAddBoxLayer();
