@@ -14,6 +14,7 @@ import { Authenticator } from './components/Authenticator';
 import CarbonFootprintCalculator from './pages/CarbonEmissionsCalculator';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
+import DocumentsDashboard from './pages/DocumentsDashboard';
 import DeleteEducationalResources from './pages/deleteEduResource';
 import AddEducationalResource from './pages/addEduResource';
 
@@ -41,6 +42,7 @@ function App() {
             <Route path="/MapV2" element={<MapV2 identityPoolId={identityPoolId} mapName={mapName} />} />
             <Route path="/Terms" element={<Terms />} />
             <Route path="/Privacy" element={<Privacy />} />
+            <Route path="/DocumentsDashboard" element={<DocumentsDashboard />} />
 
           </Routes>
         </div>
