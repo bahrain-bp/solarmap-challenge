@@ -90,7 +90,7 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
             displayControlsDefault: false,
             controls: {
               point: true, // Enable only point drawing
-              trash: true
+              // trash: true
             }
           });
 
