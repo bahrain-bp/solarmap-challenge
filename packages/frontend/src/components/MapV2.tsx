@@ -6,6 +6,17 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Feature, Polygon } from 'geojson';
 import SolarPanelCalculator from './SolarPanelCalculator';
 
+// Define coordinates array here
+let coordinates = [
+  [
+    [0, 0], // Placeholder coordinates
+    [0, 0],
+    [0, 0],
+    [0, 0],
+    [0, 0] // closing the polygon to bottom left
+  ]
+];
+
 interface MapV2Props {
   identityPoolId: string;
   mapName: string;
@@ -86,7 +97,7 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
 
   const drawBoxAroundPoint = (center: number[], size = 0.001) => {
     const [lng, lat] = center;
-    const coordinates = [
+    coordinates = [
       [
         [lng - size, lat - size], // bottom left
         [lng + size, lat - size], // bottom right
@@ -130,7 +141,7 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
 
   const handleSubmit = () => {
     setIsModalVisible(false);
-    console.log(featureCoordinates);
+    console.log("Coordinates containing the array:", coordinates);
   };
 
   const handleReset = () => {
@@ -184,3 +195,4 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
 };    
 
 export default MapV2;
+
