@@ -31,8 +31,10 @@ export function ApiStack({ stack }: StackContext) {
             "GET /carboncalculator": "packages/functions/src/fetchCarbonCalc.handler",
             "POST /resources": "packages/functions/src/postEduResources.handler",
             "POST /carboncalculator": "packages/functions/src/postCarbonCalc.handler",
+            "POST /consultants": "packages/functions/src/postConsultants.handler",
             "DELETE /resources/{resource_id}": "packages/functions/src/deleteEduResources.handler",
             "DELETE /carboncalculator/{carbon_footprint_id}": "packages/functions/src/deleteCarbonCalc.handler",
+            "DELETE /consultants": "packages/functions/src/deleteConsultants.handler",
 
             // TypeScript lambda function for MEWA bill document processing 
             // "POST /process-pdf": "packages/functions/src/process-pdf-lambda.handler",
