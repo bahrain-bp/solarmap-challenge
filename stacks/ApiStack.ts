@@ -6,7 +6,7 @@ import { DocumentProcessingStack } from "./DocumentProcessingStack";
 import { PolicyStatement } from "aws-cdk-lib/aws-iam";
 
 export function ApiStack({ stack }: StackContext) {
-   
+
 
     // const { table } = use(DBStack);
     const documentProcessingStack = use(DocumentProcessingStack);
