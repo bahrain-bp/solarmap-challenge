@@ -1,13 +1,14 @@
 import { Function, Bucket, Queue, StackContext, use } from "sst/constructs";
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { DBStack } from "./DBStack";
+import { Duration } from "aws-cdk-lib";
 
 export function DocumentProcessingStack({ stack }: StackContext) {
 
     const { db } = use(DBStack);
     
     const filterFunction = new Function(stack, "filterFunction", { handler: "packages/functions/src/filter-pdf-lambda.handler",
-    /* timeout: "120 seconds",*/ memorySize: 256, retryAttempts: 0, /*runtime: "python3.11"*/});
+    timeout: "120 seconds", memorySize: 256, retryAttempts: 0, /*runtime: "python3.11"*/});
 
     filterFunction.bind([db]);
     
@@ -15,17 +16,17 @@ export function DocumentProcessingStack({ stack }: StackContext) {
         consumer: filterFunction,
         cdk: {
             queue: {
-                // fifo: true,
-                // contentBasedDeduplication: true,
-                queueName: stack.stage + '-queue-for-filter'/*.fifo*/,
-                //visibilityTimeout: Duration.seconds(5),
+                 fifo: true,
+                 contentBasedDeduplication: true,
+                queueName: stack.stage + '-queue-for-filter.fifo',
+                visibilityTimeout: Duration.seconds(120),
             },
         },
     });
     
 
     const documentsFunction = new Function(stack, "documentsFunction", { handler: "packages/functions/src/process-pdf-lambda.handler",
-   /* timeout: "120 seconds",*/ memorySize: 256, retryAttempts: 0, environment: { QUEUE_URL: filterQueue.queueUrl,} /*runtime: "python3.11"*/});
+    timeout: "120 seconds", memorySize: 256, retryAttempts: 0, environment: { QUEUE_URL: filterQueue.queueUrl,} /*runtime: "python3.11"*/});
 
 
     // Creating Queue Service
@@ -37,7 +38,7 @@ export function DocumentProcessingStack({ stack }: StackContext) {
                 // fifo: true,
                 // contentBasedDeduplication: true,
                 queueName: stack.stage + '-queue-for-documents'/*.fifo*/,
-                //visibilityTimeout: Duration.seconds(5),
+                visibilityTimeout: Duration.seconds(120),
             }
         }
     });

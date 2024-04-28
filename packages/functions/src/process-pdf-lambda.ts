@@ -81,6 +81,7 @@ export const handler = async (event: any): Promise<any> => {
           const sqsParams: AWS.SQS.SendMessageRequest = {
             // @ts-ignore
             QueueUrl: queue_URL,
+            MessageGroupId: 'document-upload',
             MessageBody: JSON.stringify({ textractResult, combinedText, electricityEntityText }) // Send extracted text as JSON object
           };
 
