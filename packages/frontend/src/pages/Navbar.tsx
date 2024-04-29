@@ -2,6 +2,7 @@ import logo from "../assets/logo.png";
 import { signOut } from 'aws-amplify/auth';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
+import PropTypes from 'prop-types';
 
 async function handleSignOut() {
     try {
@@ -23,8 +24,8 @@ const NavButton = styled(Button)({
 
 
 
-const Navbar = () => {
-    
+const Navbar = ({isLoggedIn, onLogInButton}) => {
+
     return (
         <nav className="navbar navbar-expand-lg navbar-light" style={{ backgroundColor: '#073763' }}>
             <a href="/" className="d-block w-200">
@@ -74,12 +75,13 @@ const Navbar = () => {
                         </div>
                     </li> */}
                 </ul>
-                <NavButton variant="outlined" onClick={handleSignOut}>
-                 Logout
+                <NavButton variant="outlined" onClick={onLogInButton}>
+                    {isLoggedIn ? (<>Logout</>) : (<>Login</>)}
                 </NavButton>
             </div>
         </nav>
     );
 }
+
 
 export default Navbar;
