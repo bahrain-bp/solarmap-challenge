@@ -36,4 +36,8 @@ export function ImgDetection({ stack }: StackContext) {
         }
     });
     */
+   return {
+    queue,
+    bucket
+   }
 }

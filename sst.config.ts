@@ -31,8 +31,8 @@ export default {
       app.stack(DBStack)
       .stack(DocumentProcessingStack) // Initialize "DocumentProcessingStack" stack before "ApiStack" stack (Dependency)
       .stack(ApiStack)
-      .stack(MapStack)
       .stack(ImgDetection)
+      .stack(MapStack)
       .stack(FrontendStack);
     }
   }
