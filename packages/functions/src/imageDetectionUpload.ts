@@ -1,14 +1,24 @@
 import { S3 } from 'aws-sdk';
-import { parse } from 'aws-lambda-multipart-parser'; // This library helps parse FormData
+import { parse, MultipartRequest } from 'lambda-multipart-parser'; // Import MultipartRequest type
 
 const s3 = new S3();
 
 export async function handler(event: any) {
-    // Parse the incoming FormData
-    const parsed = parse(event, true); // `true` ensures that binary data is also parsed correctly
-
     try {
-        const file = parsed.file;  // Your FormData should have a 'file' field
+        // Parse the incoming FormData
+        const parsed: MultipartRequest = await parse(event); // `true` ensures that binary data is also parsed correctly
+
+        const file = parsed.files[0]; // Access the files array
+
+        if (!file) {
+            return {
+                statusCode: 400,
+                body: JSON.stringify({
+                    error: 'No file uploaded'
+                })
+            };
+        }
+
         const bucketName = process.env.BUCKET_NAME;
 
         // Upload the object directly to S3

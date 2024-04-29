@@ -289,7 +289,7 @@ fetch(dataUrl)
         formData.append('file', blob, 'cropped_map.png');
 
         // POST request to the server
-        fetch(import.meta.env.VITE_API_URL + '/detectionUpload', {
+        fetch(import.meta.env.VITE_API_URL+'/detectionUpload', { // Assuming the endpoint is relative
             method: 'POST',
             body: formData,  // Sending as FormData, not JSON
         })
@@ -301,6 +301,7 @@ fetch(dataUrl)
             console.error('Error:', error);
         });
     });
+
 
 
 
