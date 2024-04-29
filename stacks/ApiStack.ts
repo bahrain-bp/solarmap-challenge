@@ -53,7 +53,7 @@ export function ApiStack({ stack }: StackContext) {
             },
             "POST /detectionUpload": {
                 function: {
-                    handler: "packages/functions/src/document-upload-s3.handler",
+                    handler: "packages/functions/src/imageDetectionUpload.handler",
                     permissions: [new PolicyStatement({
                         actions: ['s3:*'],
                         resources: [mapsBucket.bucketArn + '/*'],

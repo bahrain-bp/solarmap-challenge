@@ -268,6 +268,9 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
         ia[i] = byteString.charCodeAt(i);
       }
       const blob = new Blob([ab], { type: mimeString });
+
+
+
       console.log('blob:', blob);
       console.log('mime:', mimeString);
       // Save the Blob locally
@@ -278,30 +281,28 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
 
 
 
-    /*
-
-    // Prepare the blob for sending
-    fetch(dataUrl)
-      .then(res => res.blob())
-      .then(blob => {
+// Assuming `dataUrl` is your image encoded as a data URL
+fetch(dataUrl)
+    .then(res => res.blob())
+    .then(blob => {
         const formData = new FormData();
         formData.append('file', blob, 'cropped_map.png');
 
         // POST request to the server
-        fetch('api/analyze', {
-          method: 'POST',
-          body: formData,
+        fetch(import.meta.env.VITE_API_URL + '/detectionUpload', {
+            method: 'POST',
+            body: formData,  // Sending as FormData, not JSON
         })
         .then(response => response.json())
         .then(data => {
-          console.log('Success:', data);
+            console.log('Success:', data);
         })
         .catch(error => {
-          console.error('Error:', error);
+            console.error('Error:', error);
         });
-      });
+    });
 
-    */  
+
 
       // Optionally re-add removed elements if needed
       reAddDrawControl();

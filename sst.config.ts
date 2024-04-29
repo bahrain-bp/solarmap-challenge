@@ -30,8 +30,8 @@ export default {
     else {
       app.stack(DBStack)
       .stack(DocumentProcessingStack) // Initialize "DocumentProcessingStack" stack before "ApiStack" stack (Dependency)
-      .stack(ApiStack)
       .stack(ImgDetection)
+      .stack(ApiStack)
       .stack(MapStack)
       .stack(FrontendStack);
     }
