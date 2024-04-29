@@ -6,6 +6,7 @@ import { ImageBuilderForCodeCatalyst } from "./stacks/devops/ImageBuilderForCode
 import { OIDCForGitHubCI } from "./stacks/devops/OIDCForGitHubCI";
 import { DocumentProcessingStack } from "./stacks/DocumentProcessingStack";
 import { MapStack } from "./stacks/MapStack";
+import { ImgDetection } from "./stacks/ImgDetection";
 
 export default {
   config(_input) {
@@ -31,6 +32,7 @@ export default {
       .stack(DocumentProcessingStack) // Initialize "DocumentProcessingStack" stack before "ApiStack" stack (Dependency)
       .stack(ApiStack)
       .stack(MapStack)
+      .stack(ImgDetection)
       .stack(FrontendStack);
     }
   }
