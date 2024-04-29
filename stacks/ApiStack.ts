@@ -35,6 +35,7 @@ export function ApiStack({ stack }: StackContext) {
             "DELETE /resources/{resource_id}": "packages/functions/src/deleteEduResources.handler",
             "DELETE /carboncalculator/{carbon_footprint_id}": "packages/functions/src/deleteCarbonCalc.handler",
             "DELETE /consultants/{consultant_id}": "packages/functions/src/deleteConsultants.handler",
+            "GET /documents": "packages/functions/src/getDocumentsDetails.handler",
 
             // TypeScript lambda function for MEWA bill document processing 
             // "POST /process-pdf": "packages/functions/src/process-pdf-lambda.handler",

@@ -1,8 +1,10 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import { SQL } from "./sql";
 
+let hasRun = false; // Flag variable to ensure the code runs only once
 
 export const handler: APIGatewayProxyHandler = async (event) => {
+    
     if (!event.body) {
         return {
             statusCode: 400,
