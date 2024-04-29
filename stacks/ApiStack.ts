@@ -28,8 +28,13 @@ export function ApiStack({ stack }: StackContext) {
             "GET /consultants": "packages/functions/src/fetchConsultants.handler",
             "GET /contractors": "packages/functions/src/fetchContractors.handler",
             "GET /resources": "packages/functions/src/fetchEduResources.handler",
+            "GET /carboncalculator": "packages/functions/src/fetchCarbonCalc.handler",
             "POST /resources": "packages/functions/src/postEduResources.handler",
+            "POST /carboncalculator": "packages/functions/src/postCarbonCalc.handler",
+            "POST /consultants": "packages/functions/src/postConsultants.handler",
             "DELETE /resources/{resource_id}": "packages/functions/src/deleteEduResources.handler",
+            "DELETE /carboncalculator/{carbon_footprint_id}": "packages/functions/src/deleteCarbonCalc.handler",
+            "DELETE /consultants/{consultant_id}": "packages/functions/src/deleteConsultants.handler",
             "GET /documents": "packages/functions/src/getDocumentsDetails.handler",
 
             // TypeScript lambda function for MEWA bill document processing 

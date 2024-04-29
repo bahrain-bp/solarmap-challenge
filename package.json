@@ -27,6 +27,7 @@
   "dependencies": {
     "@aws-sdk/client-quicksight": "^3.558.0",
     "@aws/amazon-location-utilities-auth-helper": "^1.0.5",
+    "@splinetool/runtime": "^1.2.0",
     "aws-amplify": "^6.0.28",
     "axios": "^1.6.8",
     "jquery": "^3.7.1",
