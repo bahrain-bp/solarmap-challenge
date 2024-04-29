@@ -5,7 +5,9 @@ export function ImgDetection({ stack }: StackContext) {
 
 
     // Create a FIFO SQS Queue
-    const queue = new Queue(stack, "myQueue");
+    const queue = new Queue(stack, "myQueue", {
+        consumer: "packages/functions/src/imageDetection.handler",
+    });
 
 
     // Create an S3 bucket and configure it to send notifications to an EventBus
