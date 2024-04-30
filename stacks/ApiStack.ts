@@ -1,9 +1,10 @@
-import { Api, StackContext, use, Function } from "sst/constructs";
+import { Api, StackContext, use } from "sst/constructs";
 import { DBStack } from "./DBStack";
 import { CacheHeaderBehavior, CachePolicy } from "aws-cdk-lib/aws-cloudfront";
 import { Duration } from "aws-cdk-lib/core";
 import { DocumentProcessingStack } from "./DocumentProcessingStack";
 import { PolicyStatement } from "aws-cdk-lib/aws-iam";
+import { ImgDetection } from "./ImgDetection";
 
 export function ApiStack({ stack }: StackContext) {
 
@@ -11,6 +12,10 @@ export function ApiStack({ stack }: StackContext) {
     // const { table } = use(DBStack);
     const documentProcessingStack = use(DocumentProcessingStack);
     const artificatsBucket = documentProcessingStack.artificatsBucket;
+
+    const imgDetection = use(ImgDetection);
+    const mapsBucket = imgDetection.bucket;
+
 
 
     const { db } = use(DBStack);
@@ -48,6 +53,18 @@ export function ApiStack({ stack }: StackContext) {
                     })],
                     environment: {
                         BUCKET_NAME: artificatsBucket.bucketName,
+                    }
+                }
+            },
+            "POST /detectionUpload": {
+                function: {
+                    handler: "packages/functions/src/imageDetectionUpload.handler",
+                    permissions: [new PolicyStatement({
+                        actions: ['s3:*'],
+                        resources: [mapsBucket.bucketArn + '/*'],
+                    })],
+                    environment: {
+                        BUCKET_NAME: mapsBucket.bucketName,
                     }
                 }
             },
