@@ -38,7 +38,7 @@ function App() {
 
 
 
-    // // do logout logic (wrap with if zift) (if logged in)
+    // // do logout logic (wrap with if authenticated) (if logged in)
     // signOut();
     // setShowLogin(false);
   }
