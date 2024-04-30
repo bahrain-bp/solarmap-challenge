@@ -13,6 +13,11 @@ const AddConsultant = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState('');
 
+    const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const validName = event.target.value.replace(/[^a-zA-Z\s]/g, ""); // Remove non-letters and non-spaces
+        setName(validName);
+    };
+
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setIsLoading(true);
@@ -21,7 +26,7 @@ const AddConsultant = () => {
             name,
             level,
             crepNum,
-            fax,
+            fax: fax ? parseInt(fax) : null,
             contactInfo
         });
 
@@ -50,11 +55,17 @@ const AddConsultant = () => {
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                     <label htmlFor="name" className="form-label">Name</label>
-                    <input type="text" className="form-control" id="name" required value={name} onChange={e => setName(e.target.value)} />
+                    <input type="text" className="form-control" id="name" required value={name} onChange={handleNameChange} />
                 </div>
                 <div className="mb-3">
                     <label htmlFor="level" className="form-label">Level</label>
-                    <input type="text" className="form-control" id="level" required value={level} onChange={e => setLevel(e.target.value)} />
+                    <select className="form-control" id="level" required value={level} onChange={e => setLevel(e.target.value)}>
+                        <option value="">Select Level</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                    </select>
                 </div>
                 <div className="mb-3">
                     <label htmlFor="crepNum" className="form-label">CREP Number</label>
@@ -62,11 +73,11 @@ const AddConsultant = () => {
                 </div>
                 <div className="mb-3">
                     <label htmlFor="fax" className="form-label">Fax Number</label>
-                    <input type="number" className="form-control" id="fax" value={fax} onChange={e => setFax(e.target.value)} />
+                    <input type="text" className="form-control" id="fax" value={fax} onChange={e => setFax(e.target.value.replace(/[^0-9]/g, ""))} />
                 </div>
                 <div className="mb-3">
                     <label htmlFor="contactInfo" className="form-label">Contact Information</label>
-                    <input type="text" className="form-control" id="contactInfo" value={contactInfo} onChange={e => setContactInfo(e.target.value)} />
+                    <input type="text" className="form-control" id="contactInfo" value={contactInfo} onChange={e => setContactInfo(e.target.value.replace(/[^0-9]/g, ""))} />
                 </div>
                 <button type="submit" className="btn btn-primary" disabled={isLoading}>Add Consultant</button>
             </form>
