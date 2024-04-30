@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import solarprovider from "../assets/solarprovider.jpg";
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for button navigation
 
 interface Consultant {
   name: string;
@@ -79,6 +80,7 @@ const Providers = () => {
   const [filterLevel, setFilterLevel] = useState('');
   const [activeTab, setActiveTab] = useState('consultants');
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate(); // Initialize navigate function
 
   useEffect(() => {
     const fetchData = async () => {
@@ -134,7 +136,19 @@ const Providers = () => {
         </div>
       </div>
       <LevelsSection />
-
+      <div className="card text-center my-4">
+        <div className="card-header">
+          <strong>Manage Providers</strong>
+        </div>
+        <div className="card-body">
+        <button type="button" className="btn btn-danger mx-2" onClick={() => navigate('/deleteConsultant')}>
+            <i className="fas fa-trash-alt"></i> Delete Consultant
+          </button>
+          <button type="button" className="btn btn-primary mx-2" onClick={() => navigate('/addConsultants')}>
+            <i className="fas fa-plus"></i> Add Consultant
+          </button>
+        </div>
+      </div>
       <div className="container">
         <div className="d-flex justify-content-between mb-3">
           <input
