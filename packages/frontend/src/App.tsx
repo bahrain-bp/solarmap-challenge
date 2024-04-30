@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from './pages/Navbar';
 import Home from './pages/Home';
 import About from './pages/About';
@@ -19,28 +19,77 @@ import DeleteEducationalResources from './pages/deleteEduResource';
 import AddEducationalResource from './pages/addEduResource';
 
 import { Authenticator } from '@aws-amplify/ui-react';
-import { signOut } from 'aws-amplify/auth';
+import { getCurrentUser, signOut } from 'aws-amplify/auth';
 import '@aws-amplify/ui-react/styles.css';
+
+import { Hub } from 'aws-amplify/utils';
 
 function App() {
   const identityPoolId = import.meta.env.VITE_IDENTITY_POOL_ID; // Cognito Identity Pool ID
   const mapName = import.meta.env.VITE_MAP_NAME; // Amazon Location Service Map Name
 
+
+  Hub.listen('auth', ({ payload }) => {
+    switch (payload.event) {
+      case 'signedIn':
+        console.log('user have been signedIn successfully.');
+        setIsLoggedIn(true);
+        setShowLogin(true);
+        break;
+      case 'signedOut':
+        console.log('user have been signedOut successfully.');
+        setIsLoggedIn(false);
+        setShowLogin(false);
+        break;
+    }
+  });
+
+
+  // vars for login check
   const [showLogin, setShowLogin] = useState(false);
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+
+  // reuse this function to recheck if there is a signed in user (in each page that needs login)
+  async function currentAuthenticatedUser() {
+    try {
+      const user = await getCurrentUser();
+      if (Object.keys(user).length !== 0)
+      {
+        setIsLoggedIn(true);
+        setShowLogin(true);
+        console.log("yes");
+      }
+    } catch (err) {
+      setIsLoggedIn(false);
+      setShowLogin(false);
+      console.log("no");
+    }
+  }
+
+  // this b3d for recheck
+  useEffect(() => {
+    currentAuthenticatedUser();
+  }, []);
+
 
   // 1. add check for login (const)
 
   function handleLoginButton()
   {
     // check if logged in first, if so, logout and set to false, flip if login (if not logged in )
-    setShowLogin(true);
-    // use navigate to / admin dashboaerd
+    if (!isLoggedIn)
+    {
+      setShowLogin(true);
+    }
+    else
+    {
+      signOut({ global: true });
+      setIsLoggedIn(false);
+      setShowLogin(false);
+    }
 
-
-
-    // // do logout logic (wrap with if authenticated) (if logged in)
-    // signOut();
-    // setShowLogin(false);
   }
 
 
@@ -48,19 +97,26 @@ function App() {
     <BrowserRouter>
       <div className="App">
         {/* pass in actual log stats to navbar (to change from login and logout in the text) */}
-        <Navbar isLoggedIn={false} onLogInButton={handleLoginButton}/>
+        <Navbar isLoggedIn={isLoggedIn} onLogInButton={handleLoginButton}/>
         { showLogin &&
             <Authenticator>
               {({ signOut, user }) => (
+
                   <main>
-                    <h1>Hello {user.username}</h1>
-                    <button onClick={signOut}>Sign out</button>
+
+                    {
+                      user &&
+                        <>
+                          <h1>Hello {user.username}</h1>
+                          <input name={"sign out"} type={"button"} onClick={signOut}/>
+                        </>
+                    }
 
                     <Routes>
-                      <Route path="/MapV2" element={<MapV2 identityPoolId={identityPoolId} mapName={mapName} />} />
-                      <Route path="/Terms" element={<Terms />} />
-                      <Route path="/Privacy" element={<Privacy />} />
-                      <Route path="/DocumentsDashboard" element={<DocumentsDashboard />} />
+                      <Route path="/MapV2" element={<MapV2 identityPoolId={identityPoolId} mapName={mapName}/>}/>
+                      <Route path="/Terms" element={<Terms/>}/>
+                      <Route path="/Privacy" element={<Privacy/>}/>
+                      <Route path="/DocumentsDashboard" element={<DocumentsDashboard/>}/>
                     </Routes>
 
                   </main>

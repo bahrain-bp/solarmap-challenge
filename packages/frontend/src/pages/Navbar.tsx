@@ -1,16 +1,7 @@
 import logo from "../assets/logo.png";
-import { signOut } from 'aws-amplify/auth';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
-import PropTypes from 'prop-types';
 
-async function handleSignOut() {
-    try {
-        await signOut({ global: true });
-    } catch (error) {
-        console.log('error signing out: ', error);
-    }
-}
 
 const NavButton = styled(Button)({
     color: '#FFF',
@@ -64,16 +55,24 @@ const Navbar = ({isLoggedIn, onLogInButton}) => {
                     <li className="nav-item">
                         <a className="nav-link" id="navbar_item" href="/DocumentsDashboard">Documents Dashboard</a>
                     </li>
-                    {/* <li className="nav-item dropdown">
-                        <a className="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Dropdown link
-                        </a>
-                        <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <a className="dropdown-item" href="#">Action</a>
-                            <a className="dropdown-item" href="#">Another action</a>
-                            <a className="dropdown-item" href="#">Something else here</a>
-                        </div>
-                    </li> */}
+
+                    {/* juts act as if these are the admin */}
+
+                    {
+                        isLoggedIn &&
+
+                        <li className="nav-item dropdown">
+                            <a className="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Dropdown link
+                            </a>
+                            <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <a className="dropdown-item" href="#">Action</a>
+                                <a className="dropdown-item" href="#">Another action</a>
+                                <a className="dropdown-item" href="#">Something else here</a>
+                            </div>
+                        </li>
+                    }
                 </ul>
                 <NavButton variant="outlined" onClick={onLogInButton}>
                     {isLoggedIn ? (<>Logout</>) : (<>Login</>)}
