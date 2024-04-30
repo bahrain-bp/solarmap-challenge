@@ -1,5 +1,6 @@
 import { S3 } from 'aws-sdk';
 import { parse, MultipartRequest } from 'lambda-multipart-parser'; // Import MultipartRequest type
+import Moment from 'moment';
 
 const s3 = new S3();
 
@@ -20,11 +21,13 @@ export async function handler(event: any) {
         }
 
         const bucketName = process.env.BUCKET_NAME;
+        // Get the current date and time formatted
+        const currentDateTime = Moment().format('YYYYMMDD_HHmmss');
 
         // Upload the object directly to S3
         const result = await s3.putObject({
             Bucket: String(bucketName),
-            Key: `uploads/${file.filename}`, // Adjust the key as needed
+            Key: `uploads/moment_${currentDateTime}_${file.filename}`, // Adjust the key as needed
             Body: file.content, // Directly using the parsed file content
             ContentType: file.contentType, // Using the content type from the parsed file
         }).promise();
