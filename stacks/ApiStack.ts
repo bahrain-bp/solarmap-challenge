@@ -37,6 +37,7 @@ export function ApiStack({ stack }: StackContext) {
             "POST /resources": "packages/functions/src/postEduResources.handler",
             "POST /carboncalculator": "packages/functions/src/postCarbonCalc.handler",
             "POST /consultants": "packages/functions/src/postConsultants.handler",
+            "POST /contractors": "packages/functions/src/postContractors.handler",
             "DELETE /resources/{resource_id}": "packages/functions/src/deleteEduResources.handler",
             "DELETE /carboncalculator/{carbon_footprint_id}": "packages/functions/src/deleteCarbonCalc.handler",
             "DELETE /consultants/{consultant_id}": "packages/functions/src/deleteConsultants.handler",

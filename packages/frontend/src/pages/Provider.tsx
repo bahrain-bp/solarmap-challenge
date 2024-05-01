@@ -147,6 +147,9 @@ const Providers = () => {
           <button type="button" className="btn btn-primary mx-2" onClick={() => navigate('/addConsultants')}>
             <i className="fas fa-plus"></i> Add Consultant
           </button>
+          <button type="button" className="btn btn-primary mx-2" onClick={() => navigate('/addContractor')}>
+            <i className="fas fa-plus"></i> Add Contractor
+          </button>
         </div>
       </div>
       <div className="container">
