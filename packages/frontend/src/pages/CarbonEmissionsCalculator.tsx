@@ -31,9 +31,29 @@ const CarbonFootprintCalculator: React.FC = () => {
     const [carMiles, setCarMiles] = useState<number>(0);
     const [wasteAmount, setWasteAmount] = useState<number>(0);
     const [carbonFootprint, setCarbonFootprint] = useState<number | null>(null);
+    const [footprintStatus, setFootprintStatus] = useState<string>('');
+    const [suggestions, setSuggestions] = useState<string[]>([]);
     const API_BASE_URL = exportString();
     const splineCanvasRef = useRef<HTMLCanvasElement>(null);
 
+    const getFootprintStatusAndSuggestions = (footprint: number): [string, string[]] => {
+        let status = '';
+        let suggestions: string[] = [];
+    
+        if (footprint <= 2000) {
+            status = 'Good';
+            suggestions.push('Maintain your habits!', 'Consider investing in renewable energy sources.');
+        } else if (footprint <= 4000) {
+            status = 'Moderate';
+            suggestions.push('Try reducing your car usage.', 'Consider upgrading to energy-efficient appliances.');
+        } else {
+            status = 'High';
+            suggestions.push('Consider carpooling or using public transportation.', 'Reduce unnecessary electricity usage.', 'Recycle and manage waste efficiently.');
+        }
+    
+        return [status, suggestions];
+    };
+    
     useEffect(() => {
         if (splineCanvasRef.current) {
             const app = new Application(splineCanvasRef.current);
@@ -63,8 +83,9 @@ const CarbonFootprintCalculator: React.FC = () => {
     ];
 
     const handleNext = () => {
-        if (step < questions.length - 1) {
-            setStep(step + 1);
+        const nextStep = step + 1;
+        if (nextStep < questions.length) {
+            setStep(nextStep);
         } else {
             calculateCarbonFootprint();
         }
@@ -79,6 +100,9 @@ const CarbonFootprintCalculator: React.FC = () => {
                                (carMiles * carEF) +
                                ((wasteAmount * 4) * wasteEF); // Convert weekly to monthly
         setCarbonFootprint(totalEmissions);
+        const [status, tips] = getFootprintStatusAndSuggestions(totalEmissions);
+        setFootprintStatus(status);
+        setSuggestions(tips);
         saveCarbonFootprint(totalEmissions);
     };
 
@@ -103,26 +127,27 @@ const CarbonFootprintCalculator: React.FC = () => {
                 <div className="card-body">
                     <h2 className="card-title text-center mb-4">Carbon Footprint Calculator</h2>
                     {carbonFootprint === null ? (
-                        <div className="carousel slide" id="carouselExampleControls" data-ride="carousel">
-                            <div className="carousel-inner">
-                                {questions.map((question, index) => (
-                                    <div className={`carousel-item ${step === index ? 'active' : ''}`} key={index}>
-                                        <QuestionSlide
-                                            label={question.label}
-                                            value={question.value}
-                                            onChange={question.onChange}
-                                            max={question.max}
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-                            <button className="carousel-control-next" type="button" data-target="#carouselExampleControls" data-slide="next" onClick={handleNext}>
-                                <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span className="sr-only">{step === questions.length - 1 ? 'Calculate' : 'Next'}</span>
+                        <div>
+                            <QuestionSlide
+                                label={questions[step].label}
+                                value={questions[step].value}
+                                onChange={questions[step].onChange}
+                                max={questions[step].max}
+                            />
+                            <button className="btn btn-primary" onClick={handleNext}>
+                                {step === questions.length - 1 ? 'Calculate' : 'Next'}
                             </button>
                         </div>
                     ) : (
-                        <h4 className="text-center">Estimated Monthly Carbon Footprint: {carbonFootprint.toFixed(2)} kg CO2</h4>
+                        <div className="text-center">
+                            <h4>Estimated Monthly Carbon Footprint: {carbonFootprint.toFixed(2)} kg CO2</h4>
+                            <p>Status: {footprintStatus}</p>
+                            <ul>
+                                {suggestions.map((suggestion, index) => (
+                                    <li key={index}>{suggestion}</li>
+                                ))}
+                            </ul>
+                        </div>
                     )}
                 </div>
             </div>
