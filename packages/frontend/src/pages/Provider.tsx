@@ -150,6 +150,9 @@ const Providers = () => {
           <button type="button" className="btn btn-primary mx-2" onClick={() => navigate('/addContractor')}>
             <i className="fas fa-plus"></i> Add Contractor
           </button>
+          <button type="button" className="btn btn-danger mx-2" onClick={() => navigate('/deleteContractor')}>
+            <i className="fas fa-trash-alt"></i> Delete Contractor
+          </button>
         </div>
       </div>
       <div className="container">
