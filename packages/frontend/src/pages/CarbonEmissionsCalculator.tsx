@@ -7,11 +7,17 @@ interface QuestionSlideProps {
     value: number;
     onChange: (newValue: number) => void;
     max: number;
+    opacity: number;
 }
 
-const QuestionSlide: React.FC<QuestionSlideProps> = ({ label, value, onChange, max }) => (
-    <div className="slide-container">
-        <label htmlFor={label.replace(/\s+/g, '')}>{label}</label>
+const QuestionSlide: React.FC<QuestionSlideProps> = ({ label, value, onChange, max, opacity }) => (
+    <div className="slide-container" style={{ opacity, transition: 'opacity 0.3s' }}>
+        <label htmlFor={label.replace(/\s+/g, '')}>
+            {label}
+            {label.includes("Electricity") && <i className="bi bi-lightning-fill" style={{marginLeft: '10px'}}></i>}
+            {label.includes("Car Travel") && <i className="bi bi-car-front-fill" style={{marginLeft: '10px'}}></i>}
+            {label.includes("Waste") && <i className="bi bi-recycle" style={{marginLeft: '10px'}}></i>}
+        </label>
         <input
             type="range"
             className="form-range slider"
@@ -25,8 +31,28 @@ const QuestionSlide: React.FC<QuestionSlideProps> = ({ label, value, onChange, m
     </div>
 );
 
+const StatusAndSuggestions: React.FC<{ footprint: number, status: string, suggestions: string[] }> = ({ footprint, status, suggestions }) => {
+    const alertClass = status === 'Good' ? 'alert-success' :
+                       status === 'Moderate' ? 'alert-warning' : 'alert-danger';
+
+    return (
+        <div>
+            <div className={`alert ${alertClass}`} role="alert">
+                <h4 className="alert-heading">{status} Carbon Footprint</h4>
+                <p>Your carbon footprint is {footprint.toFixed(2)} kg CO2. {status} - here are some suggestions to improve:</p>
+            </div>
+            <ul className="list-group">
+                {suggestions.map((suggestion, index) => (
+                    <li key={index} className="list-group-item">{suggestion}</li>
+                ))}
+            </ul>
+        </div>
+    );
+};
+
 const CarbonFootprintCalculator: React.FC = () => {
     const [step, setStep] = useState(0);
+    const [opacity, setOpacity] = useState(1);
     const [electricityUsage, setElectricityUsage] = useState<number>(0);
     const [carMiles, setCarMiles] = useState<number>(0);
     const [wasteAmount, setWasteAmount] = useState<number>(0);
@@ -83,12 +109,16 @@ const CarbonFootprintCalculator: React.FC = () => {
     ];
 
     const handleNext = () => {
-        const nextStep = step + 1;
-        if (nextStep < questions.length) {
-            setStep(nextStep);
-        } else {
-            calculateCarbonFootprint();
-        }
+        setOpacity(0);  // Set opacity to 0 to fade out the current question
+        setTimeout(() => {
+            const nextStep = step + 1;
+            if (nextStep < questions.length) {
+                setStep(nextStep);
+            } else {
+                calculateCarbonFootprint();
+            }
+            setOpacity(1);  // Fade in the next question or results
+        }, 300);  // Duration matching the CSS transition
     };
 
     const calculateCarbonFootprint = () => {
@@ -133,26 +163,18 @@ const CarbonFootprintCalculator: React.FC = () => {
                                 value={questions[step].value}
                                 onChange={questions[step].onChange}
                                 max={questions[step].max}
+                                opacity={opacity}
                             />
                             <button className="btn btn-primary" onClick={handleNext}>
                                 {step === questions.length - 1 ? 'Calculate' : 'Next'}
                             </button>
                         </div>
                     ) : (
-                        <div className="text-center">
-                            <h4>Estimated Monthly Carbon Footprint: {carbonFootprint.toFixed(2)} kg CO2</h4>
-                            <p>Status: {footprintStatus}</p>
-                            <ul>
-                                {suggestions.map((suggestion, index) => (
-                                    <li key={index}>{suggestion}</li>
-                                ))}
-                            </ul>
-                        </div>
+                        <StatusAndSuggestions footprint={carbonFootprint} status={footprintStatus} suggestions={suggestions} />
                     )}
                 </div>
             </div>
         </div>
     );
 };
-
 export default CarbonFootprintCalculator;

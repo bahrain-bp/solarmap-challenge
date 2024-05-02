@@ -405,3 +405,7 @@ tr:nth-child(even) td {
 .carousel {
   position: static;
 }
+.bi {
+  color: #5cb85c; /* Bootstrap's success color, a nice shade of green */
+}
+
