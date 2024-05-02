@@ -4,17 +4,17 @@ import exportString from "../api_url";
 const apiurl: string = exportString();
 const API_BASE_URL = apiurl;
 
-const AddConsultant = () => {
+const AddContractor = () => {
     const [name, setName] = useState('');
     const [level, setLevel] = useState('');
-    const [crepNum, setCrepNum] = useState('');
+    const [licenseNum, setLicenseNum] = useState('');
     const [fax, setFax] = useState('');
     const [contactInfo, setContactInfo] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState('');
 
     const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const validName = event.target.value.replace(/[^a-zA-Z\s]/g, ""); // Remove non-letters and non-spaces
+        const validName = event.target.value.replace(/[^a-zA-Z\s]/g, ""); // Allow only letters and spaces
         setName(validName);
     };
 
@@ -22,28 +22,28 @@ const AddConsultant = () => {
         event.preventDefault();
         setIsLoading(true);
 
-        const consultantData = JSON.stringify({
+        const contractorData = JSON.stringify({
             name,
             level,
-            crepNum,
+            license_num: licenseNum,
             fax: fax ? parseInt(fax) : null,
             contactInfo
         });
 
         try {
-            const response = await fetch(`${API_BASE_URL}/consultants`, {
+            const response = await fetch(`${API_BASE_URL}/contractors`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: consultantData
+                body: contractorData
             });
 
-            if (!response.ok) throw new Error('Failed to add consultant');
+            if (!response.ok) throw new Error('Failed to add contractor');
 
-            setMessage('Consultant added successfully');
+            setMessage('Contractor added successfully');
         } catch (error: any) {
-            setMessage(error.message || 'Failed to add consultant');
+            setMessage(error.message || 'Failed to add contractor');
         } finally {
             setIsLoading(false);
         }
@@ -51,7 +51,7 @@ const AddConsultant = () => {
 
     return (
         <div className="container mt-3">
-            <h2>Add Consultant</h2>
+            <h2>Add Contractor</h2>
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                     <label htmlFor="name" className="form-label">Name</label>
@@ -68,8 +68,8 @@ const AddConsultant = () => {
                     </select>
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="crepNum" className="form-label">CREP Number</label>
-                    <input type="text" className="form-control" id="crepNum" required value={crepNum} onChange={e => setCrepNum(e.target.value)} />
+                    <label htmlFor="licenseNum" className="form-label">License Number</label>
+                    <input type="text" className="form-control" id="licenseNum" required value={licenseNum} onChange={e => setLicenseNum(e.target.value)} />
                 </div>
                 <div className="mb-3">
                     <label htmlFor="fax" className="form-label">Fax Number</label>
@@ -79,11 +79,11 @@ const AddConsultant = () => {
                     <label htmlFor="contactInfo" className="form-label">Contact Information</label>
                     <input type="text" className="form-control" id="contactInfo" value={contactInfo} onChange={e => setContactInfo(e.target.value.replace(/[^0-9]/g, ""))} />
                 </div>
-                <button type="submit" className="btn btn-primary" disabled={isLoading}>Add Consultant</button>
+                <button type="submit" className="btn btn-primary" disabled={isLoading}>Add Contractor</button>
             </form>
             {message && <div className="alert alert-info mt-3">{message}</div>}
         </div>
     );
 };
 
-export default AddConsultant;
+export default AddContractor;
