@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import exportString from "../api_url";
 
 const SolarPanelCalculator = () => {
   const [rooftopSize, setRooftopSize] = useState<number>(0);
@@ -13,6 +14,7 @@ const SolarPanelCalculator = () => {
   const [kmDrivenSaved, setKmDrivenSaved] = useState<number>(0);
   const [emissionsSaved, setEmissionsSaved] = useState<number>(0);
   const [treesPlanted, setTreesPlanted] = useState<number>(0);
+  const API_BASE_URL = exportString();
 
   const handleRooftopSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRooftopSize(parseFloat(event.target.value));
@@ -29,6 +31,31 @@ const SolarPanelCalculator = () => {
   const handleSubsidizedChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSubsidized(event.target.checked);
   };
+
+  const saveSolarPanelCalculation = async (
+    numberOfPanels: number,
+    totalCost: number,
+    roiPercentage: number,
+    paybackPeriod: number
+  ) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/postcalculation`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          numberOfPanels,
+          totalCost,
+          roiPercentage,
+          paybackPeriod
+        })
+      });
+      const data = await response.json();
+      console.log('Save successful:', data);
+    } catch (error) {
+      console.error('Error saving solar panel calculation:', error);
+    }
+  };
+
 
   const calculateSolarPanels = () => {
     const actualRooftopSize = (fillPercentage / 100) * rooftopSize;
@@ -48,6 +75,7 @@ const SolarPanelCalculator = () => {
     } else {
       costPerKWh = 0.29;
     }
+    
     const electricityCost = costPerKWh * electricityUsage;
     setElectricityCost(electricityCost);
     const dailyProductionPerPanel = 1.5;
@@ -58,7 +86,14 @@ const SolarPanelCalculator = () => {
     const roiMonths = installationCost / maximumSavings;
     const roiYears = roiMonths / 12;
     setRoiYears(roiYears);
+    saveSolarPanelCalculation(
+      panelsFit,
+      installationCost,
+      (maximumSavings / installationCost) * 100, // ROI percentage
+      roiYears
+    );
     calculateCarbonFootprint(maximumSavings);
+    
   };
 
   const calculateCarbonFootprint = (kilowattsSaved: number) => {
@@ -103,7 +138,7 @@ const SolarPanelCalculator = () => {
           </div>
         </div>
       </div>
-      
+
       {/* ROI Overlay */}
       <div style={{ position: 'absolute', top: 0, left: '280px', zIndex: 999, width: '300px', padding: '15px' }}>
         <div className="card">
@@ -116,7 +151,7 @@ const SolarPanelCalculator = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Carbon Footprint Calculator Overlay */}
       <div style={{ position: 'absolute', bottom: 0, left: 0, zIndex: 999, width: '300px', padding: '15px' }}>
         <div className="card">

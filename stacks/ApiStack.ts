@@ -43,6 +43,7 @@ export function ApiStack({ stack }: StackContext) {
             "DELETE /consultants/{consultant_id}": "packages/functions/src/deleteConsultants.handler",
             "DELETE /contractors/{contractor_id}": "packages/functions/src/deleteContractor.handler",
             "GET /documents": "packages/functions/src/getDocumentsDetails.handler",
+            "POST /postcalculation": "packages/functions/src/postCalculation.handler",
 
             // TypeScript lambda function for MEWA bill document processing 
             // "POST /process-pdf": "packages/functions/src/process-pdf-lambda.handler",
