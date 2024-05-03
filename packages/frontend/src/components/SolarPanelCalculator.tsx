@@ -107,7 +107,7 @@ const SolarPanelCalculator = () => {
                 </div>
                 {showInquireButton && (
                   <div className="form-group">
-                    <a href="/Inquire" className="btn btn-success">Inquire</a>
+                    <a href="/Inquiry" className="btn btn-success">Inquire</a>
                   </div>
                 )}
               </div>
