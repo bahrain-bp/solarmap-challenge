@@ -28,6 +28,7 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const mapRef = useRef<maplibregl.Map | null>(null);
+  const [boxSize, setBoxSize] = useState<number>(0.001);  // Initial size of the box in degrees
 
 
   useEffect(() => {
@@ -147,7 +148,7 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
     };
   }, [identityPoolId, mapName]); // Effect dependencies
 
-  const drawBoxAroundPoint = async (center: number[], size = 0.001) => {
+  const drawBoxAroundPoint = (center: number[], size: number = boxSize) => {
     const [lng, lat] = center;
     coordinates = [
       [
@@ -303,13 +304,13 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
       console.log('blob:', blob);
       console.log('mime:', mimeString);
 
-      /*
+      
       // Save the Blob locally
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
       link.download = 'cropped_map.png'; // Update the file name
       link.click();
-      */
+      
 
 
       // Assuming `dataUrl` is your image encoded as a data URL
@@ -405,9 +406,27 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
-              <div className="modal-body" style={{ padding: '10px' }}> {/* Reduced padding */}
-                <p>Please confirm if your property is within the drawn box.</p>
-              </div>
+              <div className="modal-body" style={{ padding: '10px' }}>
+  <p>Please confirm if your property is within the drawn box.</p>
+  <label>Adjust box size:</label>
+  <input
+    type="range"
+    min="0.0005"
+    max="0.005"
+    step="0.0001"
+    value={boxSize}
+    onChange={(e) => {
+      const newSize = parseFloat(e.target.value);
+      setBoxSize(newSize);
+      if (featureCoordinates) {
+        drawBoxAroundPoint(featureCoordinates[0], newSize);
+      }
+    }}
+    
+    style={{ width: '100%' }}
+  />
+</div>
+
               <div className="modal-footer" style={{ padding: '10px' }}>
                 <button type="button" className="btn btn-primary" onClick={handleSubmit}>Confirm</button>
                 <button type="button" className="btn btn-secondary" onClick={handleReset}>Reset</button>
