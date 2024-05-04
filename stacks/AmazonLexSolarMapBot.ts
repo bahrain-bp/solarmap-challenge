@@ -1,6 +1,6 @@
 import { Function, Bucket, Queue, StackContext, use } from "sst/constructs";
-import { aws_lambda as lambda} from 'aws-cdk-lib';
-import * as iam from 'aws-cdk-lib/aws-iam';
+import { aws_lambda as lambda } from 'aws-cdk-lib';
+import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { Duration } from "aws-cdk-lib";
 
 export function DocumentProcessingStack({ stack }: StackContext) {
@@ -13,7 +13,10 @@ export function DocumentProcessingStack({ stack }: StackContext) {
         memorySize: 512,
         timeout: Duration.seconds(60),
         // code: lambda.Code.fromInline('print("Hello World")'),
-        code: lambda.Code.fromAsset('../amakin-open-parking/packages/functions/src/vehicle-processing-lambda/'),
+        code: lambda.Code.fromAsset('packages/functions/src/LexBot/'),
     });
-  
+
+    // Grant permission for the Lambda function to interact with Amazon Lex
+    lambdaFunction.grantInvoke(new ServicePrincipal('lex.amazonaws.com'));
+
 }
