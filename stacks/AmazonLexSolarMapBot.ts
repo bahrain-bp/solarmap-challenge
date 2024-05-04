@@ -1,7 +1,7 @@
 import { Function, Bucket, Queue, StackContext, use } from "sst/constructs";
 import { aws_lambda as lambda } from 'aws-cdk-lib';
 import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
-import { Duration } from "aws-cdk-lib";
+import { Duration, aws_iam as iam } from "aws-cdk-lib";
 
 export function AmazonLexSolarMapBot({ stack }: StackContext) {
     // Creating Lambda Function
@@ -18,5 +18,10 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
 
     // Grant permission for the Lambda function to interact with Amazon Lex
     lambdaFunction.grantInvoke(new ServicePrincipal('lex.amazonaws.com'));
+
+    lambdaFunction.addPermission('lex-fulfillment', {
+        action: 'lambda:InvokeFunction', 
+        principal: new iam.ServicePrincipal('lex.amazonaws.com')
+    })
 
 }
