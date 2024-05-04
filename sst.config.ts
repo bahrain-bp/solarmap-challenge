@@ -7,6 +7,7 @@ import { OIDCForGitHubCI } from "./stacks/devops/OIDCForGitHubCI";
 import { DocumentProcessingStack } from "./stacks/DocumentProcessingStack";
 import { MapStack } from "./stacks/MapStack";
 import { ImgDetection } from "./stacks/ImgDetection";
+import { AmazonLexSolarMapBot } from "./stacks/AmazonLexSolarMapBot";
 
 export default {
   config(_input) {
@@ -31,6 +32,7 @@ export default {
       app.stack(DBStack)
       .stack(DocumentProcessingStack) // Initialize "DocumentProcessingStack" stack before "ApiStack" stack (Dependency)
       .stack(ImgDetection)
+      .stack(AmazonLexSolarMapBot)
       .stack(ApiStack)
       .stack(MapStack)
       .stack(FrontendStack);

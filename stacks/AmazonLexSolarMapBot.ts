@@ -3,11 +3,11 @@ import { aws_lambda as lambda } from 'aws-cdk-lib';
 import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { Duration } from "aws-cdk-lib";
 
-export function DocumentProcessingStack({ stack }: StackContext) {
+export function AmazonLexSolarMapBot({ stack }: StackContext) {
     // Creating Lambda Function
 
     const lambdaFunction = new lambda.Function(stack, 'Vehicles-Lambda', {
-        functionName: stack.stage + '-lambda-for-sqs',
+        functionName: stack.stage + '-lambda-for-lex-bot',
         runtime: lambda.Runtime.PYTHON_3_11,
         handler: 'intentAmazonLexFulfillment.lambda_handler',
         memorySize: 512,
