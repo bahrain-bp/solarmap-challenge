@@ -129,8 +129,8 @@ def dispatch(intent_request):
     intent_name = intent_request['sessionState']['intent']['name']
     response = None
     # Dispatch to your bot's intent handlers
-    if intent_name == 'CheckBalance':
-        return CheckBalance(intent_request)
+    if intent_name == 'GetSolarPanelInstallationEstimateIntent':
+        return GetSolarPanelInstallationEstimateIntent(intent_request)
     # elif intent_name == 'FollowupCheckBalance':
     #     return FollowupCheckBalance(intent_request)
     else:
