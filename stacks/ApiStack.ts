@@ -43,6 +43,8 @@ export function ApiStack({ stack }: StackContext) {
             "DELETE /consultants/{consultant_id}": "packages/functions/src/deleteConsultants.handler",
             "DELETE /contractors/{contractor_id}": "packages/functions/src/deleteContractor.handler",
             "GET /documents": "packages/functions/src/getDocumentsDetails.handler",
+            "POST /postcalculation": "packages/functions/src/postCalculation.handler",
+            "GET /postcalculation": "packages/functions/src/fetchCalculations.handler",
             "GET /customer": "packages/functions/src/fetchCustomer.handler",
             "POST /customer": "packages/functions/src/postCustomer.handler",
             "DELETE /customer/{customer_id}": "packages/functions/src/deleteCustomer.handler",

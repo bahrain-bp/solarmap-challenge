@@ -19,6 +19,8 @@ import AddConsultants from './pages/addConsultants';
 import DeleteConsulantant from './pages/deleteConsultant';
 import AddContractor from './pages/addContractor';
 import DeleteContractor from './pages/deleteContractor';
+import Reports from './pages/Reports';
+
 import Inquiry from './pages/Inquiry';
 
 function App() {
@@ -51,6 +53,7 @@ function App() {
             <Route path="/Inquiry" element={<Inquiry />} />
             <Route path="/DocumentsDashboard" element={<DocumentsDashboard />} />
             
+            <Route path="/Reports" element={<Reports />} />
 
           </Routes>
         </div>
