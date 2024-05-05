@@ -51,6 +51,9 @@ export function ApiStack({ stack }: StackContext) {
             "POST /inquiry": "packages/functions/src/postInquiry.handler",
             "GET /inquiry": "packages/functions/src/fetchInquiry.handler",
 
+            "POST /inquirycustomer": "packages/functions/src/postCustomerInquiry.handler",
+
+
 
 
             // TypeScript lambda function for MEWA bill document processing 
