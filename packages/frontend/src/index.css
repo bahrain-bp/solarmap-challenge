@@ -351,6 +351,12 @@ tr:nth-child(even) td {
   background-color: #e9ecef;
 }
 
+.amplifyObject {
+  backdrop-filter: blur(10px); /* Blur effect for supported browsers */
+}
+
+
+
 /* .jumbotron {
   position: relative;
   color: rgb(255, 255, 255);

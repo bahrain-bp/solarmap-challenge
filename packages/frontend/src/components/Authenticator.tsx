@@ -2,27 +2,29 @@ import { PropsWithChildren } from "react";
 import {
   Authenticator as AmplifyAuthenticator,
   ThemeProvider as AmplifyThemeProvider,
-  Theme,
-} from "@aws-amplify/ui-react";
+  Theme
+} 
+from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Button } from "@mui/material";
 import logo from "../assets/logo.png"; // Ensure this path is correct
+import { useNavigate } from 'react-router-dom';
 
-export const Authenticator: React.FC<PropsWithChildren> = ({ children }) => {
+export const Authenticator: React.FC<PropsWithChildren> = ({ children, onCloseClick }) => {
   const theme: Theme = {
     name: "solarmap",
     tokens: {
       colors: {
         font: {
-          secondary: { value: "#606060" }, // Grey for texts
+          secondary: { value: "#606060" },
         },
         brand: {
           primary: {
-            100: { value: "#2A265F" }, // Dark primary color
+            100: { value: "#2A265F" },
           },
           secondary: {
-            40: { value: "#CCC" }, // Light grey for secondary elements
-            100: { value: "#FFFFFF" }, // Light background
+            40: { value: "#CCC" },
+            100: { value: "#FFFFFF" },
           },
         },
       },
@@ -32,16 +34,18 @@ export const Authenticator: React.FC<PropsWithChildren> = ({ children }) => {
       components: {
         authenticator: {
           modal: {
-            backgroundColor: { value: "{colors.white}" },
+            backgroundColor: { value: "rgba(0, 0, 0, 0.4)" }, // Semi-transparent white
           },
-        }
-      }
-    }
+        },
+      },
+    },
   };
 
+
   return (
-    <AmplifyThemeProvider theme={theme}>
-      <AmplifyAuthenticator
+    <AmplifyThemeProvider theme={theme} >
+      <AmplifyAuthenticator 
+        className="amplifyObject"
         variation="modal"
         hideSignUp={true}
         components={{
@@ -49,10 +53,10 @@ export const Authenticator: React.FC<PropsWithChildren> = ({ children }) => {
             <Box
               sx={{
                 display: "flex",
-                flexDirection: "column", // Stack logo and title vertically
+                flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
-                background: "#073763", // Use brand primary color
+                background: "#073763",
                 color: "#fff",
                 py: "1rem",
                 width: "100%",
@@ -71,6 +75,10 @@ export const Authenticator: React.FC<PropsWithChildren> = ({ children }) => {
           Footer: () => (
             <Box
               sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
                 background: "#FFF",
                 color: "#606060",
                 textAlign: "center",
@@ -79,6 +87,7 @@ export const Authenticator: React.FC<PropsWithChildren> = ({ children }) => {
                 borderRadius: "0 0 0.5rem 0.5rem",
               }}
             >
+              <Button onClick={onCloseClick} color="primary">Close</Button> {/* Back button */}
               © 2024 SolarMap. All rights reserved.
             </Box>
           ),

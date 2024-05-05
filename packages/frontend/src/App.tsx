@@ -18,7 +18,7 @@ import DocumentsDashboard from './pages/DocumentsDashboard';
 import DeleteEducationalResources from './pages/deleteEduResource';
 import AddEducationalResource from './pages/addEduResource';
 
-import { Authenticator } from '@aws-amplify/ui-react';
+import { Authenticator } from './components/Authenticator';
 import { getCurrentUser, signOut } from 'aws-amplify/auth';
 import '@aws-amplify/ui-react/styles.css';
 
@@ -27,6 +27,7 @@ import { Hub } from 'aws-amplify/utils';
 function App() {
   const identityPoolId = import.meta.env.VITE_IDENTITY_POOL_ID; // Cognito Identity Pool ID
   const mapName = import.meta.env.VITE_MAP_NAME; // Amazon Location Service Map Name
+
 
 
   Hub.listen('auth', ({ payload }) => {
@@ -92,6 +93,11 @@ function App() {
 
   }
 
+  function closeLoginDialog()
+  {
+    setShowLogin(false);
+  }
+
 
   return (
     <BrowserRouter>
@@ -99,28 +105,18 @@ function App() {
         {/* pass in actual log stats to navbar (to change from login and logout in the text) */}
         <Navbar isLoggedIn={isLoggedIn} onLogInButton={handleLoginButton}/>
         { showLogin &&
-            <Authenticator>
-              {({ signOut, user }) => (
+            <Authenticator onCloseClick={closeLoginDialog} >
 
                   <main>
 
-                    {
-                      user &&
-                        <>
-                          <h1>Hello {user.username}</h1>
-                          <input name={"sign out"} type={"button"} onClick={signOut}/>
-                        </>
-                    }
-
                     <Routes>
-                      <Route path="/MapV2" element={<MapV2 identityPoolId={identityPoolId} mapName={mapName}/>}/>
-                      <Route path="/Terms" element={<Terms/>}/>
-                      <Route path="/Privacy" element={<Privacy/>}/>
-                      <Route path="/DocumentsDashboard" element={<DocumentsDashboard/>}/>
+                    <Route path="/QuickSightDashboard" element={<QuickSightDashboard />} />
+                    <Route path="/DocumentsDashboard" element={<DocumentsDashboard/>}/>
+                    <Route path="/deleteEduResource" element={<DeleteEducationalResources />} />
+                    <Route path="/addEduResource" element={<AddEducationalResource />} />
                     </Routes>
 
                   </main>
-              )}
             </Authenticator>
         }
 
@@ -131,13 +127,11 @@ function App() {
             <Route path="/Provider" element={<Providers />} />
             <Route path="/CarbonEmissionsCalculator" element={<CarbonFootprintCalculator />} />
             <Route path="/DocumentUpload" element={<DocumentUpload />} />
-            <Route path="/QuickSightDashboard" element={<QuickSightDashboard />} />
-            <Route path="/EducationalResources" element={<EducationalResources />} />
-            <Route path="/deleteEduResource" element={<DeleteEducationalResources />} />
-            <Route path="/addEduResource" element={<AddEducationalResource />} />
+            <Route path="/MapV2" element={<MapV2 identityPoolId={identityPoolId} mapName={mapName}/>}/>
+            <Route path="/Terms" element={<Terms/>}/>
+            <Route path="/Privacy" element={<Privacy/>}/>
+            <Route path="/EducationalResources" element={<EducationalResources isLoggedIn={isLoggedIn} />} />
           </Routes>
-
-
 
         </div>
         {/* Footer */}

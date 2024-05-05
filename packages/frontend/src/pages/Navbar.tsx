@@ -1,24 +1,41 @@
 import logo from "../assets/logo.png";
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
+import { useEffect, useState } from "react";
+import { fetchUserAttributes } from "@aws-amplify/auth";
 
 
-const NavButton = styled(Button)({
-    color: '#FFF',
-    borderColor: '#FFF',
-    '&:hover': {
-        backgroundColor: '#062542',
-        borderColor: '#FFF',
-    },
-    marginRight: '20px',  // Add right margin for spacing
-});
+// Type definition for the props
+interface NavbarProps {
+    isLoggedIn: boolean;
+    onLogInButton: () => void; // Assuming onLogInButton is a function that returns nothing
+}
 
+const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => 
+    {
 
+        const NavButton = styled(Button)({
+            color: '#FFF',
+            borderColor: '#FFF',
+            '&:hover': {
+                backgroundColor: '#062542',
+                borderColor: '#FFF',
+            },
+            marginRight: '20px',  // Add right margin for spacing
+        });
 
-const Navbar = ({isLoggedIn, onLogInButton}) => {
+        const [userName, setUserName] = useState(null);
+
+        async function getUserInfo()
+        {
+            await fetchUserAttributes().then(data => {setUserName(data.given_name)});
+        }
+
+        useEffect(() => {getUserInfo()}, []);
+
 
     return (
-        <nav className="navbar navbar-expand-lg navbar-light" style={{ backgroundColor: '#073763' }}>
+        <nav className="navbar navbar-expand-lg navbar-light" style={{ backgroundColor: isLoggedIn ? '#FF0000' : '#073763' }}>
             <a href="/" className="d-block w-200">
                 <img src={logo} alt="Logo" style={{ paddingLeft: '25px', paddingRight: '50px', height: '55px' }} />
             </a>
@@ -46,7 +63,6 @@ const Navbar = ({isLoggedIn, onLogInButton}) => {
                         <a className="nav-link" href="/MapV2" style={{ color: '#FFF' }}>Calculator</a>
                     </li>
                     <li>
-                        <a className="nav-link" href="/QuickSightDashboard" style={{ color: '#FFF' }}>Business dashboard</a>
                         <a className="nav-link" id="navbar_item" href="/CarbonEmissionsCalculator">Carbon Calculator</a>
                     </li>
                     <li className="nav-item">
@@ -56,7 +72,7 @@ const Navbar = ({isLoggedIn, onLogInButton}) => {
                         <a className="nav-link" id="navbar_item" href="/DocumentsDashboard">Documents Dashboard</a>
                     </li>
 
-                    {/* juts act as if these are the admin */}
+                    {/* Admin Pages */}
 
                     {
                         isLoggedIn &&
@@ -74,6 +90,7 @@ const Navbar = ({isLoggedIn, onLogInButton}) => {
                         </li>
                     }
                 </ul>
+                {isLoggedIn && userName !== null && <p style={{ color: '#ffffff', margin:10 }}>Hello {userName} 👋🏼😁</p>}
                 <NavButton variant="outlined" onClick={onLogInButton}>
                     {isLoggedIn ? (<>Logout</>) : (<>Login</>)}
                 </NavButton>
