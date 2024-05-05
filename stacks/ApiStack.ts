@@ -52,6 +52,8 @@ export function ApiStack({ stack }: StackContext) {
             "GET /inquiry": "packages/functions/src/fetchInquiry.handler",
 
             "POST /inquirycustomer": "packages/functions/src/postCustomerInquiry.handler",
+            "GET /inquirycustomer": "packages/functions/src/fetchCustomerInquiry.handler",
+
 
 
 
