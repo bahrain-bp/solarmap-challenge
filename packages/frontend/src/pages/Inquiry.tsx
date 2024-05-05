@@ -13,51 +13,32 @@ const Inquiry = () => {
   const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
 
-    const customerData = {
+    const combinedData = {
       first_name: firstName,
       last_name: lastName,
       email,
-      phone
+      phone: parseInt(phone), // Ensure the phone is sent as a number
+      inquiry_content: message
     };
 
     try {
-      // Insert into the customer table
-      const customerResponse = await fetch(`${API_BASE_URL}/customer`, {
+      // Insert into the customer and inquiry tables
+      const response = await fetch(`${API_BASE_URL}/inquirycustomer`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(customerData),
+        body: JSON.stringify(combinedData),
       });
 
-      if (!customerResponse.ok) {
-        throw new Error('Failed to submit customer data');
-      }
-
-      const customerResult = await customerResponse.json();
-      const customerId = customerResult.customer_id;
-
-      const inquiryData = {
-        customer_id: customerId,
-        inquiry_content: message
-      };
-
-      // Insert into the inquiry table using the customer id
-      const inquiryResponse = await fetch(`${API_BASE_URL}/inquiry`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(inquiryData),
-      });
-
-      if (inquiryResponse.ok) {
+      if (response.ok) {
         setSubmitted(true);
       } else {
-        throw new Error('Failed to submit inquiry data');
+        const errorResponse = await response.json();
+        throw new Error(errorResponse.message || 'Failed to submit data');
       }
     } catch (error) {
-      console.error('Error submitting inquiry:', error);
+      console.error('Error submitting data:', error);
     }
   };
 

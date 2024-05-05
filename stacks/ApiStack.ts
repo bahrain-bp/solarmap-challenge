@@ -50,6 +50,9 @@ export function ApiStack({ stack }: StackContext) {
             "DELETE /customer/{customer_id}": "packages/functions/src/deleteCustomer.handler",
             "POST /inquiry": "packages/functions/src/postInquiry.handler",
 
+            "POST /inquirycustomer": "packages/functions/src/postCustomerInquiry.handler",
+
+
 
 
             // TypeScript lambda function for MEWA bill document processing 
