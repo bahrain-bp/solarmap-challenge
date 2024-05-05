@@ -19,6 +19,8 @@ import AddConsultants from './pages/addConsultants';
 import DeleteConsulantant from './pages/deleteConsultant';
 import AddContractor from './pages/addContractor';
 import DeleteContractor from './pages/deleteContractor';
+import Reports from './pages/Reports';
+
 
 function App() {
   const identityPoolId = import.meta.env.VITE_IDENTITY_POOL_ID; // Cognito Identity Pool ID
@@ -48,6 +50,7 @@ function App() {
             <Route path="/Terms" element={<Terms />} />
             <Route path="/Privacy" element={<Privacy />} />
             <Route path="/DocumentsDashboard" element={<DocumentsDashboard />} />
+            <Route path="/Reports" element={<Reports />} />
 
           </Routes>
         </div>
