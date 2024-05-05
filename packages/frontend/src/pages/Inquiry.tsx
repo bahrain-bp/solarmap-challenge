@@ -1,4 +1,5 @@
 import { useState } from "react";
+import exportString from "../api_url";
 
 const Inquiry = () => {
   const [firstName, setFirstName] = useState("");
@@ -7,15 +8,57 @@ const Inquiry = () => {
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const API_BASE_URL = exportString();
 
-  const handleSubmit = (e: { preventDefault: () => void; }) => {
+  const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
-    // Perform your submission logic here
 
-    // Simulating a delay for demonstration purposes
-    setTimeout(() => {
-      setSubmitted(true);
-    }, 2000);
+    const customerData = {
+      first_name: firstName,
+      last_name: lastName,
+      email,
+      phone
+    };
+
+    try {
+      // Insert into the customer table
+      const customerResponse = await fetch(`${API_BASE_URL}/customer`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(customerData),
+      });
+
+      if (!customerResponse.ok) {
+        throw new Error('Failed to submit customer data');
+      }
+
+      const customerResult = await customerResponse.json();
+      const customerId = customerResult.customer_id;
+
+      const inquiryData = {
+        customer_id: customerId,
+        inquiry_content: message
+      };
+
+      // Insert into the inquiry table using the customer id
+      const inquiryResponse = await fetch(`${API_BASE_URL}/inquiry`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(inquiryData),
+      });
+
+      if (inquiryResponse.ok) {
+        setSubmitted(true);
+      } else {
+        throw new Error('Failed to submit inquiry data');
+      }
+    } catch (error) {
+      console.error('Error submitting inquiry:', error);
+    }
   };
 
   return (

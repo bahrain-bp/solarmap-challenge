@@ -48,6 +48,7 @@ export function ApiStack({ stack }: StackContext) {
             "GET /customer": "packages/functions/src/fetchCustomer.handler",
             "POST /customer": "packages/functions/src/postCustomer.handler",
             "DELETE /customer/{customer_id}": "packages/functions/src/deleteCustomer.handler",
+            "POST /inquiry": "packages/functions/src/postInquiry.handler",
 
 
 
