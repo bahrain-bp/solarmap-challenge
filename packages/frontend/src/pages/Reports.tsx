@@ -24,8 +24,9 @@ const Reports = () => {
   useEffect(() => {
     const fetchCalculations = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/postcalculation`);
-        if (!response.ok) {
+        // Fetch calculations
+        const calculationResponse = await fetch(`${import.meta.env.VITE_API_URL}/postcalculation`);
+        if (!calculationResponse.ok) {
           throw new Error('Failed to fetch calculations');
         }
         const calcData = await response.json();
@@ -52,6 +53,8 @@ const Reports = () => {
       setIsLoading(false);
     });
   }, []);
+
+  
 
   return (
     <div className="container">
@@ -106,6 +109,39 @@ const Reports = () => {
             </tbody>
           </table>
         </>
+      )}
+
+      {/* Inquiries Table */}
+      <h2>Inquiries</h2>
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : (
+        <table className="table table-hover">
+          <thead className="thead-dark">
+            <tr>
+              <th>Inquiry ID</th>
+              <th>Customer ID</th>
+              <th>Inquiry Content</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+            </tr>
+          </thead>
+          <tbody>
+            {inquiries.map((inquiry: Inquiry) => (
+              <tr key={inquiry.inquiry_id}>
+                <td>{inquiry.inquiry_id}</td>
+                <td>{inquiry.customer_id}</td>
+                <td>{inquiry.inquiry_content}</td>
+                <td>{inquiry.first_name}</td>
+                <td>{inquiry.last_name}</td>
+                <td>{inquiry.email}</td>
+                <td>{inquiry.phone}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       )}
     </div>
   );
