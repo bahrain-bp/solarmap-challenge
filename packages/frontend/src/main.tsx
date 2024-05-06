@@ -10,16 +10,7 @@ Amplify.configure({
       userPoolId: process.env.USER_POOL_ID,
       userPoolClientId: process.env.USER_POOL_CLIENT_ID,
     }
-  },
-  API: {
-    endpoints: [
-      {
-        name: "api",
-        endpoint: import.meta.env.VITE_APP_API_URL,
-        region: import.meta.env.VITE_APP_REGION,
-      },
-    ],
-  },
+  }
 });
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
