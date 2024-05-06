@@ -32,10 +32,9 @@ export function FrontendStack({ stack, app }: StackContext) {
     },
     cdk: {
       distribution: {
-        distributionId: existingDistributionId,
         additionalBehaviors: {
           "/api/*": {
-            origin: new HttpOrigin(existingDomainName/*Fn.parseDomainName(api.url)*/, {
+            origin: new HttpOrigin(Fn.parseDomainName(api.url), {
               originSslProtocols: [OriginSslPolicy.TLS_V1_2],
               protocolPolicy: OriginProtocolPolicy.HTTPS_ONLY,
             }),
