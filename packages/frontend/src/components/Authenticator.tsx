@@ -89,7 +89,9 @@ export const Authenticator: React.FC<PropsWithChildren<AuthenticatorProps>> = ({
                 borderRadius: "0 0 0.5rem 0.5rem",
               }}
             >
-              <Button onClick={onCloseClick} color="primary">Close</Button> {/* Back button */}
+<Button onClick={onCloseClick} style={{ color: '#073763' }}>
+  Close
+</Button> {/* Back button */}
               © 2024 SolarMap. All rights reserved.
             </Box>
           ),

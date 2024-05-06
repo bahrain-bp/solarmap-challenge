@@ -410,3 +410,6 @@ tr:nth-child(even) td {
   color: #5cb85c; /* Bootstrap's success color, a nice shade of green */
 }
 
+.amplify-button--primary {
+  background: #073763;
+}

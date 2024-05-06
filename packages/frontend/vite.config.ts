@@ -6,7 +6,6 @@ import dotenv from "dotenv";
 export default defineConfig({
   plugins: [react()],
   define: {
-    "process.env": process.env,
-    global: {},
-},
+    "process.env": process.env
+  },
 });
