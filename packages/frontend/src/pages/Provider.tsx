@@ -90,29 +90,21 @@ const Providers: React.FC<ProvidersProps> = ({ isLoggedIn }) => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const consultantResponse = await fetch(`${import.meta.env.VITE_API_URL}/consultants`, {
-          method: 'GET'
-        }) .then(response => response.json())
- 
-
-        const contractorResponse = await fetch(`${import.meta.env.VITE_API_URL}/contractors`, {
-          method: 'GET'
-        }) .then(response => response.json())
-
-
+        const consultantResponse = await fetch(import.meta.env.VITE_API_URL+'/consultants');
+        const contractorResponse = await fetch(import.meta.env.VITE_API_URL+'/contractors');
         
-        // if (!consultantResponse.ok) {
-        //   throw new Error('Failed to fetch consultants');
-        // }
-        // if (!contractorResponse.ok) {
-        //   throw new Error('Failed to fetch contractors');
-        // }
+        if (!consultantResponse.ok) {
+          throw new Error('Failed to fetch consultants');
+        }
+        if (!contractorResponse.ok) {
+          throw new Error('Failed to fetch contractors');
+        }
 
-        // const consultantsData = await consultantResponse.json();
-        // const contractorsData = await contractorResponse.json();
+        const consultantsData = await consultantResponse.json();
+        const contractorsData = await contractorResponse.json();
 
-        setConsultants(consultantResponse);
-        setContractors(contractorResponse);
+        setConsultants(consultantsData);
+        setContractors(contractorsData);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {

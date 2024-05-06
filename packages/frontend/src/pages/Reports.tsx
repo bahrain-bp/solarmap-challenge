@@ -16,7 +16,7 @@ const Reports = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/postcalculation`);
+        const response = await fetch(import.meta.env.VITE_API_URL+'/postcalculation');
         if (!response.ok) {
           throw new Error('Failed to fetch calculations');
         }
