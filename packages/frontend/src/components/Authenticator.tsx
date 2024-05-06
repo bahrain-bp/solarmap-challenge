@@ -9,8 +9,11 @@ import "@aws-amplify/ui-react/styles.css";
 import { Box, Typography, Button } from "@mui/material";
 import logo from "../assets/logo.png"; // Ensure this path is correct
 
-export const Authenticator: React.FC<PropsWithChildren> = ({ children, onCloseClick }) => {
-  const theme: Theme = {
+interface AuthenticatorProps {
+  onCloseClick: () => void;  // Function that takes no arguments and returns void
+}
+
+export const Authenticator: React.FC<PropsWithChildren<AuthenticatorProps>> = ({ children, onCloseClick }) => {  const theme: Theme = {
     name: "solarmap",
     tokens: {
       colors: {

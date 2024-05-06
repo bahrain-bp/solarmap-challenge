@@ -21,10 +21,13 @@ const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
         marginRight: '20px',
     });
 
-    const [userName, setUserName] = useState(null);
+    // Explicitly define the type of the state
+    const [userName, setUserName] = useState<string | null>(null);
 
     async function getUserInfo() {
-        await fetchUserAttributes().then(data => { setUserName(data.given_name); });
+        const data = await fetchUserAttributes();
+        // Use optional chaining and nullish coalescing operator to handle undefined
+        setUserName(data.given_name ?? null);
     }
 
     useEffect(() => { getUserInfo(); }, []);
