@@ -20,7 +20,7 @@ export function DBStack({ stack, app }: StackContext) {
     // Define output/export attributes names
     const dbSecretArnOutputName = "DBSecretArn";
     const dbClusterIdentifierOutputName = "DBClusterIdentifier";
-    // // create db variable that will hold the RDS db construct
+    // create db variable that will hold the RDS db construct
     // var db:RDS
 
     if (app.stage == "prod") {
