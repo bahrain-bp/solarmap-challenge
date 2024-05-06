@@ -6,7 +6,6 @@ import Providers from './pages/Provider';
 import DocumentUpload from './pages/DocumentUpload';
 import EducationalResources from './pages/EduResources';
 import Footer from './pages/Footer'
-
 // import Map from './pages/Map'
 import MapV2 from './components/MapV2'; // Import InitializeMap component
 import { BrowserRouter, Route, Routes} from 'react-router-dom';
@@ -17,6 +16,12 @@ import Privacy from './pages/Privacy';
 import DocumentsDashboard from './pages/DocumentsDashboard';
 import DeleteEducationalResources from './pages/deleteEduResource';
 import AddEducationalResource from './pages/addEduResource';
+import AddConsultants from './pages/addConsultants';
+import DeleteConsulantant from './pages/deleteConsultant';
+import AddContractor from './pages/addContractor';
+import DeleteContractor from './pages/deleteContractor';
+import Reports from './pages/Reports';
+
 
 import { Authenticator } from './components/Authenticator';
 import { getCurrentUser, signOut } from 'aws-amplify/auth';
@@ -108,14 +113,12 @@ function App() {
             <Authenticator onCloseClick={closeLoginDialog} >
 
                   <main>
-
                     <Routes>
                     <Route path="/QuickSightDashboard" element={<QuickSightDashboard />} />
                     <Route path="/DocumentsDashboard" element={<DocumentsDashboard/>}/>
                     <Route path="/deleteEduResource" element={<DeleteEducationalResources />} />
                     <Route path="/addEduResource" element={<AddEducationalResource />} />
                     </Routes>
-
                   </main>
             </Authenticator>
         }
@@ -125,12 +128,17 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/About" element={<About />} />
             <Route path="/Provider" element={<Providers />} />
+            <Route path="/addConsultants" element={<AddConsultants />} />
+            <Route path="/addContractor" element={<AddContractor />} />
+            <Route path="/deleteConsultant" element={<DeleteConsulantant />} />
+            <Route path="/deleteContractor" element={<DeleteContractor />} />
             <Route path="/CarbonEmissionsCalculator" element={<CarbonFootprintCalculator />} />
             <Route path="/DocumentUpload" element={<DocumentUpload />} />
             <Route path="/MapV2" element={<MapV2 identityPoolId={identityPoolId} mapName={mapName}/>}/>
             <Route path="/Terms" element={<Terms/>}/>
             <Route path="/Privacy" element={<Privacy/>}/>
             <Route path="/EducationalResources" element={<EducationalResources isLoggedIn={isLoggedIn} />} />
+            <Route path="/Reports" element={<Reports />} />
           </Routes>
 
         </div>

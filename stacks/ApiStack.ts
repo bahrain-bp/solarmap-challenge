@@ -1,9 +1,10 @@
-import { Api, StackContext, use, Function } from "sst/constructs";
+import { Api, StackContext, use } from "sst/constructs";
 import { DBStack } from "./DBStack";
 import { CacheHeaderBehavior, CachePolicy } from "aws-cdk-lib/aws-cloudfront";
 import { Duration } from "aws-cdk-lib/core";
 import { DocumentProcessingStack } from "./DocumentProcessingStack";
 import { PolicyStatement } from "aws-cdk-lib/aws-iam";
+import { ImgDetection } from "./ImgDetection";
 
 export function ApiStack({ stack }: StackContext) {
 
@@ -11,6 +12,10 @@ export function ApiStack({ stack }: StackContext) {
     // const { table } = use(DBStack);
     const documentProcessingStack = use(DocumentProcessingStack);
     const artificatsBucket = documentProcessingStack.artificatsBucket;
+
+    const imgDetection = use(ImgDetection);
+    const mapsBucket = imgDetection.bucket;
+
 
 
     const { db } = use(DBStack);
@@ -28,9 +33,18 @@ export function ApiStack({ stack }: StackContext) {
             "GET /consultants": "packages/functions/src/fetchConsultants.handler",
             "GET /contractors": "packages/functions/src/fetchContractors.handler",
             "GET /resources": "packages/functions/src/fetchEduResources.handler",
+            "GET /carboncalculator": "packages/functions/src/fetchCarbonCalc.handler",
             "POST /resources": "packages/functions/src/postEduResources.handler",
+            "POST /carboncalculator": "packages/functions/src/postCarbonCalc.handler",
+            "POST /consultants": "packages/functions/src/postConsultants.handler",
+            "POST /contractors": "packages/functions/src/postContractors.handler",
             "DELETE /resources/{resource_id}": "packages/functions/src/deleteEduResources.handler",
+            "DELETE /carboncalculator/{carbon_footprint_id}": "packages/functions/src/deleteCarbonCalc.handler",
+            "DELETE /consultants/{consultant_id}": "packages/functions/src/deleteConsultants.handler",
+            "DELETE /contractors/{contractor_id}": "packages/functions/src/deleteContractor.handler",
             "GET /documents": "packages/functions/src/getDocumentsDetails.handler",
+            "POST /postcalculation": "packages/functions/src/postCalculation.handler",
+            "GET /postcalculation": "packages/functions/src/fetchCalculations.handler",
 
             // TypeScript lambda function for MEWA bill document processing 
             // "POST /process-pdf": "packages/functions/src/process-pdf-lambda.handler",
@@ -43,6 +57,18 @@ export function ApiStack({ stack }: StackContext) {
                     })],
                     environment: {
                         BUCKET_NAME: artificatsBucket.bucketName,
+                    }
+                }
+            },
+            "POST /detectionUpload": {
+                function: {
+                    handler: "packages/functions/src/imageDetectionUpload.handler",
+                    permissions: [new PolicyStatement({
+                        actions: ['s3:*'],
+                        resources: [mapsBucket.bucketArn + '/*'],
+                    })],
+                    environment: {
+                        BUCKET_NAME: mapsBucket.bucketName,
                     }
                 }
             },

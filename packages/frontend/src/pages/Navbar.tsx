@@ -71,6 +71,9 @@ const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) =>
                     <li className="nav-item">
                         <a className="nav-link" id="navbar_item" href="/DocumentsDashboard">Documents Dashboard</a>
                     </li>
+                    <li className="nav-item">
+                        <a className="nav-link" id="navbar_item" href="/Reports">Reports</a>
+                    </li>
 
                     {/* Admin Pages */}
 
