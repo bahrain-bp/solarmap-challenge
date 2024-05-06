@@ -90,8 +90,8 @@ const Providers: React.FC<ProvidersProps> = ({ isLoggedIn }) => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const consultantResponse = await fetch(import.meta.env.VITE_API_URL+'/consultants');
-        const contractorResponse = await fetch(import.meta.env.VITE_API_URL+'/contractors');
+        const consultantResponse = await fetch(`${import.meta.env.VITE_API_URL}/consultants`);
+        const contractorResponse = await fetch(`${import.meta.env.VITE_API_URL}/contractors`);
         
         if (!consultantResponse.ok) {
           throw new Error('Failed to fetch consultants');

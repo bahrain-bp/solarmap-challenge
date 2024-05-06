@@ -13,17 +13,15 @@ const DocumentsDashboard = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const ewaBillResponse = await fetch(import.meta.env.VITE_API_URL+'/documents', {
-          method: 'GET'
-        }) .then(response => response.json());
+        const ewaBillResponse = await fetch(`${import.meta.env.VITE_API_URL}/documents`);
         
-        // if (!ewaBillResponse.ok) {
-        //   throw new Error('Failed to fetch EWA bills');
-        // }
+        if (!ewaBillResponse.ok) {
+          throw new Error('Failed to fetch EWA bills');
+        }
 
-        // const ewaBillsData = await ewaBillResponse.json();
-        setEwaBills(ewaBillResponse);
-        setFilteredBills(ewaBillResponse); // Initially set filtered bills to all bills
+        const ewaBillsData = await ewaBillResponse.json();
+        setEwaBills(ewaBillsData);
+        setFilteredBills(ewaBillsData); // Initially set filtered bills to all bills
       } catch (error) {
         console.error('Error fetching EWA bills data:', error);
       } finally {

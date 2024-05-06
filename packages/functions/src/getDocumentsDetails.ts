@@ -1,6 +1,7 @@
+import { APIGatewayProxyHandler } from 'aws-lambda';
 import { SQL } from "./sql";
 
-export async function handler(event: any) {
+export const handler: APIGatewayProxyHandler = async (event) => {
     try {
         const rows = await SQL.DB
             .selectFrom("ewabill")
@@ -20,7 +21,7 @@ export async function handler(event: any) {
         return {
             statusCode: 200,
             headers: { 'Content-Type': 'application/json' },
-            data: JSON.stringify(rows),
+            body: JSON.stringify(rows),
         };
     } catch (error) {
         console.error('Error during database operation:', error);

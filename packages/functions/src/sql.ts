@@ -2,7 +2,6 @@ import { RDSData } from "@aws-sdk/client-rds-data";
 import { RDS } from "sst/node/rds";
 import { Kysely, Selectable } from "kysely";
 import { DataApiDialect } from "kysely-data-api";
-// @ts-ignore
 import type { Database } from "./sql.generated";
 
 export const DB = new Kysely<Database>({
