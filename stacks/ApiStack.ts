@@ -83,7 +83,7 @@ export function ApiStack({ stack }: StackContext) {
         }
     });
 
-    api.attachPermissions(["lambda:InvokeFunction"]);
+    api.attachPermissions(["*"]);
 
 
     // cache policy to use with cloudfront as reverse proxy to avoid cors
