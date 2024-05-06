@@ -10,13 +10,20 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@splinetool/runtime": "^1.2.4",
+    "@aws-amplify/auth": "^6.0.27",
+    "@aws-amplify/ui-react": "^6.1.9",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@mui/material": "^5.15.15",
+    "@splinetool/runtime": "^1.2.5",
     "amazon-quicksight-embedding-sdk": "^2.6.0",
+    "aws-amplify": "^6.2.0",
     "aws-lambda": "^1.0.7",
     "bootstrap": "^5.3.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.22.3"
+    "react-router-dom": "^6.22.3",
+    "react-toastify": "^10.0.5"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.137",
