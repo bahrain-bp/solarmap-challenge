@@ -10,12 +10,12 @@ const userPoolClientId = "7h6ao9muqtfgds5ku5qonqs9p3";
 if (!userPoolId || !userPoolClientId) {
   throw new Error("Environment variables USER_POOL_ID and USER_POOL_CLIENT_ID are required.");
 }
-
+        
 Amplify.configure({
   Auth: {
     Cognito: {
       userPoolId,
-      userPoolClientId,
+      userPoolClientId
     }
   }
 });
