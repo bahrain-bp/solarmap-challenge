@@ -84,16 +84,7 @@ export function ApiStack({ stack }: StackContext) {
     });
 
 
-    // Define permissions with '*' for everything
-    const permissions = [
-        new PolicyStatement({
-            actions: ['*'],
-            resources: ['*'],
-        })
-    ];
-
-    // Attach permissions to API
-    api.attachPermissions(permissions);
+    api.attachPermissions("*");
 
 
     // cache policy to use with cloudfront as reverse proxy to avoid cors
