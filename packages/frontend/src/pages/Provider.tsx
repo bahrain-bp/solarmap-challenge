@@ -73,7 +73,11 @@ const LevelsSection = () => {
   );
 };
 
-const Providers = () => {
+interface ProvidersProps {
+  isLoggedIn: boolean; // Added prop to determine if the user is logged in
+}
+
+const Providers: React.FC<ProvidersProps> = ({ isLoggedIn }) => {
   const [consultants, setConsultants] = useState<Consultant[]>([]);
   const [contractors, setContractors] = useState<Contractor[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -136,6 +140,7 @@ const Providers = () => {
         </div>
       </div>
       <LevelsSection />
+      {isLoggedIn && (
       <div className="card text-center my-4">
         <div className="card-header">
           <strong>Manage Providers</strong>
@@ -155,6 +160,7 @@ const Providers = () => {
           </button>
         </div>
       </div>
+      )}
       <div className="container">
         <div className="d-flex justify-content-between mb-3">
           <input

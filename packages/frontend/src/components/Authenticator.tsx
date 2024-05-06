@@ -8,7 +8,6 @@ from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
 import { Box, Typography, Button } from "@mui/material";
 import logo from "../assets/logo.png"; // Ensure this path is correct
-import { useNavigate } from 'react-router-dom';
 
 export const Authenticator: React.FC<PropsWithChildren> = ({ children, onCloseClick }) => {
   const theme: Theme = {

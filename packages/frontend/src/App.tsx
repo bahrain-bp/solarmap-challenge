@@ -111,13 +111,17 @@ function App() {
         <Navbar isLoggedIn={isLoggedIn} onLogInButton={handleLoginButton}/>
         { showLogin &&
             <Authenticator onCloseClick={closeLoginDialog} >
-
                   <main>
                     <Routes>
                     <Route path="/QuickSightDashboard" element={<QuickSightDashboard />} />
                     <Route path="/DocumentsDashboard" element={<DocumentsDashboard/>}/>
                     <Route path="/deleteEduResource" element={<DeleteEducationalResources />} />
                     <Route path="/addEduResource" element={<AddEducationalResource />} />
+                    <Route path="/addConsultants" element={<AddConsultants />} />
+                    <Route path="/addContractor" element={<AddContractor />} />
+                    <Route path="/deleteConsultant" element={<DeleteConsulantant />} />
+                    <Route path="/deleteContractor" element={<DeleteContractor />} />
+                    <Route path="/Reports" element={<Reports />} />
                     </Routes>
                   </main>
             </Authenticator>
@@ -127,18 +131,13 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/About" element={<About />} />
-            <Route path="/Provider" element={<Providers />} />
-            <Route path="/addConsultants" element={<AddConsultants />} />
-            <Route path="/addContractor" element={<AddContractor />} />
-            <Route path="/deleteConsultant" element={<DeleteConsulantant />} />
-            <Route path="/deleteContractor" element={<DeleteContractor />} />
+            <Route path="/Provider" element={<Providers isLoggedIn={isLoggedIn} />} />
             <Route path="/CarbonEmissionsCalculator" element={<CarbonFootprintCalculator />} />
             <Route path="/DocumentUpload" element={<DocumentUpload />} />
             <Route path="/MapV2" element={<MapV2 identityPoolId={identityPoolId} mapName={mapName}/>}/>
             <Route path="/Terms" element={<Terms/>}/>
             <Route path="/Privacy" element={<Privacy/>}/>
             <Route path="/EducationalResources" element={<EducationalResources isLoggedIn={isLoggedIn} />} />
-            <Route path="/Reports" element={<Reports />} />
           </Routes>
 
         </div>

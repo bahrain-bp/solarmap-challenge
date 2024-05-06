@@ -94,13 +94,8 @@ body {
 }
 
 /* navbar styles */
-#navbar_item {
-  color: rgb(249, 249, 249); /* Sets the default text color to navy blue */
-}
-
-/* Hover state with yellow color */
-#navbar_item:hover {
-  color: yellow; /* Changes text color to yellow on hover */
+.nav-link {
+  color: #FFF; /* Sets the default text color to white */
 }
 
 /* Content styles */
