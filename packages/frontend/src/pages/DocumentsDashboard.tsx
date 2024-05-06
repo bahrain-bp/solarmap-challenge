@@ -13,7 +13,7 @@ const DocumentsDashboard = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const ewaBillResponse = await fetch(`${import.meta.env.VITE_API_URL}/documents`);
+        const ewaBillResponse = await fetch(import.meta.env.VITE_API_URL+'/documents');
         
         if (!ewaBillResponse.ok) {
           throw new Error('Failed to fetch EWA bills');
