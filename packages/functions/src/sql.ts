@@ -4,6 +4,7 @@ import { use } from "sst/constructs"
 import { Kysely, Selectable } from "kysely";
 import { DataApiDialect } from "kysely-data-api";
 import {DBStack} from "../../../stacks/DBStack"
+// @ts-ignore
 import type { Database } from "./sql.generated";
 
 const db = use(DBStack);
