@@ -4,8 +4,8 @@ import App from './App.tsx'
 import './index.css'
 import { Amplify } from 'aws-amplify';
 
-const userPoolId = process.env.USER_POOL_ID;
-const userPoolClientId = process.env.USER_POOL_CLIENT_ID;
+const userPoolId = "us-east-1_yJLupftez";
+const userPoolClientId = "7h6ao9muqtfgds5ku5qonqs9p3";
 
 if (!userPoolId || !userPoolClientId) {
   throw new Error("Environment variables USER_POOL_ID and USER_POOL_CLIENT_ID are required.");
