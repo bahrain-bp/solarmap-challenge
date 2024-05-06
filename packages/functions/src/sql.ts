@@ -1,8 +1,13 @@
 import { RDSData } from "@aws-sdk/client-rds-data";
 import { RDS } from "sst/node/rds";
+import { use } from "sst/constructs"
 import { Kysely, Selectable } from "kysely";
 import { DataApiDialect } from "kysely-data-api";
+import {DBStack} from "../../../stacks/DBStack"
 import type { Database } from "./sql.generated";
+
+const db = use(DBStack);
+
 
 export const DB = new Kysely<Database>({
   dialect: new DataApiDialect({
