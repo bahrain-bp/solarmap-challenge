@@ -4,11 +4,18 @@ import App from './App.tsx'
 import './index.css'
 import { Amplify } from 'aws-amplify';
 
+const userPoolId = process.env.USER_POOL_ID;
+const userPoolClientId = process.env.USER_POOL_CLIENT_ID;
+
+if (!userPoolId || !userPoolClientId) {
+  throw new Error("Environment variables USER_POOL_ID and USER_POOL_CLIENT_ID are required.");
+}
+
 Amplify.configure({
   Auth: {
-    Cognito:{
-      userPoolId: process.env.USER_POOL_ID,
-      userPoolClientId: process.env.USER_POOL_CLIENT_ID,
+    Cognito: {
+      userPoolId,
+      userPoolClientId,
     }
   }
 });
