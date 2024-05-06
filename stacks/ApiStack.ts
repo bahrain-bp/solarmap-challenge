@@ -30,17 +30,8 @@ export function ApiStack({ stack }: StackContext) {
         routes: {
             // Sample TypeScript lambda function
             "POST /": "packages/functions/src/lambda.main",
-            "GET /consultants": {
-                function: {
-                    handler: "packages/functions/src/fetchConsultants.handler",
-                }
-                },
-                
-            "GET /contractors": {
-                function: {
-                    handler: "packages/functions/src/fetchContractors.handler",
-                }
-                },
+            "GET /consultants": "packages/functions/src/fetchConsultants.handler",
+            "GET /contractors": "packages/functions/src/fetchContractors.handler",
             "GET /resources": "packages/functions/src/fetchEduResources.handler",
             "GET /carboncalculator": "packages/functions/src/fetchCarbonCalc.handler",
             "POST /resources": "packages/functions/src/postEduResources.handler",
