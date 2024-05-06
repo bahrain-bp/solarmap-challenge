@@ -19,7 +19,10 @@ interface InquiryDetail {
 const Reports = () => {
   const [calculations, setCalculations] = useState<Calculation[]>([]);
   const [inquiryDetails, setInquiryDetails] = useState<InquiryDetail[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [, setIsLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'calculations' | 'inquiries'>('calculations');
+  const [calculationSearch, setCalculationSearch] = useState('');
+  const [inquirySearch, setInquirySearch] = useState('');
 
   useEffect(() => {
     const fetchCalculations = async () => {
@@ -53,60 +56,145 @@ const Reports = () => {
     });
   }, []);
 
+  const handleCalculationSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      setCalculationSearch(event.target.value);
+    } catch (error) {
+      console.error('Error handling calculation search:', error);
+    }
+  };
+
+  const handleInquirySearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      setInquirySearch(event.target.value);
+    } catch (error) {
+      console.error('Error handling inquiry search:', error);
+    }
+  };
+
+  const filterCalculations = (calculation: Calculation) => {
+    try {
+      return (
+        calculation.calculation_id.toString().includes(calculationSearch) ||
+        calculation.number_of_panels.toString().includes(calculationSearch) ||
+        calculation.total_cost.toString().includes(calculationSearch) ||
+        calculation.roi_percentage.toString().includes(calculationSearch) ||
+        calculation.payback_period.toString().includes(calculationSearch)
+      );
+    } catch (error) {
+      console.error('Error filtering calculations:', error);
+      return false;
+    }
+  };
+
+  const filterInquiries = (inquiry: InquiryDetail) => {
+    try {
+      return (
+        inquiry.first_name.toLowerCase().includes(inquirySearch.toLowerCase()) ||
+        inquiry.last_name.toLowerCase().includes(inquirySearch.toLowerCase()) ||
+        inquiry.email.toLowerCase().includes(inquirySearch.toLowerCase()) ||
+        inquiry.phone.toString().includes(inquirySearch) ||
+        inquiry.inquiry_content.toLowerCase().includes(inquirySearch.toLowerCase())
+      );
+    } catch (error) {
+      console.error('Error filtering inquiries:', error);
+      return false;
+    }
+  };
+
+  const totalCalculatorUsages = calculations.length;
+
   return (
     <div className="container">
       <h1>Reports</h1>
-      {isLoading ? <div>Loading...</div> : (
-        <>
-          <h2>Calculation Results</h2>
-          <table className="table table-hover">
-            <thead className="thead-dark">
-              <tr>
-                <th>Calculation ID</th>
-                <th>Number of Panels</th>
-                <th>Total Cost</th>
-                <th>ROI Percentage</th>
-                <th>Payback Period</th>
-              </tr>
-            </thead>
-            <tbody>
-              {calculations.map((calculation, index) => (
-                <tr key={index}>
-                  <td>{calculation.calculation_id}</td>
-                  <td>{calculation.number_of_panels}</td>
-                  <td>{calculation.total_cost}</td>
-                  <td>{calculation.roi_percentage}</td>
-                  <td>{calculation.payback_period}</td>
+      <div className="row align-items-center" style={{ marginTop: '20px' }}>
+        <div className="col-auto">
+          <ul className="nav nav-tabs">
+            <li className="nav-item">
+              <button
+                className={`nav-link ${activeTab === 'calculations' ? 'active' : ''}`}
+                onClick={() => setActiveTab('calculations')}
+              >
+                Calculation
+              </button>
+            </li>
+            <li className="nav-item">
+              <button
+                className={`nav-link ${activeTab === 'inquiries' ? 'active' : ''}`}
+                onClick={() => setActiveTab('inquiries')}
+              >
+                Inquiries
+              </button>
+            </li>
+          </ul>
+        </div>
+        <div className="col-auto ml-auto">
+          <div className="badge badge-info mr-2">
+            Total Calculator Usages: {totalCalculatorUsages}
+          </div>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Search..."
+            value={activeTab === 'calculations' ? calculationSearch : inquirySearch}
+            onChange={activeTab === 'calculations' ? handleCalculationSearchChange : handleInquirySearchChange}
+          />
+        </div>
+      </div>
+      <div className="tab-content mt-2">
+        <div className={`tab-pane ${activeTab === 'calculations' ? 'show active' : ''}`}>
+          <div className="table-responsive" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+            <table className="table table-hover">
+              <thead className="thead-dark">
+                <tr>
+                  <th>Calculation ID</th>
+                  <th>Number of Panels</th>
+                  <th>Total Cost</th>
+                  <th>ROI Percentage</th>
+                  <th>Payback Period</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-
-          <h2>Inquiries with Customer Details</h2>
-          <table className="table table-hover">
-            <thead className="thead-dark">
-              <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Inquiry</th>
-              </tr>
-            </thead>
-            <tbody>
-              {inquiryDetails.map((detail, index) => (
-                <tr key={index}>
-                  <td>{detail.first_name}</td>
-                  <td>{detail.last_name}</td>
-                  <td>{detail.email}</td>
-                  <td>{detail.phone}</td>
-                  <td>{detail.inquiry_content}</td>
+              </thead>
+              <tbody>
+                {calculations.filter(filterCalculations).map((calculation, index) => (
+                  <tr key={index}>
+                    <td>{calculation.calculation_id}</td>
+                    <td>{calculation.number_of_panels}</td>
+                    <td>{calculation.total_cost}</td>
+                    <td>{calculation.roi_percentage}</td>
+                    <td>{calculation.payback_period}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div className={`tab-pane ${activeTab === 'inquiries' ? 'show active' : ''}`}>
+          <div className="table-responsive" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+            <table className="table table-hover">
+              <thead className="thead-dark">
+                <tr>
+                  <th>First Name</th>
+                  <th>Last Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Inquiry</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </>
-      )}
+              </thead>
+              <tbody>
+                {inquiryDetails.filter(filterInquiries).map((detail, index) => (
+                  <tr key={index}>
+                    <td>{detail.first_name}</td>
+                    <td>{detail.last_name}</td>
+                    <td>{detail.email}</td>
+                    <td>{detail.phone}</td>
+                    <td>{detail.inquiry_content}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
