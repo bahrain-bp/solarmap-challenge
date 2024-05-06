@@ -1,19 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import uploadFile from "../uploadFile";
 
 type ListenFunction = (url: string) => void;
-
-// Function to append content to the document body
-export const appendToDocumentBody = (content: string) => {
-  const element = document.createElement("div");
-  element.innerText = content;
-  document.body.appendChild(element);
-};
 
 const DocumentUpload: React.FC = () => {
   const [, setUploadedFileUrl] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string>("");
+  const [uploading, setUploading] = useState<boolean>(false);
+  const [canUpload, setCanUpload] = useState<boolean>(true);
+
+  useEffect(() => {
+    let uploadTimer: NodeJS.Timeout;
+
+    if (!canUpload) {
+      // Start a timer to reset the upload button state after 1 minute
+      uploadTimer = setTimeout(() => {
+        setCanUpload(true);
+      }, 60000); // 1 minute = 60,000 milliseconds
+    }
+
+    return () => {
+      clearTimeout(uploadTimer);
+    };
+  }, [canUpload]);
 
   const handleListen: ListenFunction = (url) => {
     setUploadedFileUrl(url);
@@ -28,41 +38,27 @@ const DocumentUpload: React.FC = () => {
     setErrorMessage(""); // Reset error message
     setSuccessMessage(""); // Reset success message
 
-    if (file) {
+    if (canUpload && file) {
+      setCanUpload(false); // Disable uploading for 1 minute
+      setUploading(true); // Set uploading state to true
       setErrorMessage("");
       try {
-        // Extract file type from the file name or MIME type
-        const fileType = file.type.split("/")[1]; // Extracting the file extension from the MIME type
+        const fileType = file.type.split("/")[1];
         if (fileType !== "png" && fileType !== "jpeg" && fileType !== "pdf") {
           throw new Error("Invalid file type. Please select a PNG, JPEG, or PDF file.");
         }
 
         const fileUrl = await uploadFile(file, file.type);
-
-        // Call the listen function with the necessary parameter
         handleListen(fileUrl);
-
-        /*
-        const link = document.createElement("a");
-        link.href = fileUrl;
-        link.target = "_blank";
-        link.innerText = "Uploaded File";
-        document.body.appendChild(link);
-        */
-
-        // Display success message
         setSuccessMessage("File uploaded successfully!");
-
-        // Clear any previous error messages
+        setUploading(false); // Set uploading state to false
         setErrorMessage("");
       } catch (error) {
-        // Log the error for debugging
         console.error("Error uploading file:", error);
-
-        // Handle error, e.g., show an error message to the user
         setErrorMessage("An error occurred while uploading the file. Please try again later.");
+        setUploading(false); // Set uploading state to false
       }
-    } else {
+    } else if (!file) {
       setErrorMessage("Please select a file to upload.");
     }
   };
@@ -77,7 +73,9 @@ const DocumentUpload: React.FC = () => {
           <input className="form-control" id="formFileLg" type="file" accept=".pdf, .png, .jpeg" />
           <p style={{ fontSize: "12px" }}>Acceptable files are *.pdf, *.png, and *.jpeg</p>
         </div>
-        <button className="btn btn-primary" type="submit">Upload</button>
+        <button className="btn btn-primary" type="submit" disabled={uploading || !canUpload}>
+          {uploading ? "Uploading..." : "Upload"}
+        </button>
         {errorMessage && <div className="alert alert-danger mt-3">{errorMessage}</div>}
         {successMessage && <div className="alert alert-success mt-3">{successMessage}</div>}
       </form>
