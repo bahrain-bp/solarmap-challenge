@@ -111,6 +111,18 @@ export function ApiStack({ stack }: StackContext) {
     });
 
 
+    // Define permissions with '*' for everything
+    const permissions = [
+        new PolicyStatement({
+            actions: ['*'],
+            resources: ['*'],
+        })
+    ];
+
+    // Attach permissions to API
+    api.attachPermissions(permissions);
+
+
     // cache policy to use with cloudfront as reverse proxy to avoid cors
     // https://dev.to/larswww/real-world-serverless-part-3-cloudfront-reverse-proxy-no-cors-cgj
     const apiCachePolicy = new CachePolicy(stack, "CachePolicy", {
