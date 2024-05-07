@@ -5,7 +5,6 @@ import { DataApiDialect } from "kysely-data-api";
 // @ts-ignore
 import type { Database } from "./sql.generated";
 
-// Setup the Kysely instance to use the AWS RDS Data API
 export const DB = new Kysely<Database>({
   dialect: new DataApiDialect({
     mode: "mysql",

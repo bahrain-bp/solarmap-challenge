@@ -23,7 +23,7 @@ export function DBStack({ stack, app }: StackContext) {
     // create db variable that will hold the RDS db construct
     // var db:RDS
 
-    if (stack.stage == "prod") {
+    if (app.stage == "prod") {
         const db = new RDS(stack, mainDBLogicalName, {
             engine: "mysql5.7",
             defaultDatabaseName: "maindb",
@@ -42,6 +42,7 @@ export function DBStack({ stack, app }: StackContext) {
             },
             
         });
+        console.log(db);
         return {db}
     } else {
         // Import the existing secret from the exported value
