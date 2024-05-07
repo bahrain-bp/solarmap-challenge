@@ -25,6 +25,7 @@
     "packages/*"
   ],
   "dependencies": {
+    "@amaabca/aws-lex-custom-resources": "^4.1.0",
     "@aws-sdk/client-quicksight": "^3.563.0",
     "@aws/amazon-location-utilities-auth-helper": "^1.0.5",
     "@splinetool/runtime": "^1.2.0",
