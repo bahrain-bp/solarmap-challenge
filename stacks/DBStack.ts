@@ -14,8 +14,8 @@ export function DBStack({ stack, app }: StackContext) {
     });
 
     const mainDBLogicalName = "MainDatabase";
-    const dbSecretArnOutputName = "DBSecretArn";
-    const dbClusterIdentifierOutputName = "DBClusterIdentifier";
+    const dbSecretArnOutputName = `DBSecretArn-${app.stage}`;
+    const dbClusterIdentifierOutputName = `DBClusterIdentifier-${app.stage}`;
 
     let db: RDS;
 
