@@ -273,12 +273,14 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
 
       console.log('blob:', blob);
       console.log('mime:', mimeString);
+
+      /*
       // Save the Blob locally
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
       link.download = 'cropped_map.png'; // Update the file name
       link.click();
-
+      */
 
 
 // Assuming `dataUrl` is your image encoded as a data URL
