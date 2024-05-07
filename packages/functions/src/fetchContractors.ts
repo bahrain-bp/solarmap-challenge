@@ -1,8 +1,10 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import { SQL } from "./sql";
 
+
 export const handler: APIGatewayProxyHandler = async (event) => {
     try {
+
         const rows = await SQL.DB
             .selectFrom("contractor")
             .select([
