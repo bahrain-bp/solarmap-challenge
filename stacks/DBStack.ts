@@ -14,8 +14,8 @@ export function DBStack({ stack, app }: StackContext) {
     });
 
     const mainDBLogicalName = "MainDatabase";
-    const dbSecretArnOutputName = `DBSecretArn-${app.stage}`;
-    const dbClusterIdentifierOutputName = `DBClusterIdentifier-${app.stage}`;
+    const dbSecretArnOutputName = "DBSecretArn";
+    const dbClusterIdentifierOutputName = "DBClusterIdentifier";
 
     let db: RDS;
 
@@ -25,6 +25,17 @@ export function DBStack({ stack, app }: StackContext) {
             defaultDatabaseName: "maindb",
             migrations: [".", "packages", "db-migrations"].join(path.sep),
         });
+            // Export db secret arn and cluster identifier to be used by other stages
+    stack.addOutputs({
+        [dbSecretArnOutputName]: {
+            value: db.secretArn,
+            exportName: dbSecretArnOutputName,
+        },
+        [dbClusterIdentifierOutputName]: {
+            value: db.clusterIdentifier,
+            exportName: dbClusterIdentifierOutputName,
+        },
+    });
     } else {
         const existing_secret = secretsManager.Secret.fromSecretCompleteArn(stack, "ExistingSecret", Fn.importValue(dbSecretArnOutputName));
         db = new RDS(stack, "ExistingDatabase", {
@@ -41,17 +52,7 @@ export function DBStack({ stack, app }: StackContext) {
         });
     }
 
-    // Export db secret arn and cluster identifier to be used by other stages
-    stack.addOutputs({
-        [dbSecretArnOutputName]: {
-            value: db.secretArn,
-            exportName: dbSecretArnOutputName,
-        },
-        [dbClusterIdentifierOutputName]: {
-            value: db.clusterIdentifier,
-            exportName: dbClusterIdentifierOutputName,
-        },
-    });
+
 
     return { db };
 }
