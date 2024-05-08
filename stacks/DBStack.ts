@@ -43,6 +43,7 @@ export function DBStack({ stack, app }: StackContext) {
             },
             
         });
+
         return {db}
     } else {
         // Import the existing secret from the exported value
@@ -61,7 +62,7 @@ export function DBStack({ stack, app }: StackContext) {
                 secret: existing_secret,
             },
         });
-        
+
         return {db};
     }
     
