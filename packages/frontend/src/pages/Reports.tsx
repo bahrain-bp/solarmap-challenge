@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface Calculation {
   calculation_id: number;
@@ -14,6 +14,7 @@ interface InquiryDetail {
   email: string;
   phone: number;
   inquiry_content: string;
+  address: string; // Add address field
 }
 
 const Reports = () => {
@@ -23,6 +24,11 @@ const Reports = () => {
   const [activeTab, setActiveTab] = useState<'calculations' | 'inquiries'>('calculations');
   const [calculationSearch, setCalculationSearch] = useState('');
   const [inquirySearch, setInquirySearch] = useState('');
+  const [selectedInquiry, setSelectedInquiry] = useState<InquiryDetail | null>(null);
+  const [emailTo, setEmailTo] = useState('');
+  const [emailSubject, setEmailSubject] = useState('');
+  const [emailBody, setEmailBody] = useState('');
+  const [responseMessage, setResponseMessage] = useState('');
 
   useEffect(() => {
     const fetchCalculations = async () => {
@@ -94,7 +100,8 @@ const Reports = () => {
         inquiry.last_name.toLowerCase().includes(inquirySearch.toLowerCase()) ||
         inquiry.email.toLowerCase().includes(inquirySearch.toLowerCase()) ||
         inquiry.phone.toString().includes(inquirySearch) ||
-        inquiry.inquiry_content.toLowerCase().includes(inquirySearch.toLowerCase())
+        inquiry.inquiry_content.toLowerCase().includes(inquirySearch.toLowerCase()) ||
+        inquiry.address.toLowerCase().includes(inquirySearch.toLowerCase()) // Filter by address
       );
     } catch (error) {
       console.error('Error filtering inquiries:', error);
@@ -104,9 +111,59 @@ const Reports = () => {
 
   const totalCalculatorUsages = calculations.length;
 
+  const handleInquiryClick = (inquiry: InquiryDetail) => {
+    setSelectedInquiry(inquiry);
+    setEmailTo(inquiry.email); // Populate emailTo field with the selected inquiry's email
+  };
+
+  const handleEmailSubjectChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmailSubject(event.target.value);
+  };
+
+  const handleEmailBodyChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setEmailBody(event.target.value);
+  };
+
+  const handleSubmitEmail = async (event: React.FormEvent<HTMLFormElement> | undefined) => {
+    if (event) {
+      event.preventDefault(); // Prevent default form submission behavior
+    }
+    try {
+      // Check if emailTo is empty
+      if (!emailTo) {
+        throw new Error('Email address is required.');
+      }
+      
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/send-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userEmail: emailTo, body: emailBody, subject: emailSubject }), // Correct order of fields
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const responseData = await response.json();
+
+      if (responseData.result === 'OK') {
+        setResponseMessage('Email sent successfully!');
+      } else {
+        setResponseMessage('Error sending email.');
+      }
+    } catch (error) {
+      console.error('Error sending email:', error);
+      setResponseMessage('An error occurred while sending the email.');
+    }
+  };
+
+
   return (
     <div className="container">
       <h1>Reports</h1>
+      <h4>Click on an inquiry to send an email</h4>
       <div className="row align-items-center" style={{ marginTop: '20px' }}>
         <div className="col-auto">
           <ul className="nav nav-tabs">
@@ -178,21 +235,67 @@ const Reports = () => {
                   <th>Email</th>
                   <th>Phone</th>
                   <th>Inquiry</th>
+                  <th>Address</th> {/* Add Address column header */}
                 </tr>
               </thead>
               <tbody>
                 {inquiryDetails.filter(filterInquiries).map((detail, index) => (
-                  <tr key={index}>
+                  <tr key={index} onClick={() => handleInquiryClick(detail)} style={{ cursor: 'pointer' }}>
                     <td>{detail.first_name}</td>
                     <td>{detail.last_name}</td>
                     <td>{detail.email}</td>
                     <td>{detail.phone}</td>
                     <td>{detail.inquiry_content}</td>
+                    <td>{detail.address}</td> {/* Add Address column */}
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
+          {selectedInquiry && (
+            <div className="mt-4">
+              <h3>Send Email</h3>
+              <form onSubmit={handleSubmitEmail}>
+                <div className="form-group">
+                  <label htmlFor="emailTo">To</label>
+                  <input
+                    type="email"
+                    className="form-control"
+                    id="emailTo"
+                    value={emailTo}
+                    readOnly // Make it read-only since it's auto-populated
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="emailSubject">Subject</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="emailSubject"
+                    value={emailSubject}
+                    onChange={handleEmailSubjectChange}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="emailBody">Body</label>
+                  <textarea
+                    className="form-control"
+                    id="emailBody"
+                    rows={3}
+                    value={emailBody}
+                    onChange={handleEmailBodyChange}
+                    required
+                  ></textarea>
+                </div>
+                <button type="submit" className="btn btn-primary">
+                  Submit
+                </button>
+              </form>
+              <div>{responseMessage}</div>
+            </div>
+          )}
         </div>
       </div>
     </div>

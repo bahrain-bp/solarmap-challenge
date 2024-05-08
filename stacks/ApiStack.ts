@@ -1,3 +1,4 @@
+// Import necessary constructs and stacks
 import { Api, StackContext, use } from "sst/constructs";
 import { DBStack } from "./DBStack";
 import { CacheHeaderBehavior, CachePolicy } from "aws-cdk-lib/aws-cloudfront";
@@ -5,30 +6,35 @@ import { Duration } from "aws-cdk-lib/core";
 import { DocumentProcessingStack } from "./DocumentProcessingStack";
 import { PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { ImgDetection } from "./ImgDetection";
+import { EmailAPIStack } from "./EmailAPIStack";
 
-export function ApiStack({ stack }: StackContext) {
+// Define the ApiStack function
+export function ApiStack(context: StackContext) {
+    // Destructure the stack from the context parameter
+    const { app, stack } = context;
 
-
-    // const { table } = use(DBStack);
+    // Retrieve resources from other stacks
     const documentProcessingStack = use(DocumentProcessingStack);
-    const artificatsBucket = documentProcessingStack.artificatsBucket;
+    const artifactsBucket = documentProcessingStack.artificatsBucket;
 
     const imgDetection = use(ImgDetection);
     const mapsBucket = imgDetection.bucket;
 
+    // Call the EmailAPIStack function to get the email API
+    const { api: emailApi } = EmailAPIStack({ app, stack });
 
-
+    // Retrieve the DB stack
     const { db } = use(DBStack);
+
     // Create the HTTP API
     const api = new Api(stack, "Api", {
         defaults: {
             function: {
                 bind: [db],
-
             },
         },
         routes: {
-            // Sample TypeScript lambda function
+            // Define API routes
             "POST /": "packages/functions/src/lambda.main",
             "GET /consultants": "packages/functions/src/fetchConsultants.handler",
             "GET /contractors": "packages/functions/src/fetchContractors.handler",
@@ -53,22 +59,29 @@ export function ApiStack({ stack }: StackContext) {
 
             "POST /inquirycustomer": "packages/functions/src/postCustomerInquiry.handler",
             "GET /inquirycustomer": "packages/functions/src/fetchCustomerInquiry.handler",
+            // Adjusted route for sending emails
 
+            "POST /send-email": {
+                function: {
+                    handler: "packages/functions/src/send-email.sendEmail",
+                    permissions: [new PolicyStatement({
+                        actions: ['ses:SendEmail'], // Add the necessary SES action here
+                        resources: ['*'], // You may need to specify the resource ARN if you want to restrict it
+                    })],
+                }
+            },
+            
 
-
-
-
-            // TypeScript lambda function for MEWA bill document processing 
-            // "POST /process-pdf": "packages/functions/src/process-pdf-lambda.handler",
+            // Define routes for document upload and image detection
             "POST /upload": {
                 function: {
                     handler: "packages/functions/src/document-upload-s3.handler",
                     permissions: [new PolicyStatement({
                         actions: ['s3:*'],
-                        resources: [artificatsBucket.bucketArn + '/*'],
+                        resources: [artifactsBucket.bucketArn + '/*'],
                     })],
                     environment: {
-                        BUCKET_NAME: artificatsBucket.bucketName,
+                        BUCKET_NAME: artifactsBucket.bucketName,
                     }
                 }
             },
@@ -92,6 +105,7 @@ export function ApiStack({ stack }: StackContext) {
                     timeout: "60 seconds",
                 }
             },
+            // Define routes for QuickSight integration
             "GET /BusinessDashboard": {
                 function: {
                     handler: "packages/functions/src/AnonymousEmbedDashboardFunction.handler",
@@ -100,7 +114,6 @@ export function ApiStack({ stack }: StackContext) {
                         resources: ['arn:aws:quicksight:*:*:namespace/default', 'arn:aws:quicksight:*:*:dashboard/8260f2dc-bd4e-4c32-b8ce-0b6568c824cf',
                             'arn:aws:quicksight:us-east-1:211125369004:topic/XUb6hHYJsspOO27IIwHYM2eEKi6bWL1n', 'arn:aws:quicksight:us-east-1:211125369004:topic/9z9ugAtwlWsNWdWDEJBU73Mtbo3j7RBF'
                         ],
-
                     })],
                 }
             },
@@ -114,19 +127,15 @@ export function ApiStack({ stack }: StackContext) {
                             'arn:aws:quicksight:us-east-1:211125369004:topic/XUb6hHYJsspOO27IIwHYM2eEKi6bWL1n',
                             'arn:aws:quicksight:us-east-1:211125369004:topic/9z9ugAtwlWsNWdWDEJBU73Mtbo3j7RBF'
                         ],
-
                     })],
                 }
             },
-
         }
     });
 
-
-    // cache policy to use with cloudfront as reverse proxy to avoid cors
-    // https://dev.to/larswww/real-world-serverless-part-3-cloudfront-reverse-proxy-no-cors-cgj
+    // Define cache policy for API
     const apiCachePolicy = new CachePolicy(stack, "CachePolicy", {
-        minTtl: Duration.seconds(0), // no cache by default unless backend decides otherwise
+        minTtl: Duration.seconds(0),
         defaultTtl: Duration.seconds(0),
         headerBehavior: CacheHeaderBehavior.allowList(
             "Accept",
@@ -136,5 +145,6 @@ export function ApiStack({ stack }: StackContext) {
         ),
     });
 
-    return { api, apiCachePolicy }
+    // Return the API, cache policy, and email API
+    return { api, apiCachePolicy, emailApi };
 }
