@@ -7,9 +7,10 @@ import { DBStack } from "../../../stacks/DBStack";
 // @ts-ignore
 import type { Database } from "./sql.generated";
 
-const stage = use(DBStack).state;
+const dbStack = use(DBStack);
+const currentStage = dbStack.stateName;
 
-const isProd = stage === 'prod'; // Check if the stage is 'prod'
+const isProd = currentStage === 'prod'; // Check if the stage is 'prod'
 
 export const DB = new Kysely<Database>({
   dialect: new DataApiDialect({
