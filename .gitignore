@@ -18,5 +18,3 @@ node_modules
 workspace.json
 .structurizr
 
-# existing database file
-packages/functions/src/sql.ts
