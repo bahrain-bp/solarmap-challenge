@@ -43,7 +43,8 @@ export function DBStack({ stack, app }: StackContext) {
             },
             
         });
-        return {db}
+        const state = "prod";
+        return {db, state}
     } else {
         // Import the existing secret from the exported value
         const existing_secret = secretsManager.Secret.fromSecretCompleteArn(stack, "ExistingSecret", Fn.importValue(dbSecretArnOutputName));
@@ -61,8 +62,8 @@ export function DBStack({ stack, app }: StackContext) {
                 secret: existing_secret,
             },
         });
-        
-        return {db};
+        const state = "existing";
+        return {db, state};
     }
     
 }
