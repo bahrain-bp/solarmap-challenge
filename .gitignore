@@ -18,3 +18,4 @@ node_modules
 workspace.json
 .structurizr
 
+**/dbConfig.ts
