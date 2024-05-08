@@ -1,16 +1,14 @@
 import { RDSData } from "@aws-sdk/client-rds-data";
 import { Kysely, Selectable } from "kysely";
 import { DataApiDialect } from "kysely-data-api";
-import { use } from "sst/constructs";
 import { RDS } from "sst/node/rds";
-import { DBStack } from "../../../stacks/DBStack";
 // @ts-ignore
 import type { Database } from "./sql.generated";
 
 const dbStack = use(DBStack);
 const currentStage = dbStack.stateName;
 
-const isProd = currentStage === 'prod'; // Check if the stage is 'prod'
+const isProd = process.env.STAGE === 'prod';
 
 export const DB = new Kysely<Database>({
   dialect: new DataApiDialect({
