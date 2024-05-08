@@ -24,4 +24,4 @@ export type Row = {
   [Key in keyof Database]: Selectable<Database[Key]>;
 };
 
-export * as SQL from "./sql";
+export * as SQL from "./dbConfig";
