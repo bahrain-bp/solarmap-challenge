@@ -4,11 +4,13 @@ import { SQL } from "./dbConfig";
 export const handler: APIGatewayProxyHandler = async (event) => {
     try {
         const rows = await SQL.DB
-            .selectFrom("carbon_footprint_calculator")
+            .selectFrom("solarpanelcalculation")
             .select([
-                'carbon_footprint_calculator.carbon_footprint_id',
-                'carbon_footprint_calculator.ecological_footprint',
-
+                'solarpanelcalculation.calculation_id',
+                'solarpanelcalculation.number_of_panels',
+                'solarpanelcalculation.total_cost',
+                'solarpanelcalculation.roi_percentage',
+                'solarpanelcalculation.payback_period'
             ])
             .execute();
 
@@ -26,7 +28,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
         
         return {
             statusCode: 500,
-            body: JSON.stringify({ message: 'Failed to fetch ecological footprints', error: errorMessage }),
+            body: JSON.stringify({ message: 'Failed to fetch solar panel calculations', error: errorMessage }),
         };
     }
 }; 

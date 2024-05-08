@@ -1,8 +1,11 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import { SQL } from "./dbConfig";
 
-interface CarbonFootprintData {
-    ecologicalFootprint: number;
+interface SolarPanelData {
+    numberOfPanels: number;
+    totalCost: number;
+    roiPercentage: number;
+    paybackPeriod: number;
 }
 
 export const handler: APIGatewayProxyHandler = async (event) => {
@@ -13,27 +16,35 @@ export const handler: APIGatewayProxyHandler = async (event) => {
         };
     }
     
-    const { ecologicalFootprint }: CarbonFootprintData = JSON.parse(event.body);
+    const {
+        numberOfPanels,
+        totalCost,
+        roiPercentage,
+        paybackPeriod
+    }: SolarPanelData = JSON.parse(event.body);
 
     try {
         await SQL.DB
-            .insertInto('carbon_footprint_calculator')
+            .insertInto('solarpanelcalculation')
             .values({
-                ecological_footprint: ecologicalFootprint
+                number_of_panels: numberOfPanels,
+                total_cost: totalCost,
+                roi_percentage: roiPercentage,
+                payback_period: paybackPeriod
             })
             .execute();
 
         return {
             statusCode: 201,
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: 'Carbon footprint added successfully' }),
+            body: JSON.stringify({ message: 'Solar panel calculation added successfully' }),
         };
     } catch (error) {
         console.error('Error during database operation:', error);
         const errorMessage = (error instanceof Error) ? error.message : 'Unknown error';
         return {
             statusCode: 500,
-            body: JSON.stringify({ message: 'Failed to insert carbon footprint data', error: errorMessage }),
+            body: JSON.stringify({ message: 'Failed to insert solar panel calculation data', error: errorMessage }),
         };
     }
 };

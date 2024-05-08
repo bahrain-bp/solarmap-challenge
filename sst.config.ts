@@ -6,6 +6,7 @@ import { ImageBuilderForCodeCatalyst } from "./stacks/devops/ImageBuilderForCode
 import { OIDCForGitHubCI } from "./stacks/devops/OIDCForGitHubCI";
 import { DocumentProcessingStack } from "./stacks/DocumentProcessingStack";
 import { MapStack } from "./stacks/MapStack";
+import { AuthStack } from "./stacks/AuthStack";
 import { ImgDetection } from "./stacks/ImgDetection";
 import { AmazonLexSolarMapBot } from "./stacks/AmazonLexSolarMapBot";
 
@@ -35,7 +36,8 @@ export default {
       .stack(AmazonLexSolarMapBot)
       .stack(ApiStack)
       .stack(MapStack)
-      .stack(FrontendStack);
+      .stack(FrontendStack)
+      .stack(AuthStack);
     }
   }
 } satisfies SSTConfig;

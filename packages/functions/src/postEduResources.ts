@@ -1,5 +1,5 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
-import { SQL } from "./sql";
+import { SQL } from "./dbConfig";
 
 let hasRun = false; // Flag variable to ensure the code runs only once
 
