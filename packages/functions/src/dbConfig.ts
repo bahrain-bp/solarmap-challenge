@@ -5,21 +5,17 @@ import { RDS } from "sst/node/rds";
 // @ts-ignore
 import type { Database } from "./sql.generated";
 
-const dbStack = use(DBStack);
-const currentStage = dbStack.stateName;
-
-const isProd = process.env.STAGE === 'prod';
 
 export const DB = new Kysely<Database>({
   dialect: new DataApiDialect({
     mode: "mysql",
     driver: {
       // @ts-ignore
-      secretArn: isProd ? RDS.MainDatabase.secretArn : RDS.ExistingDatabase.secretArn,
+      secretArn: RDS.MainDatabase.secretArn,
       // @ts-ignore
-      resourceArn: isProd ? RDS.MainDatabase.clusterArn : RDS.ExistingDatabase.clusterArn,
+      resourceArn: RDS.MainDatabase.clusterArn,
       // @ts-ignore
-      database: isProd ? RDS.MainDatabase.defaultDatabaseName : RDS.ExistingDatabase.defaultDatabaseName,
+      database: RDS.MainDatabase.defaultDatabaseName,
       client: new RDSData({}),
     },
   }),
