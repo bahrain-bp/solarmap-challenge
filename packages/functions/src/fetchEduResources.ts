@@ -1,4 +1,4 @@
-import { SQL } from "./sql";
+import { SQL } from "./dbConfig";
 
 // Define a TypeScript type for the function response
 interface GetEduResponse {

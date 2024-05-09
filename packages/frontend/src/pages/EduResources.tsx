@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for button navigation
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import exportString from "../api_url";
 import EduRes from "../assets/Educationalresources.jpg";
 
@@ -14,11 +14,15 @@ interface EducationalResource {
   resource_img: string | null;
 }
 
-const EducationalResources: React.FC = () => {
+interface EducationalResourcesProps {
+  isLoggedIn: boolean;  // Added prop to determine if the user is logged in
+}
+
+const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn }) => {  // Destructure isLoggedIn from props
   const [resources, setResources] = useState<EducationalResource[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate(); // Initialize navigate function
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchResources = async () => {
@@ -52,19 +56,21 @@ const EducationalResources: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="card text-center my-4">
-        <div className="card-header">
-          <strong>Manage Resources</strong>
+      {isLoggedIn && (
+        <div className="card text-center my-4">
+          <div className="card-header">
+            <strong>Manage Resources</strong>
+          </div>
+          <div className="card-body">
+            <button type="button" className="btn btn-danger mx-2" onClick={() => navigate('/deleteEduResource')}>
+              <i className="fas fa-trash-alt"></i> Delete Resource
+            </button>
+            <button type="button" className="btn btn-primary mx-2" onClick={() => navigate('/addEduResource')}>
+              <i className="fas fa-plus"></i> Add Resource
+            </button>
+          </div>
         </div>
-        <div className="card-body">
-          <button type="button" className="btn btn-danger mx-2" onClick={() => navigate('/deleteEduResource')}>
-            <i className="fas fa-trash-alt"></i> Delete Resource
-          </button>
-          <button type="button" className="btn btn-primary mx-2" onClick={() => navigate('/addEduResource')}>
-            <i className="fas fa-plus"></i> Add Resource
-          </button>
-        </div>
-      </div>
+      )}
       {isLoading && (
         <div className="text-center">
           <div className="spinner-border text-primary" role="status">

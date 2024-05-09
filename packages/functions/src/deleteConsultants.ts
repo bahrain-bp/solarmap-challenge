@@ -1,5 +1,5 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
-import { SQL } from "./sql";
+import { SQL } from "./dbConfig";
 
 export const handler: APIGatewayProxyHandler = async (event) => {
     const consultantId = event.pathParameters ? event.pathParameters.consultant_id : null;
