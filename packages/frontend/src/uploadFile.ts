@@ -1,7 +1,7 @@
 // uploadImage.ts
 const uploadImage = async (file: File, contentType: string): Promise<string> => {
   try {
-      const { url } = await fetch("https://4fa2gsnj8b.execute-api.us-east-1.amazonaws.com/upload", {
+      const { url } = await fetch(import.meta.env.VITE_API_URL+"/upload", {
           method: "POST",
           body: JSON.stringify({ contentType }),
       }).then(res => res.json());

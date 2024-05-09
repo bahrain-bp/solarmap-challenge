@@ -59,8 +59,8 @@ export function ApiStack(context: StackContext) {
 
             "POST /inquirycustomer": "packages/functions/src/postCustomerInquiry.handler",
             "GET /inquirycustomer": "packages/functions/src/fetchCustomerInquiry.handler",
-            // Adjusted route for sending emails
-
+            // TypeScript lambda function for MEWA bill document processing 
+            // "POST /process-pdf": "packages/functions/src/process-pdf-lambda.handler",
             "POST /send-email": {
                 function: {
                     handler: "packages/functions/src/send-email.sendEmail",
