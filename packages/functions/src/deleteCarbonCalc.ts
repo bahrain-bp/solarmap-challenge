@@ -1,5 +1,5 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
-import { SQL } from "./sql";
+import { SQL } from "./dbConfig";
 
 export const handler: APIGatewayProxyHandler = async (event) => {
     const carbonFootprintId = event.pathParameters ? event.pathParameters.carbon_footprint_id : null;
