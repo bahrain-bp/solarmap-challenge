@@ -1,4 +1,3 @@
-import { color } from '@mui/system';
 import React, { useEffect, useState } from 'react';
 
 interface Calculation {
