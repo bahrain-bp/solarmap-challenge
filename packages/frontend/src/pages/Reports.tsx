@@ -1,3 +1,4 @@
+import { color } from '@mui/system';
 import React, { useEffect, useState } from 'react';
 
 interface Calculation {
@@ -170,7 +171,7 @@ const Reports = () => {
             <li className="nav-item">
               <button
                 className={`nav-link ${activeTab === 'calculations' ? 'active' : ''}`}
-                onClick={() => setActiveTab('calculations')}
+                onClick={() => setActiveTab('calculations')} style={{color:"black"}}
               >
                 Calculation
               </button>
@@ -178,7 +179,7 @@ const Reports = () => {
             <li className="nav-item">
               <button
                 className={`nav-link ${activeTab === 'inquiries' ? 'active' : ''}`}
-                onClick={() => setActiveTab('inquiries')}
+                onClick={() => setActiveTab('inquiries')} style={{color:"black"}}
               >
                 Inquiries
               </button>

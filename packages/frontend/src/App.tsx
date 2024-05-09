@@ -139,6 +139,8 @@ function App() {
             <Route path="/Terms" element={<Terms/>}/>
             <Route path="/Privacy" element={<Privacy/>}/>
             <Route path="/EducationalResources" element={<EducationalResources isLoggedIn={isLoggedIn} />} />
+            <Route path="/Inquiry" element={<Inquiry/>} />
+
           </Routes>
 
         </div>
