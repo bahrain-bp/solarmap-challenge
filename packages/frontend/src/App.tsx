@@ -29,6 +29,7 @@ import { getCurrentUser, signOut } from 'aws-amplify/auth';
 import '@aws-amplify/ui-react/styles.css';
 
 import { Hub } from 'aws-amplify/utils';
+import Inquiry from './pages/Inquiry';
 
 function App() {
   const identityPoolId = import.meta.env.VITE_IDENTITY_POOL_ID; // Cognito Identity Pool ID
@@ -136,10 +137,17 @@ function App() {
             <Route path="/Provider" element={<Providers isLoggedIn={isLoggedIn} />} />
             <Route path="/CarbonEmissionsCalculator" element={<CarbonFootprintCalculator />} />
             <Route path="/DocumentUpload" element={<DocumentUpload />} />
-            <Route path="/MapV2" element={<MapV2 identityPoolId={identityPoolId} mapName={mapName}/>}/>
-            <Route path="/Terms" element={<Terms/>}/>
-            <Route path="/Privacy" element={<Privacy/>}/>
+            <Route path="/QuickSightDashboard" element={<QuickSightDashboard />} />
+            {/* <Route path="/Map" element={<Map />} /> */}
             <Route path="/EducationalResources" element={<EducationalResources isLoggedIn={isLoggedIn} />} />
+            <Route path="/deleteEduResource" element={<DeleteEducationalResources />} />
+            <Route path="/addEduResource" element={<AddEducationalResource />} />
+            <Route path="/MapV2" element={<MapV2 identityPoolId={identityPoolId} mapName={mapName} />} />
+            <Route path="/Terms" element={<Terms />} />
+            <Route path="/Privacy" element={<Privacy />} />
+            <Route path="/Inquiry" element={<Inquiry />} />
+            <Route path="/DocumentsDashboard" element={<DocumentsDashboard />} />
+
           </Routes>
 
         </div>
