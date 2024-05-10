@@ -92,6 +92,17 @@ export function ApiStack({ stack }: StackContext) {
                     })],
                 }
             },
+            "GET /calculatorUsage": {
+                function: {
+                    handler: "packages/functions/src/calcUsageStats.handler",
+                    permissions: [new PolicyStatement({
+                        actions: ['quicksight:*'],
+                        resources: ['arn:aws:quicksight:*:*:namespace/default', 'arn:aws:quicksight:*:*:dashboard/60731b32-1883-450f-99e9-19af71b09054'
+                        ],
+
+                    })],
+                }
+            },
             "GET /BusinessQSearchBar": {
                 function: {
                     handler: "packages/functions/src/AnonymousEmbedQSearchBarFunction.handler",
