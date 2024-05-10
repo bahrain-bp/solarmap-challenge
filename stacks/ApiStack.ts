@@ -97,7 +97,8 @@ export function ApiStack({ stack }: StackContext) {
                     handler: "packages/functions/src/calcUsageStats.handler",
                     permissions: [new PolicyStatement({
                         actions: ['quicksight:*'],
-                        resources: ['arn:aws:quicksight:*:*:namespace/default', 'arn:aws:quicksight:*:*:dashboard/60731b32-1883-450f-99e9-19af71b09054'
+                        resources: ['arn:aws:quicksight:*:*:namespace/default', 'arn:aws:quicksight:*:*:dashboard/60731b32-1883-450f-99e9-19af71b09054',
+                        'arn:aws:quicksight:us-east-1:211125369004:topic/xonhtgcNUZJP5UsUTL6RtKQPgpQmPIV5'
                         ],
 
                     })],
@@ -112,6 +113,19 @@ export function ApiStack({ stack }: StackContext) {
                             'arn:aws:quicksight:*:*:dashboard/8260f2dc-bd4e-4c32-b8ce-0b6568c824cf',
                             'arn:aws:quicksight:us-east-1:211125369004:topic/XUb6hHYJsspOO27IIwHYM2eEKi6bWL1n',
                             'arn:aws:quicksight:us-east-1:211125369004:topic/9z9ugAtwlWsNWdWDEJBU73Mtbo3j7RBF'
+                        ],
+
+                    })],
+                }
+            },
+            "GET /statisticsSearchBar": {
+                function: {
+                    handler: "packages/functions/src/statisticsSearchBar.handler",
+                    permissions: [new PolicyStatement({
+                        actions: ['quicksight:*'],
+                        resources: ['arn:aws:quicksight:*:*:namespace/default',
+                            'arn:aws:quicksight:*:*:dashboard/60731b32-1883-450f-99e9-19af71b09054',
+                            'arn:aws:quicksight:us-east-1:211125369004:topic/xonhtgcNUZJP5UsUTL6RtKQPgpQmPIV5',
                         ],
 
                     })],
