@@ -118,6 +118,7 @@ export function ApiStack({ stack }: StackContext) {
                     })],
                 }
             },
+            //Add dashboardID and topicID in the resources
             "GET /statisticsSearchBar": {
                 function: {
                     handler: "packages/functions/src/statisticsSearchBar.handler",
