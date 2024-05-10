@@ -29,6 +29,7 @@ import '@aws-amplify/ui-react/styles.css';
 
 import { Hub } from 'aws-amplify/utils';
 import Inquiry from './pages/Inquiry';
+import AdminMap from './pages/AdminMap';
 
 function App() {
   const identityPoolId = import.meta.env.VITE_IDENTITY_POOL_ID; // Cognito Identity Pool ID
@@ -145,6 +146,7 @@ function App() {
             <Route path="/Privacy" element={<Privacy />} />
             <Route path="/Inquiry" element={<Inquiry />} />
             <Route path="/DocumentsDashboard" element={<DocumentsDashboard />} />
+            <Route path="/AdminMap" element={<AdminMap />} />
 
           </Routes>
 
