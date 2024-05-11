@@ -28,6 +28,7 @@ import { getCurrentUser, signOut } from 'aws-amplify/auth';
 import '@aws-amplify/ui-react/styles.css';
 
 import { Hub } from 'aws-amplify/utils';
+import Chatbot from './components/AmazonLexSolarMapChatbot';
 
 function App() {
   const identityPoolId = import.meta.env.VITE_IDENTITY_POOL_ID; // Cognito Identity Pool ID
@@ -143,6 +144,7 @@ function App() {
         </div>
         {/* Footer */}
         <Footer />
+        <Chatbot />
       </div>
     </BrowserRouter>
   )

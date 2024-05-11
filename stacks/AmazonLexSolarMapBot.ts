@@ -27,14 +27,16 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
     // generate the resource.
     const botDefinition = new LexBotDefinition(
         stack,
-        'YourBotName', // Replace 'YourBotName' with your actual bot name
+        'SolarMapBot', // Replace 'YourBotName' with your actual bot name
         provider.serviceToken(),
         {
-            botName: 'YourBotName', // Replace 'YourBotName' with your actual bot name
+            botName: 'SolarMapBot', // Replace 'YourBotName' with your actual bot name
             dataPrivacy: {
                 childDirected: false,
             },
-            description: 'Description of your bot', // Provide a description for your bot
+            description: `SolarMap Bot is a virtual guide 
+            to everything solar panel in Bahrain. Get Estiamtes, 
+            submit applications, check status and more!`, // Provide a description for your bot
             idleSessionTTLInSeconds: 300,
             roleArn: provider.serviceLinkedRoleArn(),
         }
@@ -50,25 +52,27 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
     });
 
     locale.addSlotType({
-        slotTypeName: 'YourSlotType', // Specify your slot type name
-        description: 'Description of your slot type', // Provide a description for your slot type
+        slotTypeName: 'PropertySizeSlot', // Specify your slot type name
+        description: 'User Property Dimensions', // Provide a description for your slot type
         valueSelectionSetting: {
             resolutionStrategy: 'OriginalValue'
         },
         slotTypeValues: [
-            { sampleValue: { value: 'value1' } }, // Replace 'value1' with your slot values
-            { sampleValue: { value: 'value2' } }, // Replace 'value2' with your slot values
-            // Add more slot values as needed
+            { sampleValue: { value: 'Small' } }, 
+            { sampleValue: { value: 'Medium' } }, 
+            { sampleValue: { value: 'Large' } }, 
+            { sampleValue: { value: '275 square meters' } }, 
+            // Adding more slot values as needed
         ],
     });
 
     const yourIntent = locale.addIntent({
-        intentName: 'YourIntentName', // Specify your intent name
+        intentName: 'GetSolarPenlInstallationEstimateIntent', // Specify your intent name
         description: 'Description of your intent', // Provide a description for your intent
         sampleUtterances: [
-            { utterance: 'Your sample utterance 1' }, // Replace with your sample utterances
-            { utterance: 'Your sample utterance 2' }, // Replace with your sample utterances
-            // Add more sample utterances as needed
+            { utterance: 'Calculate my solar panel installation' },
+            { utterance: 'How many solar panels do I need?' }, 
+            // Adding more sample utterances as needed
         ],
         intentConfirmationSetting: {
             promptSpecification: {
@@ -76,7 +80,8 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
                     {
                         message: {
                             plainTextMessage: {
-                                value: 'Your confirmation prompt message', // Replace with your confirmation prompt message
+                                value: `Thank you for providing the information.
+                                Just to confirm, you're requesting a solar panel installation estimate for.`, // Replace with your confirmation prompt message
                             },
                         },
                     },
@@ -88,7 +93,7 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
                     {
                         message: {
                             plainTextMessage: {
-                                value: 'Your declination response message' // Replace with your declination response message
+                                value: 'Okay, I have canceled your calculation request.' // Replace with your declination response message
                             },
                         },
                     },
@@ -98,9 +103,9 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
     });
 
     yourIntent.addSlot({
-        slotName: 'YourSlotName', // Specify your slot name
-        slotTypeName: 'YourSlotType', // Specify your slot type name
-        description: 'Description of your slot', // Provide a description for your slot
+        slotName: 'PropertySizeSlot', // Specify your slot name
+        slotTypeName: 'PropertySizeSlot', // Specify your slot type name
+        // description: 'Description of your slot', // Provide a description for your slot
         valueElicitationSetting: {
             slotConstraint: 'Required',
             promptSpecification: {
@@ -108,7 +113,8 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
                     {
                         message: {
                             plainTextMessage: {
-                                value: 'Your value elicitation prompt message', // Replace with your value elicitation prompt message
+                                value: `Please specify the size of your property. Is it small, medium, large,
+                                or provide a custom estimate based on square meters?`, // Replace with your value elicitation prompt message
                             },
                         },
                     },
@@ -126,7 +132,7 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
 
     // create an alias and assign it to the latest bot version
     bot.addAlias({
-        botAliasName: 'live',
+        botAliasName: 'SolarMapBotLive',
         botVersion: version.botVersion(),
         botAliasLocaleSettings: {
             en_US: {
