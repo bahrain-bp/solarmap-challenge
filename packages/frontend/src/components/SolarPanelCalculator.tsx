@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import exportString from "../api_url";
+import { useNavigate } from "react-router-dom"; 
 
 const SolarPanelCalculator = () => {
   const [rooftopSize, setRooftopSize] = useState<number>(0);
@@ -16,7 +17,8 @@ const SolarPanelCalculator = () => {
   const [treesPlanted, setTreesPlanted] = useState<number>(0);
   const API_BASE_URL = exportString();
   const [showInquireButton, setShowInquireButton] = useState(false);
-
+  const navigate = useNavigate();
+  
   const handleRooftopSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRooftopSize(parseFloat(event.target.value));
   };
@@ -143,6 +145,9 @@ const SolarPanelCalculator = () => {
                 {showInquireButton && (
                   <div className="form-group">
                     <a href="/Inquiry" className="btn btn-success">Inquire</a>
+                    <button type="button" className="btn btn-primary" onClick={() => navigate('/CalculationRec')}>
+                      What's Next?
+                    </button>
                   </div>
                 )}
               </div>
