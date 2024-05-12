@@ -6,6 +6,13 @@ import maplibregl from 'maplibre-gl';
 import React, { useEffect, useRef, useState } from 'react';
 import SolarPanelCalculator from './SolarPanelCalculator';
 
+import './geoCoding.css'
+import type { MapController } from "@maptiler/geocoding-control/types";
+import { GeocodingControl } from "@maptiler/geocoding-control/react";
+import { createMapLibreGlMapController } from "@maptiler/geocoding-control/maplibregl-controller";
+import "@maptiler/geocoding-control/style.css";
+import 'maplibre-gl/dist/maplibre-gl.css';
+
 // Define coordinates array here
 let coordinates = [
   [
@@ -29,6 +36,7 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
   const [errorMessage, setErrorMessage] = useState<string>('');
   const mapRef = useRef<maplibregl.Map | null>(null);
 
+  const [mapController, setMapController] = useState<MapController | undefined>()
 
   useEffect(() => {
     const initializeMap = async () => {
@@ -51,6 +59,13 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
         });
 
         mapRef.current.on('load', () => {
+
+          if (mapRef.current) { // Null check before using mapRef.current
+            const mapController = createMapLibreGlMapController(mapRef.current, maplibregl);
+            setMapController(mapController);
+          }
+
+
           // Insert the layer beneath any symbol layer.
           mapRef.current?.addSource('openmaptiles', {
             url: `https://api.maptiler.com/tiles/v3/tiles.json?key=UGho1CzUl0HDsQMTTKJ0`,
@@ -364,6 +379,7 @@ fetch(dataUrl)
 
   return (
     <>
+    <h2>Please navigate to your property and use the pin to start the calculation process.</h2>
       {isModalVisible && featureCoordinates && (
         <div className="modal show" role="dialog" style={{ display: 'block', position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 1050 }}>
           <div className="modal-dialog" role="document" style={{ width: '300px' }}> {/* Smaller width */}
@@ -386,7 +402,10 @@ fetch(dataUrl)
         </div>
       )}
       <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
-        <SolarPanelCalculator />
+        {/* <SolarPanelCalculator /> */}
+        <div className="geocoding">
+          <GeocodingControl apiKey="UGho1CzUl0HDsQMTTKJ0" country={"BH"} mapController={mapController} />
+        </div>
         <div id="map" style={{ width: '100%', height: '100%' }}>
           {errorMessage && (
             <div style={{ color: 'red', position: 'absolute', top: '10px', left: '10px' }}>{errorMessage}</div>
