@@ -96,8 +96,27 @@ const SolarPanelCalculator = () => {
       roiYears
     );
     calculateCarbonFootprint(maximumSavings);
-    
+
+    setNumPanels(panelsFit);
+    setInstallationCost(installationCost);
+    setElectricityCost(electricityCost);
+    setSavingsPerMonth(potentialSavings);
+    setRoiYears(roiYears);
+
+    // Store results in sessionStorage
+    sessionStorage.setItem('calculationResults', JSON.stringify({
+        numPanels: panelsFit,
+        installationCost,
+        electricityCost,
+        monthlySavings: potentialSavings, 
+        roiYears
+    }));
     setShowInquireButton(true);
+  };
+
+  const handleNextClick = () => {
+    // Navigate to CalculationRec page
+    navigate('/CalculationRec');
   };
 
   const calculateCarbonFootprint = (kilowattsSaved: number) => {
@@ -145,7 +164,7 @@ const SolarPanelCalculator = () => {
                 {showInquireButton && (
                   <div className="form-group">
                     <a href="/Inquiry" className="btn btn-success">Inquire</a>
-                    <button type="button" className="btn btn-primary" onClick={() => navigate('/CalculationRec')}>
+                    <button type="button" className="btn btn-primary" onClick={handleNextClick}>
                       What's Next?
                     </button>
                   </div>
