@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import Navbar from './pages/Navbar';
+import NavBar from './components/NavBar';
 import Home from './pages/Home';
 import About from './pages/About';
 import Providers from './pages/Provider';
@@ -108,7 +108,7 @@ function App() {
     <BrowserRouter>
       <div className="App">
         {/* pass in actual log stats to navbar (to change from login and logout in the text) */}
-        <Navbar isLoggedIn={isLoggedIn} onLogInButton={handleLoginButton}/>
+        <NavBar isLoggedIn={isLoggedIn} onLogInButton={handleLoginButton}/>
         { showLogin &&
             <Authenticator onCloseClick={closeLoginDialog} >
                   <main>
