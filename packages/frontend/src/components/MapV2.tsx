@@ -6,6 +6,7 @@ import maplibregl from 'maplibre-gl';
 import React, { useEffect, useRef, useState } from 'react';
 import SolarPanelCalculator from './SolarPanelCalculator';
 
+// npm install --save @maptiler/geocoding-control
 import './geoCoding.css'
 import type { MapController } from "@maptiler/geocoding-control/types";
 import { GeocodingControl } from "@maptiler/geocoding-control/react";
