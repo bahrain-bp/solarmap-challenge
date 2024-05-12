@@ -57,7 +57,6 @@ export function ApiStack(context: StackContext) {
             "POST /inquiry": "packages/functions/src/postInquiry.handler",
             "GET /inquiry": "packages/functions/src/fetchInquiry.handler",
 
-            "GET /LatestCalc": "packages/functions/src/LatestCalc.handler",
 
 
             "POST /inquirycustomer": "packages/functions/src/postCustomerInquiry.handler",
