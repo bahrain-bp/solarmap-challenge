@@ -5,13 +5,14 @@ import { Duration, aws_iam as iam } from "aws-cdk-lib";
 import { Construct } from 'constructs';
 import { Stack } from 'aws-cdk-lib';
 import {
-  LexCustomResource,
-  LexBotDefinition,
+    LexCustomResource,
+    LexBotDefinition,
 } from '@amaabca/aws-lex-custom-resources';
 
 
 export function AmazonLexSolarMapBot({ stack }: StackContext) {
 
+    // Setup our custom resource from the AWS Serverless Application Repo.
     // Application link: https://serverlessrepo.aws.amazon.com/applications/us-east-1/777566285978/lex-v2-cfn-cr
     const provider = new LexCustomResource(
         stack,
@@ -27,24 +28,22 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
     // generate the resource.
     const botDefinition = new LexBotDefinition(
         stack,
-        'SolarMapBot', // Replace 'YourBotName' with your actual bot name
+        'OrderFlowersBot',
         provider.serviceToken(),
         {
-            botName: 'SolarMapBot', // Replace 'YourBotName' with your actual bot name
+            botName: 'OrderFlowersBot',
             dataPrivacy: {
                 childDirected: false,
             },
-            description: `SolarMap Bot is a virtual guide 
-            to everything solar panel in Bahrain. Get Estiamtes, 
-            submit applications, check status and more!`, // Provide a description for your bot
+            description: 'Bot to order flowers on the behalf of a user',
             idleSessionTTLInSeconds: 300,
             roleArn: provider.serviceLinkedRoleArn(),
         }
     );
 
-    // Add a language for your bot to which you can add intents/slots and slot types.
+    // Add a language for our bot to which we can add intents/slots and slot types.
     const locale = botDefinition.addLocale({
-        localeId: 'en_US', // Specify the locale ID for your bot
+        localeId: 'en_US',
         nluIntentConfidenceThreshold: 0.40,
         voiceSettings: {
             voiceId: 'Ivy',
@@ -52,27 +51,24 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
     });
 
     locale.addSlotType({
-        slotTypeName: 'PropertySizeSlot', // Specify your slot type name
-        description: 'User Property Dimensions', // Provide a description for your slot type
+        slotTypeName: 'FlowerTypes',
+        description: 'Types of flowers to pick up',
         valueSelectionSetting: {
             resolutionStrategy: 'OriginalValue'
         },
         slotTypeValues: [
-            { sampleValue: { value: 'Small' } }, 
-            { sampleValue: { value: 'Medium' } }, 
-            { sampleValue: { value: 'Large' } }, 
-            { sampleValue: { value: '275 square meters' } }, 
-            // Adding more slot values as needed
+            { sampleValue: { value: 'lillies' } },
+            { sampleValue: { value: 'roses' } },
+            { sampleValue: { value: 'tulips' } },
         ],
     });
 
-    const yourIntent = locale.addIntent({
-        intentName: 'GetSolarPenlInstallationEstimateIntent', // Specify your intent name
-        description: 'Description of your intent', // Provide a description for your intent
+    const orderFlowers = locale.addIntent({
+        intentName: 'OrderFlowers',
+        description: 'Intent to order a bouquet of flowers for pick up',
         sampleUtterances: [
-            { utterance: 'Calculate my solar panel installation' },
-            { utterance: 'How many solar panels do I need?' }, 
-            // Adding more sample utterances as needed
+            { utterance: 'I would like to pick up flowers' },
+            { utterance: 'I would like to order some flower' },
         ],
         intentConfirmationSetting: {
             promptSpecification: {
@@ -80,8 +76,7 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
                     {
                         message: {
                             plainTextMessage: {
-                                value: `Thank you for providing the information.
-                                Just to confirm, you're requesting a solar panel installation estimate for.`, // Replace with your confirmation prompt message
+                                value: 'Okay, your {FlowerType} will be ready for pickup by {PickupTime} on {PickupDate}. Does this sound okay?',
                             },
                         },
                     },
@@ -93,7 +88,7 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
                     {
                         message: {
                             plainTextMessage: {
-                                value: 'Okay, I have canceled your calculation request.' // Replace with your declination response message
+                                value: 'Okay, I will not place your order.'
                             },
                         },
                     },
@@ -102,10 +97,10 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
         },
     });
 
-    yourIntent.addSlot({
-        slotName: 'PropertySizeSlot', // Specify your slot name
-        slotTypeName: 'PropertySizeSlot', // Specify your slot type name
-        // description: 'Description of your slot', // Provide a description for your slot
+    orderFlowers.addSlot({
+        slotName: 'FlowerType',
+        slotTypeName: 'FlowerTypes',
+        description: 'The type of flowers to pick up',
         valueElicitationSetting: {
             slotConstraint: 'Required',
             promptSpecification: {
@@ -113,8 +108,49 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
                     {
                         message: {
                             plainTextMessage: {
-                                value: `Please specify the size of your property. Is it small, medium, large,
-                                or provide a custom estimate based on square meters?`, // Replace with your value elicitation prompt message
+                                value: 'What type of flowers would you like to order?',
+                            },
+                        },
+                    },
+                ],
+                maxRetries: 2,
+            },
+        },
+    });
+
+    orderFlowers.addSlot({
+        slotName: 'PickupDate',
+        slotTypeName: 'AMAZON.Date',
+        description: 'The date to pick up the flowers',
+        valueElicitationSetting: {
+            slotConstraint: 'Required',
+            promptSpecification: {
+                messageGroups: [
+                    {
+                        message: {
+                            plainTextMessage: {
+                                value: 'What day do you want the {FlowerType} to be picked up?',
+                            },
+                        },
+                    },
+                ],
+                maxRetries: 2,
+            },
+        },
+    });
+
+    orderFlowers.addSlot({
+        slotName: 'PickupTime',
+        slotTypeName: 'AMAZON.Time',
+        description: 'The time to pick up the flowers',
+        valueElicitationSetting: {
+            slotConstraint: 'Required',
+            promptSpecification: {
+                messageGroups: [
+                    {
+                        message: {
+                            plainTextMessage: {
+                                value: 'At what time do you want the {FlowerType} to be picked up?',
                             },
                         },
                     },
@@ -132,7 +168,7 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
 
     // create an alias and assign it to the latest bot version
     bot.addAlias({
-        botAliasName: 'SolarMapBotLive',
+        botAliasName: 'live',
         botVersion: version.botVersion(),
         botAliasLocaleSettings: {
             en_US: {

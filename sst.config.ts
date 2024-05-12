@@ -22,6 +22,8 @@ export default {
     if (app.stage !== "prod") {
       app.setDefaultRemovalPolicy("destroy");
     }
+
+    const stackBaseName = `SolarMapBot-${app.stage}`;  // Dynamic stack name including the stage
     
     if (app.stage == 'devops-coca') {
       app.stack(ImageBuilderForCodeCatalyst)
@@ -33,9 +35,11 @@ export default {
       app.stack(DBStack)
       .stack(DocumentProcessingStack) // Initialize "DocumentProcessingStack" stack before "ApiStack" stack (Dependency)
       .stack(ImgDetection)
-      .stack(AmazonLexSolarMapBot)
+      .stack(AmazonLexSolarMapBot, {
+        stackName: stackBaseName
+      })
       .stack(ApiStack)
-      .stack(MapStack)
+      .stack(MapStack)  
       .stack(FrontendStack)
       .stack(AuthStack);
     }
