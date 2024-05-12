@@ -29,7 +29,7 @@ export function FrontendStack({ stack, app }: StackContext) {
       VITE_APP_REGION: app.region,
       VITE_MAP_NAME: mapName,
       VITE_IDENTITY_POOL_ID: identityPoolId,
-
+      VITE_TILER_API_KEY: 'UGho1CzUl0HDsQMTTKJ0',
     },
     cdk: {
       distribution: {

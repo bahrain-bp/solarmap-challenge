@@ -68,7 +68,7 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
 
           // Insert the layer beneath any symbol layer.
           mapRef.current?.addSource('openmaptiles', {
-            url: `https://api.maptiler.com/tiles/v3/tiles.json?key=UGho1CzUl0HDsQMTTKJ0`,
+            url: `https://api.maptiler.com/tiles/v3/tiles.json?key=${import.meta.env.VITE_TILER_API_KEY}`,
             type: 'vector',
           });
 
@@ -327,7 +327,7 @@ fetch(dataUrl)
    if (!mapRef.current?.getLayer('3d-buildings')) {
     // Add 3D buildings layer back to the map
     mapRef.current?.addSource('openmaptiles', {
-      url: `https://api.maptiler.com/tiles/v3/tiles.json?key=UGho1CzUl0HDsQMTTKJ0`,
+      url: `https://api.maptiler.com/tiles/v3/tiles.json?key=${import.meta.env.VITE_TILER_API_KEY}`,
       type: 'vector',
     });
     mapRef.current?.addLayer({
@@ -404,7 +404,7 @@ fetch(dataUrl)
       <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
         {/* <SolarPanelCalculator /> */}
         <div className="geocoding">
-          <GeocodingControl apiKey="UGho1CzUl0HDsQMTTKJ0" country={"BH"} mapController={mapController} />
+          <GeocodingControl apiKey={import.meta.env.VITE_TILER_API_KEY} country={"BH"} mapController={mapController} />
         </div>
         <div id="map" style={{ width: '100%', height: '100%' }}>
           {errorMessage && (
