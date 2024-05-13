@@ -407,7 +407,7 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
                 </button>
               </div>
               <div className="modal-body" style={{ padding: '10px' }}>
-                <p>Please confirm if your property is within the drawn box.</p>
+                {/* <p>Please confirm if your property is within the drawn box.</p> */}
                 <label>Adjust box size:</label>
                 <input
                   type="range"
