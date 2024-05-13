@@ -7,20 +7,11 @@ import { Amplify } from 'aws-amplify';
 Amplify.configure({
   Auth: {
     Cognito:{
-      userPoolId: process.env.USER_POOL_ID,
-      userPoolClientId: process.env.USER_POOL_CLIENT_ID,
+      userPoolId: import.meta.env.VITE_USER_POOL_ID,
+      userPoolClientId: import.meta.env.VITE_USER_POOL_CLIENT_ID,
     }
-  },
-  API: {
-    endpoints: [
-      {
-        name: "api",
-        endpoint: import.meta.env.VITE_APP_API_URL,
-        region: import.meta.env.VITE_APP_REGION,
-      },
-    ],
-  },
-} as any);
+  }
+});
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
