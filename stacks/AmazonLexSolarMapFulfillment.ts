@@ -13,7 +13,7 @@ export function AmazonLexSolarMapFulfillment({ stack }: StackContext) {
         memorySize: 512,
         timeout: Duration.seconds(60),
         // code: lambda.Code.fromInline('print("Hello World")'),
-        code: lambda.Code.fromAsset('packages/functions/src/LexBot/'),
+        code: lambda.Code.fromAsset('packages/functions/LexBot/'),
     });
 
     // Grant permission for the Lambda function to interact with Amazon Lex
@@ -24,4 +24,5 @@ export function AmazonLexSolarMapFulfillment({ stack }: StackContext) {
         principal: new iam.ServicePrincipal('lex.amazonaws.com')
     })
 
+    return { lambdaFunction }
 }

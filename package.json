@@ -25,8 +25,8 @@
     "packages/*"
   ],
   "dependencies": {
-    "@aws-amplify/ui-react": "^6.1.9",
     "@amaabca/aws-lex-custom-resources": "^4.1.0",
+    "@aws-amplify/ui-react": "^6.1.9",
     "@aws-sdk/client-quicksight": "^3.564.0",
     "@aws/amazon-location-utilities-auth-helper": "^1.0.5",
     "@mui/material": "^5.15.16",

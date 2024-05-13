@@ -9,6 +9,7 @@ import { MapStack } from "./stacks/MapStack";
 import { AuthStack } from "./stacks/AuthStack";
 import { ImgDetection } from "./stacks/ImgDetection";
 import { AmazonLexSolarMapBot } from "./stacks/AmazonLexSolarMapBot";
+import { AmazonLexSolarMapFulfillment } from "./stacks/AmazonLexSolarMapFulfillment";
 
 export default {
   config(_input) {
@@ -35,6 +36,7 @@ export default {
       app.stack(DBStack)
       .stack(DocumentProcessingStack) // Initialize "DocumentProcessingStack" stack before "ApiStack" stack (Dependency)
       .stack(ImgDetection)
+      .stack(AmazonLexSolarMapFulfillment)
       .stack(AmazonLexSolarMapBot, {
         stackName: stackBaseName
       })
