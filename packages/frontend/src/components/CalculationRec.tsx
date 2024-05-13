@@ -59,14 +59,15 @@ const CalculationRec = () => {
     };
 
     const determineLevelByTotalCost = (totalCost: number): string => {
-        if (totalCost > 5000) return 'A';
-        if (totalCost > 1000) return 'B';
-        return 'C';
+        if (totalCost > 100000) return 'A';
+        if (totalCost > 50000) return 'B';
+        if (totalCost > 25000) return 'C';
+        return 'D';
     };
 
     return (
         <div className="container mt-4">
-            <h1 className="mb-3">Calculation Results</h1>
+            <h1 className="mb-3">An EWA Representative will contact you in 5-7 business days</h1>
             {calculation ? (
                 <div className="card">
                     <div className="card-body">
