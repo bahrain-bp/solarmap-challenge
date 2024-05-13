@@ -21,7 +21,9 @@ import DeleteConsulantant from './pages/deleteConsultant';
 import AddContractor from './pages/addContractor';
 import DeleteContractor from './pages/deleteContractor';
 import Reports from './pages/Reports';
+import CalculationReccomendation from './components/CalculationRec';
 import CalcUsageStats from './components/CalculatorUsageStats';
+
 
 
 import { Authenticator } from './components/Authenticator';
@@ -147,6 +149,7 @@ function App() {
             <Route path="/Privacy" element={<Privacy />} />
             <Route path="/Inquiry" element={<Inquiry />} />
             <Route path="/DocumentsDashboard" element={<DocumentsDashboard />} />
+            <Route path="/CalculationRec" element={<CalculationReccomendation />} />
 
           </Routes>
 

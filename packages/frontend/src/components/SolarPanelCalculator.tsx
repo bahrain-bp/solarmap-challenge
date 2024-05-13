@@ -16,7 +16,7 @@ const SolarPanelCalculator = () => {
   const [treesPlanted, setTreesPlanted] = useState<number>(0);
   const API_BASE_URL = exportString();
   const [showInquireButton, setShowInquireButton] = useState(false);
-
+  
   const handleRooftopSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRooftopSize(parseFloat(event.target.value));
   };
@@ -94,7 +94,21 @@ const SolarPanelCalculator = () => {
       roiYears
     );
     calculateCarbonFootprint(maximumSavings);
-    
+
+    setNumPanels(panelsFit);
+    setInstallationCost(installationCost);
+    setElectricityCost(electricityCost);
+    setSavingsPerMonth(potentialSavings);
+    setRoiYears(roiYears);
+
+    // Store results in sessionStorage
+    sessionStorage.setItem('calculationResults', JSON.stringify({
+        numPanels: panelsFit,
+        installationCost,
+        electricityCost,
+        monthlySavings: potentialSavings, 
+        roiYears
+    }));
     setShowInquireButton(true);
   };
 
