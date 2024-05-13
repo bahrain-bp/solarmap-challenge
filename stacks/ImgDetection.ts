@@ -1,8 +1,10 @@
 
-import { Bucket, EventBus, Queue, StackContext } from "sst/constructs";
+import { Bucket, EventBus, Function, Queue, StackContext } from "sst/constructs";
 
 export function ImgDetection({ stack }: StackContext) {
 
+    const rooftopFunction = new Function(stack, "documentsFunction", { handler: "packages/functions/src/imageDetection.handler",
+    timeout: "120 seconds", memorySize: 4096, retryAttempts: 0, /*runtime: "python3.11"*/});
 
     // Create a FIFO SQS Queue
     const queue = new Queue(stack, "myQueue", {
@@ -20,6 +22,8 @@ export function ImgDetection({ stack }: StackContext) {
             }
         }
     });
+
+    rooftopFunction.attachPermissions("*");
 
     /*
     // Create an EventBus
