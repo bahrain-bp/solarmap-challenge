@@ -51,14 +51,15 @@ const StyledLink = styled(Link)(({ theme }) => ({
   color: theme.palette.common.white,
   marginLeft: theme.spacing(3),
   fontFamily: 'Quicksand, sans-serif',
-  transition: 'background-color 0.3s ease-in-out',
+  transition: 'background-color 0.3s ease-in-out, transform 0.3s ease',
   '&:hover, &.active': {
     textDecoration: 'none',
     backgroundColor: theme.palette.primary.dark,
     color: theme.palette.common.white,
     borderRadius: theme.shape.borderRadius,
     padding: theme.spacing(1),
-    marginRight: theme.spacing(1)
+    marginRight: theme.spacing(1),
+    transform: 'scale(1.05)' // Scale up slightly on hover
   },
 }));
 
@@ -67,10 +68,13 @@ const DropdownButton = styled(Button)(({ theme }) => ({
   marginLeft: theme.spacing(1),
   textTransform: 'none',
   fontFamily: 'Quicksand, sans-serif',
+  transition: 'background-color 0.3s, transform 0.3s ease',
   '&:hover, &.active': {
     backgroundColor: theme.palette.primary.dark,
+    transform: 'scale(1.05)' // Scale up slightly on hover
   },
 }));
+
 
 const RightLink = styled(Button)(({ theme }) => ({
   color: theme.palette.common.white,
@@ -78,6 +82,7 @@ const RightLink = styled(Button)(({ theme }) => ({
   fontFamily: 'Quicksand, sans-serif',
   '&:hover': {
     backgroundColor: theme.palette.primary.dark,
+    transform: 'scale(1.05)' // Scale up slightly on hover
   },
 }));
 
@@ -96,9 +101,12 @@ const DrawerLink = styled(Link, {
   backgroundColor: active ? theme.palette.primary.dark : 'transparent', // Highlight background if active
   display: 'flex',
   alignItems: 'center',
+  transition: 'background-color 0.3s ease-in-out, transform 0.3s ease',
   '&:hover, &.active': {
     textDecoration: 'none',
     backgroundColor: theme.palette.primary.dark,
+    color: theme.palette.common.white,
+    transform: 'scale(1.05)' // Scale up slightly on hover
   },
 }));
 
@@ -295,7 +303,7 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
               <>
                 {userName && <Box sx={{ color: 'common.white', marginRight: 1, marginLeft: 1 }}>Hello, {userName}!</Box>}
                 {isMobile ? (
-                  <IconButton onClick={onLogInButton} color="inherit">
+                  <IconButton onClick={onLogInButton}  color="inherit">
                     <ExitToAppIcon />
                   </IconButton>
                 ) : (
