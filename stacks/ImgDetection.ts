@@ -4,7 +4,7 @@ import { Bucket, EventBus, Function, Queue, StackContext } from "sst/constructs"
 export function ImgDetection({ stack }: StackContext) {
 
     const rooftopFunction = new Function(stack, "rooftopFunction", { handler: "packages/functions/src/imageDetection.handler",
-    timeout: "120 seconds", memorySize: 4096, retryAttempts: 0, /*runtime: "python3.11"*/});
+    timeout: "120 seconds", memorySize: 2048, retryAttempts: 0, /*runtime: "python3.11"*/});
 
     // Create a FIFO SQS Queue
     const queue = new Queue(stack, "myQueue", {
