@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { styled, useTheme } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -14,6 +15,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import MenuIcon from '@mui/icons-material/Menu';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { fetchUserAttributes } from '@aws-amplify/auth';
 import logo from "../assets/logo.png";
 import HomeIcon from '@mui/icons-material/Home';
@@ -24,6 +26,11 @@ import SchoolIcon from '@mui/icons-material/School';
 import ReportIcon from '@mui/icons-material/Assessment';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import FolderIcon from '@mui/icons-material/Folder';
+import { LinkProps } from '@mui/material/Link';
+
+interface DrawerLinkProps extends LinkProps {
+  active: boolean;
+}
 
 interface NavbarProps {
   isLoggedIn: boolean;
@@ -45,10 +52,13 @@ const StyledLink = styled(Link)(({ theme }) => ({
   marginLeft: theme.spacing(3),
   fontFamily: 'Quicksand, sans-serif',
   transition: 'background-color 0.3s ease-in-out',
-  '&:hover': {
+  '&:hover, &.active': {
     textDecoration: 'none',
     backgroundColor: theme.palette.primary.dark,
     color: theme.palette.common.white,
+    borderRadius: theme.shape.borderRadius,
+    padding: theme.spacing(1),
+    marginRight: theme.spacing(1)
   },
 }));
 
@@ -57,7 +67,7 @@ const DropdownButton = styled(Button)(({ theme }) => ({
   marginLeft: theme.spacing(1),
   textTransform: 'none',
   fontFamily: 'Quicksand, sans-serif',
-  '&:hover': {
+  '&:hover, &.active': {
     backgroundColor: theme.palette.primary.dark,
   },
 }));
@@ -78,15 +88,20 @@ const DrawerList = styled(List)(({ theme }) => ({
   fontFamily: 'Quicksand, sans-serif',
 }));
 
-const DrawerLink = styled(Link)(({ theme }) => ({
+const DrawerLink = styled(Link, {
+  shouldForwardProp: (prop) => prop !== 'active',
+})<DrawerLinkProps>(({ theme, active }) => ({
   color: theme.palette.common.white,
   textDecoration: 'none',
-  '&:hover': {
-    textDecoration: 'none',
-  },
+  backgroundColor: active ? theme.palette.primary.dark : 'transparent', // Highlight background if active
   display: 'flex',
   alignItems: 'center',
+  '&:hover, &.active': {
+    textDecoration: 'none',
+    backgroundColor: theme.palette.primary.dark,
+  },
 }));
+
 
 const icons: { [key: string]: JSX.Element } = {
   Home: <HomeIcon />,
@@ -106,6 +121,9 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
   const [adminAnchorEl, setAdminAnchorEl] = useState<null | HTMLElement>(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const location = useLocation();
+
+  const isActive = (path: string) => location.pathname === path;
 
   async function getUserInfo() {
     try {
@@ -139,6 +157,9 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
     setAdminAnchorEl(null);
   };
 
+  // Check if any menu item is active to style the parent dropdown
+  const isDropdownActive = ['/DocumentUpload', '/MapV2', '/CarbonEmissionsCalculator'].some(isActive);
+
   const drawerContent = (
     <DrawerList>
       <ListItem>
@@ -146,28 +167,65 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
           <img src={logo} alt="Logo" style={{ height: '55px', margin: theme.spacing(1) }} />
         </Link>
       </ListItem>
-      {['Home', 'About', 'Providers', 'Document Upload', 'Educational Resources'].map((text) => (
-        <ListItem key={text} disablePadding>
-          <DrawerLink href={`/${text.replace(/ /g, '')}`} sx={{ width: '100%' }}>
-            {icons[text as keyof typeof icons]}
-            <ListItemText primary={text} sx={{ marginLeft: theme.spacing(1) }} />
-          </DrawerLink>
-        </ListItem>
-      ))}
-      {isLoggedIn && ['Reports', 'Business Dashboard', 'Documents Dashboard'].map((text) => (
-        <ListItem key={text} disablePadding>
-          <DrawerLink href={`/${text.replace(/ /g, '')}`} sx={{ width: '100%' }}>
-            {icons[text as keyof typeof icons]}
-            <ListItemText primary={text} sx={{ marginLeft: theme.spacing(1) }} />
-          </DrawerLink>
-        </ListItem>
-      ))}
+      <ListItem disablePadding>
+        <DrawerLink href="/" sx={{ width: '100%' }} active={isActive('/')}>
+          {icons.Home}
+          <ListItemText primary="Home" sx={{ marginLeft: theme.spacing(1) }} />
+        </DrawerLink>
+      </ListItem>
+      <ListItem disablePadding>
+        <DrawerLink href="/About" sx={{ width: '100%' }} active={isActive('/About')}>
+          {icons.About}
+          <ListItemText primary="About" sx={{ marginLeft: theme.spacing(1) }} />
+        </DrawerLink>
+      </ListItem>
+      <ListItem disablePadding>
+        <DrawerLink href="/Provider" sx={{ width: '100%' }} active={isActive('/Provider')}>
+          {icons.Providers}
+          <ListItemText primary="Providers" sx={{ marginLeft: theme.spacing(1) }} />
+        </DrawerLink>
+      </ListItem>
+      <ListItem disablePadding>
+        <DrawerLink href="/DocumentUpload" sx={{ width: '100%' }} active={isActive('/DocumentUpload')}>
+          {icons['Document Upload']}
+          <ListItemText primary="Document Upload" sx={{ marginLeft: theme.spacing(1) }} />
+        </DrawerLink>
+      </ListItem>
+      <ListItem disablePadding>
+        <DrawerLink href="/EducationalResources" sx={{ width: '100%' }} active={isActive('/EducationalResources')}>
+          {icons['Educational Resources']}
+          <ListItemText primary="Educational Resources" sx={{ marginLeft: theme.spacing(1) }} />
+        </DrawerLink>
+      </ListItem>
+      {isLoggedIn && (
+        <>
+          <ListItem disablePadding>
+            <DrawerLink href="/Reports" sx={{ width: '100%' }} active={isActive('/Reports')}>
+              {icons.Reports}
+              <ListItemText primary="Reports" sx={{ marginLeft: theme.spacing(1) }} />
+            </DrawerLink>
+          </ListItem>
+          <ListItem disablePadding>
+            <DrawerLink href="/QuickSightDashboard" sx={{ width: '100%' }} active={isActive('/QuickSightDashboard')}>
+              {icons['Business Dashboard']}
+              <ListItemText primary="Business Dashboard" sx={{ marginLeft: theme.spacing(1) }} />
+            </DrawerLink>
+          </ListItem>
+          <ListItem disablePadding>
+            <DrawerLink href="/DocumentsDashboard" sx={{ width: '100%' }} active={isActive('/DocumentsDashboard')}>
+              {icons['Documents Dashboard']}
+              <ListItemText primary="Documents Dashboard" sx={{ marginLeft: theme.spacing(1) }} />
+            </DrawerLink>
+          </ListItem>
+        </>
+      )}
     </DrawerList>
   );
+  
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="fixed" elevation={0} sx={{ bgcolor: isLoggedIn ? 'rgb(7, 55, 99)' : 'rgb(7, 55, 99)' }}>
+      <AppBar position="fixed" elevation={0} sx={{ bgcolor: 'rgb(7, 55, 99)' }}>
         <StyledToolbar>
           {isMobile && (
             <IconButton
@@ -180,15 +238,20 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
               <MenuIcon />
             </IconButton>
           )}
-          <Link href="/">
+          <Link href="/" className={isActive('/') ? 'active' : ''}>
             <img src={logo} alt="Logo" style={{ height: '55px' }} />
           </Link>
           {!isMobile && (
             <>
-              <StyledLink href="/">Home</StyledLink>
-              <StyledLink href="/About">About</StyledLink>
-              <StyledLink href="/Provider">Providers</StyledLink>
-              <DropdownButton aria-controls="map-menu" aria-haspopup="true" onClick={handleMenuClick}>
+              <StyledLink href="/" className={isActive('/') ? 'active' : ''}>Home</StyledLink>
+              <StyledLink href="/About" className={isActive('/About') ? 'active' : ''}>About</StyledLink>
+              <StyledLink href="/Provider" className={isActive('/Provider') ? 'active' : ''}>Providers</StyledLink>
+              <DropdownButton
+                aria-controls="map-menu"
+                aria-haspopup="true"
+                onClick={handleMenuClick}
+                className={isDropdownActive ? 'active' : ''}
+              >
                 Map & Calculator
               </DropdownButton>
               <Menu
@@ -198,13 +261,18 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose} component={Link} href="/DocumentUpload">Document Upload</MenuItem>
-                <MenuItem onClick={handleClose} component={Link} href="/MapV2">Map V2</MenuItem>
-                <MenuItem onClick={handleClose} component={Link} href="/CarbonEmissionsCalculator">Carbon Calculator</MenuItem>
+                <MenuItem onClick={handleClose} component={Link} href="/DocumentUpload" className={isActive('/DocumentUpload') ? 'active' : ''}>Document Upload</MenuItem>
+                <MenuItem onClick={handleClose} component={Link} href="/MapV2" className={isActive('/MapV2') ? 'active' : ''}>Map V2</MenuItem>
+                <MenuItem onClick={handleClose} component={Link} href="/CarbonEmissionsCalculator" className={isActive('/CarbonEmissionsCalculator') ? 'active' : ''}>Carbon Calculator</MenuItem>
               </Menu>
               {isLoggedIn && (
                 <>
-                  <DropdownButton aria-controls="admin-menu" aria-haspopup="true" onClick={handleAdminMenuClick}>
+                  <DropdownButton
+                    aria-controls="admin-menu"
+                    aria-haspopup="true"
+                    onClick={handleAdminMenuClick}
+                    className={isActive('/Reports') || isActive('/QuickSightDashboard') || isActive('/DocumentsDashboard') ? 'active' : ''}
+                  >
                     Admin Dashboard
                   </DropdownButton>
                   <Menu
@@ -214,9 +282,9 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
                     open={Boolean(adminAnchorEl)}
                     onClose={handleClose}
                   >
-                    <MenuItem onClick={handleClose} component={Link} href="/Reports">Reports</MenuItem>
-                    <MenuItem onClick={handleClose} component={Link} href="/QuickSightDashboard">Business Dashboard</MenuItem>
-                    <MenuItem onClick={handleClose} component={Link} href="/DocumentsDashboard">Documents Dashboard</MenuItem>
+                    <MenuItem onClick={handleClose} component={Link} href="/Reports" className={isActive('/Reports') ? 'active' : ''}>Reports</MenuItem>
+                    <MenuItem onClick={handleClose} component={Link} href="/QuickSightDashboard" className={isActive('/QuickSightDashboard') ? 'active' : ''}>Business Dashboard</MenuItem>
+                    <MenuItem onClick={handleClose} component={Link} href="/DocumentsDashboard" className={isActive('/DocumentsDashboard') ? 'active' : ''}>Documents Dashboard</MenuItem>
                   </Menu>
                 </>
               )}
@@ -225,11 +293,17 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
           <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
             {isLoggedIn ? (
               <>
-                {userName && <Box sx={{ color: 'common.white', marginRight: 2 }}>Hello, {userName}!</Box>}
-                <RightLink onClick={onLogInButton} variant="outlined">Logout</RightLink>
+                {userName && <Box sx={{ color: 'common.white', marginRight: 1, marginLeft: 1 }}>Hello, {userName}!</Box>}
+                {isMobile ? (
+                  <IconButton onClick={onLogInButton} color="inherit">
+                    <ExitToAppIcon />
+                  </IconButton>
+                ) : (
+                  <RightLink onClick={onLogInButton} variant="outlined" className={isActive('/logout') ? 'active' : ''}>Logout</RightLink>
+                )}
               </>
             ) : (
-              <RightLink onClick={onLogInButton} variant="outlined">Login</RightLink>
+              <RightLink onClick={onLogInButton} variant="outlined" className={isActive('/login') ? 'active' : ''}>Login</RightLink>
             )}
           </Box>
         </StyledToolbar>
@@ -238,9 +312,7 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
         anchor="left"
         open={mobileOpen}
         onClose={handleDrawerToggle}
-        sx={{
-          '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 240 }
-        }}
+        sx={{ '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 240 } }}
       >
         {drawerContent}
       </Drawer>
