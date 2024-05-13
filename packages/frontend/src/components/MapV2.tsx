@@ -306,10 +306,10 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
 
       
       // Save the Blob locally
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = 'cropped_map.png'; // Update the file name
-      link.click();
+      // const link = document.createElement('a');
+      // link.href = window.URL.createObjectURL(blob);
+      // link.download = 'cropped_map.png'; // Update the file name
+      // link.click();
       
 
 
