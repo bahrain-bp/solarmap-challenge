@@ -3,30 +3,29 @@ import { SQL } from "./dbConfig";
 
 export const handler: APIGatewayProxyHandler = async (event) => {
     try {
-        const rows = await SQL.DB
-            .selectFrom("carbon_footprint_calculator")
+        const inquiries = await SQL.DB
+            .selectFrom('inquiry')
+            .innerJoin('customer', 'customer.customer_id', 'inquiry.customer_id')
             .select([
-                'carbon_footprint_calculator.carbon_footprint_id',
-                'carbon_footprint_calculator.ecological_footprint',
-
+                'customer.first_name',
+                'customer.last_name',
+                'customer.email',
+                'customer.phone',
+                'inquiry.inquiry_content'
             ])
             .execute();
-
-        console.log('Query successful');
 
         return {
             statusCode: 200,
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(rows),
+            body: JSON.stringify(inquiries),
         };
     } catch (error) {
         console.error('Error during database operation:', error);
-        
         const errorMessage = (error instanceof Error) ? error.message : 'Unknown error';
-        
         return {
             statusCode: 500,
-            body: JSON.stringify({ message: 'Failed to fetch ecological footprints', error: errorMessage }),
+            body: JSON.stringify({ message: 'Failed to fetch inquiries', error: errorMessage }),
         };
     }
-}; 
+};
