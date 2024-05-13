@@ -304,13 +304,13 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
       console.log('blob:', blob);
       console.log('mime:', mimeString);
 
-      
+
       // Save the Blob locally
       // const link = document.createElement('a');
       // link.href = window.URL.createObjectURL(blob);
       // link.download = 'cropped_map.png'; // Update the file name
       // link.click();
-      
+
 
 
       // Assuming `dataUrl` is your image encoded as a data URL
@@ -407,25 +407,25 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
                 </button>
               </div>
               <div className="modal-body" style={{ padding: '10px' }}>
-  <p>Please confirm if your property is within the drawn box.</p>
-  <label>Adjust box size:</label>
-  <input
-    type="range"
-    min="0.0005"
-    max="0.005"
-    step="0.0001"
-    value={boxSize}
-    onChange={(e) => {
-      const newSize = parseFloat(e.target.value);
-      setBoxSize(newSize);
-      if (featureCoordinates) {
-        drawBoxAroundPoint(featureCoordinates[0], newSize);
-      }
-    }}
-    
-    style={{ width: '100%' }}
-  />
-</div>
+                <p>Please confirm if your property is within the drawn box.</p>
+                <label>Adjust box size:</label>
+                <input
+                  type="range"
+                  min="0.0005"
+                  max="0.005"
+                  step="0.0001"
+                  value={boxSize}
+                  onChange={(e) => {
+                    const newSize = parseFloat(e.target.value);
+                    setBoxSize(newSize);
+                    if (featureCoordinates) {
+                      drawBoxAroundPoint(featureCoordinates[0], newSize);
+                    }
+                  }}
+
+                  style={{ width: '100%' }}
+                />
+              </div>
 
               <div className="modal-footer" style={{ padding: '10px' }}>
                 <button type="button" className="btn btn-primary" onClick={handleSubmit}>Confirm</button>
@@ -436,14 +436,14 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
         </div>
       )}
 
-    <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
-    {/* <SolarPanelCalculator /> */}
-      <div id="map" style={{ width: '100%', height: '100%' }}>
-        {errorMessage && (
-          <div style={{ color: 'red', position: 'absolute', top: '10px', left: '10px' }}>{errorMessage}</div>
-        )}
+      <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
+        {/* <SolarPanelCalculator /> */}
+        <div id="map" style={{ width: '100%', height: '100%' }}>
+          {errorMessage && (
+            <div style={{ color: 'red', position: 'absolute', top: '10px', left: '10px' }}>{errorMessage}</div>
+          )}
+        </div>
       </div>
-    </div>
     </>
   );
 
