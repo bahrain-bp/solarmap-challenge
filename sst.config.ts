@@ -30,12 +30,12 @@ export default {
     }
     else {
       app.stack(DBStack)
+      .stack(AuthStack)
       .stack(DocumentProcessingStack) // Initialize "DocumentProcessingStack" stack before "ApiStack" stack (Dependency)
       .stack(ImgDetection)
       .stack(ApiStack)
       .stack(MapStack)
       .stack(FrontendStack)
-      .stack(AuthStack);
     }
   }
 } satisfies SSTConfig;

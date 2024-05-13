@@ -22,6 +22,9 @@ import AddContractor from './pages/addContractor';
 import DeleteContractor from './pages/deleteContractor';
 import Reports from './pages/Reports';
 import CalculationReccomendation from './components/CalculationRec';
+import CalcUsageStats from './components/CalculatorUsageStats';
+
+
 
 import { Authenticator } from './components/Authenticator';
 import { getCurrentUser, signOut } from 'aws-amplify/auth';
@@ -116,6 +119,7 @@ function App() {
                     <Routes>
                     <Route path="/QuickSightDashboard" element={<QuickSightDashboard />} />
                     <Route path="/DocumentsDashboard" element={<DocumentsDashboard/>}/>
+                    <Route path="/calcUsageStats" element={<CalcUsageStats />} />
                     <Route path="/deleteEduResource" element={<DeleteEducationalResources />} />
                     <Route path="/addEduResource" element={<AddEducationalResource />} />
                     <Route path="/addConsultants" element={<AddConsultants />} />

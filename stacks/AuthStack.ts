@@ -3,16 +3,6 @@ import { UserPool, AccountRecovery, UserPoolClient, OAuthScope } from "aws-cdk-l
 import { Api, Cognito, StackContext, StaticSite } from "sst/constructs";
 
 export function AuthStack({ stack, app }: StackContext) {
-  // Create Api
-  const api = new Api(stack, "AuthApi", {
-    defaults: {
-      authorizer: "iam",
-    },
-    routes: {
-      "GET /private": "packages/functions/src/private.main",
-    },
-  });
-
 // Create auth provider
 const cognito = new UserPool(stack, "SolarMapUserPool", {
   signInAliases: {
@@ -57,6 +47,8 @@ const userPoolClient = new UserPoolClient(stack, "SolarMapClient", {
   },
 });
   
+const userPoolId = cognito.userPoolId;
+const userPoolClientId = userPoolClient.userPoolClientId;
 
 new CfnOutput(stack, "UserPoolId", {
   value: cognito.userPoolId || "",
@@ -65,4 +57,7 @@ new CfnOutput(stack, "UserPoolId", {
 new CfnOutput(stack, "UserPoolClientId", {
   value: userPoolClient.userPoolClientId || "",
 });
+
+return { userPoolId, userPoolClientId}
+
 }
