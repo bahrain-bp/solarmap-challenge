@@ -1,31 +1,47 @@
+import { S3 } from 'aws-sdk';
+
+// Create an S3 service object
+const s3 = new S3();
+
 export const handler = async (event: any): Promise<any> => {
     try {
         console.log("Received event:", event);
-
-        // Assuming event structure is as shown in your log
         const records = event.Records;
 
-        // Check if there are records and process the first one
         if (records && records.length > 0) {
             const firstRecord = records[0];
-
-            // Extracting bucket name
-            const bucketName = firstRecord.body ? JSON.parse(firstRecord.body).Records[0].s3.bucket.name : null;
-
-            // Extracting object key
-            const objectKey = firstRecord.body ? JSON.parse(firstRecord.body).Records[0].s3.object.key : null;
+            const body = JSON.parse(firstRecord.body);
+            const bucketName = body.Records[0].s3.bucket.name;
+            const objectKey = body.Records[0].s3.object.key;
 
             console.log(`Bucket Name: ${bucketName}`);
             console.log(`Object Key: ${objectKey}`);
 
-            // You can add further logic here to handle the bucket name and object key
+            // Download the image from S3
+            const params = {
+                Bucket: bucketName,
+                Key: objectKey,
+            };
+
+            const imageData = await s3.getObject(params).promise();
+
+            // imageData.Body contains the image data as a buffer
+            console.log('Image has been downloaded.');
+
+            // You can process the image as needed here
+
+            return {
+                statusCode: 200,
+                body: JSON.stringify({
+                    message: "Image processed successfully",
+                }),
+            };
         }
 
         return {
-            statusCode: 200,
+            statusCode: 400,
             body: JSON.stringify({
-                message: "Process successful",
-                input: event,
+                message: "No records found in the event",
             }),
         };
     } catch (error) {
