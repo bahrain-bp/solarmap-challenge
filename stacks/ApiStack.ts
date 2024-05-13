@@ -57,6 +57,8 @@ export function ApiStack(context: StackContext) {
             "POST /inquiry": "packages/functions/src/postInquiry.handler",
             "GET /inquiry": "packages/functions/src/fetchInquiry.handler",
 
+
+
             "POST /inquirycustomer": "packages/functions/src/postCustomerInquiry.handler",
             "GET /inquirycustomer": "packages/functions/src/fetchCustomerInquiry.handler",
             // TypeScript lambda function for MEWA bill document processing 
@@ -117,6 +119,18 @@ export function ApiStack(context: StackContext) {
                     })],
                 }
             },
+            "GET /calculatorUsage": {
+                function: {
+                    handler: "packages/functions/src/calcUsageStats.handler",
+                    permissions: [new PolicyStatement({
+                        actions: ['quicksight:*'],
+                        resources: ['arn:aws:quicksight:*:*:namespace/default', 'arn:aws:quicksight:*:*:dashboard/60731b32-1883-450f-99e9-19af71b09054',
+                        'arn:aws:quicksight:us-east-1:211125369004:topic/xonhtgcNUZJP5UsUTL6RtKQPgpQmPIV5'
+                        ],
+
+                    })],
+                }
+            },
             "GET /BusinessQSearchBar": {
                 function: {
                     handler: "packages/functions/src/AnonymousEmbedQSearchBarFunction.handler",
@@ -130,6 +144,22 @@ export function ApiStack(context: StackContext) {
                     })],
                 }
             },
+            //Add dashboardID and topicID in the resources
+            "GET /statisticsSearchBar": {
+                function: {
+                    handler: "packages/functions/src/statisticsSearchBar.handler",
+                    permissions: [new PolicyStatement({
+                        actions: ['quicksight:*'],
+                        resources: ['arn:aws:quicksight:*:*:namespace/default',
+                            'arn:aws:quicksight:*:*:dashboard/60731b32-1883-450f-99e9-19af71b09054',
+                            'arn:aws:quicksight:us-east-1:211125369004:topic/xonhtgcNUZJP5UsUTL6RtKQPgpQmPIV5',
+                        ],
+
+                    })],
+                }
+            },
+
+
         }
     });
 

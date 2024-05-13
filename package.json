@@ -30,7 +30,7 @@
     "@aws/amazon-location-utilities-auth-helper": "^1.0.5",
     "@mui/material": "^5.15.17",
     "@splinetool/runtime": "^1.2.0",
-    "aws-amplify": "^6.0.28",
+    "aws-amplify": "^6.3.0",
     "axios": "^1.6.8",
     "jquery": "^3.7.1",
     "lambda-multipart-parser": "^1.0.1",
