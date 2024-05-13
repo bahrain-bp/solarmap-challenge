@@ -87,6 +87,31 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
         ],
         fulfillmentCodeHook: {
             enabled: true,
+                // PostFulfillmentStatusSpecification: { // Last updates here
+                //     successResponse: {
+                //         messageGroups: [
+                //             {
+                //                 message: {
+                //                     plainTextMessage: {
+                //                         value: 'Okay, your request has been successfuly processed.'
+                //                     },
+                //                 },
+                //             },
+                //         ],
+                //     },
+                //     failureResponse: {
+                //         messageGroups: [
+                //             {
+                //                 message: {
+                //                     plainTextMessage: {
+                //                         value: 'Okay, please choose another category.'
+                //                     },
+                //                 },
+                //             },
+                //         ],
+                //     }
+
+                // },
         },
         intentConfirmationSetting: {
             promptSpecification: {
