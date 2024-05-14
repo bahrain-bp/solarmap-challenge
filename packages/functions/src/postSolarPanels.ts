@@ -5,8 +5,8 @@ interface SolarPanelData {
     ownerName: string;
     installationAddress: string;
     installationCoord: string;
-    numberOfPanels: number;
-    installationDate: string;
+    numberOfPanel: number; 
+    installationDate: string; 
 }
 
 export const handler: APIGatewayProxyHandler = async (event) => {
@@ -17,13 +17,8 @@ export const handler: APIGatewayProxyHandler = async (event) => {
         };
     }
     
-    const {
-        ownerName,
-        installationAddress,
-        installationCoord,
-        numberOfPanels,
-        installationDate
-    }: SolarPanelData = JSON.parse(event.body);
+    // Parse the body to get contractor data
+    const { ownerName, installationAddress, installationCoord, numberOfPanel, installationDate }: SolarPanelData = JSON.parse(event.body);
 
     try {
         await SQL.DB
@@ -32,7 +27,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
                 owner_name: ownerName,
                 installation_address: installationAddress,
                 installation_coord: installationCoord,
-                number_of_panel: numberOfPanels,
+                number_of_panel: numberOfPanel,
                 installation_date: installationDate
             })
             .execute();
@@ -40,14 +35,14 @@ export const handler: APIGatewayProxyHandler = async (event) => {
         return {
             statusCode: 201,
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: 'Solar panel data added successfully' }),
+            body: JSON.stringify({ message: 'Solar panel added successfully' }),
         };
     } catch (error) {
         console.error('Error during database operation:', error);
         const errorMessage = (error instanceof Error) ? error.message : 'Unknown error';
         return {
             statusCode: 500,
-            body: JSON.stringify({ message: 'Failed to insert solar panel data', error: errorMessage }),
+            body: JSON.stringify({ message: 'Failed to insert contractor data', error: errorMessage }),
         };
     }
 };
