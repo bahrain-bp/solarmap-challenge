@@ -1,10 +1,28 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import exportString from "../api_url";
+import EduRes from "../assets/Educationalresources.jpg";
 
 const apiurl: string = exportString();
 const API_BASE_URL = apiurl;
 
-const EducationalResources: React.FC = () => {
+interface EducationalResource {
+  resource_id: string;
+  title: string;
+  body: string;
+  resource_url: string;
+  resource_img: string | null;
+}
+
+interface EducationalResourcesProps {
+  isLoggedIn: boolean;  // Added prop to determine if the user is logged in
+}
+
+const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn }) => {  // Destructure isLoggedIn from props
+  const navigate = useNavigate();
+  const [resources, setResources] = useState<EducationalResource[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     title: '',
     body: '',
@@ -53,56 +71,70 @@ const EducationalResources: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchResources = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/resources`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch resources');
+        }
+        const data: EducationalResource[] = await response.json();
+        setResources(data);
+      } catch (err) {
+        setError((err as Error).message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchResources();
+  }, []);
+
   return (
-    <div className="container mt-4">
-      <h1 className="display-4">Add Educational Resource and Subscription</h1>
+    <>
+      <div className="carousel-inner">
+        <div className="carousel-item active">
+          <img className="d-block w-100" alt="Educational Resources" style={{ height: "500px" }} src={EduRes}/>
+          <div className="carousel-caption d-none d-md-block">
+            <h1 className="display-3" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.6)' }}>Educational Resources</h1>
+            <p className="lead" style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.5)' }}>
+              Explore our comprehensive database of educational materials. Search by topic or type to find your resources.
+            </p>
+          </div>
+        </div>
+      </div>
+      {isLoggedIn && (
+        <div className="card text-center my-4">
+          <div className="card-header">
+            <strong>Manage Resources</strong>
+          </div>
+          <div className="card-body">
+            <button type="button" className="btn btn-danger mx-2" onClick={() => navigate('/deleteEduResource')}>
+              <i className="fas fa-trash-alt"></i> Delete Resource
+            </button>
+            <button type="button" className="btn btn-primary mx-2" onClick={() => navigate('/addEduResource')}>
+              <i className="fas fa-plus"></i> Add Resource
+            </button>
+          </div>
+        </div>
+      )}
+      {isLoading && (
+        <div className="text-center">
+          <div className="spinner-border text-primary" role="status">
+            <span className="sr-only">Loading...</span>
+          </div>
+        </div>
+      )}
+      {error && (
+        <div className="alert alert-danger" role="alert">
+          Error: {error}
+        </div>
+      )}
+      {!isLoading && !error && (
+        <div className="container mt-4">
+          <div className="container mt-4">
+      <h1 className="display-4">Subscribe to the newsletter!</h1>
       <form onSubmit={handleFormSubmit}>
-        <div className="form-group">
-          <label htmlFor="title">Resource Title:</label>
-          <input
-            type="text"
-            className="form-control"
-            id="title"
-            name="title"
-            value={formData.title}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="body">Resource Body:</label>
-          <textarea
-            className="form-control"
-            id="body"
-            name="body"
-            value={formData.body}
-            onChange={handleInputChange}
-            required
-          ></textarea>
-        </div>
-        <div className="form-group">
-          <label htmlFor="resource_url">Resource URL:</label>
-          <input
-            type="url"
-            className="form-control"
-            id="resource_url"
-            name="resource_url"
-            value={formData.resource_url}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="resource_img">Resource Image (Base64):</label>
-          <input
-            type="text"
-            className="form-control"
-            id="resource_img"
-            name="resource_img"
-            value={formData.resource_img}
-            onChange={handleInputChange}
-          />
-        </div>
         <div className="form-group">
           <label htmlFor="first_name">First Name:</label>
           <input
@@ -155,6 +187,33 @@ const EducationalResources: React.FC = () => {
       </form>
       {message && <div className="alert alert-info mt-3">{message}</div>}
     </div>
+          {resources.length > 0 ? (
+            <div className="row">
+              {resources.map((resource) => (
+                <div key={resource.resource_id} className="col-md-4 mb-4">
+                  <div className="card h-100">
+                    {resource.resource_img && (
+                      <img
+                        src={`data:image/jpeg;base64,${resource.resource_img}`}
+                        alt={resource.title}
+                        className="card-img-top"
+                      />
+                    )}
+                    <div className="card-body">
+                      <h5 className="card-title">{resource.title}</h5>
+                      <p className="card-text">{resource.body}</p>
+                      {resource.resource_url && <a href={resource.resource_url} className="btn btn-primary">Learn More</a>}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-center">No resources found.</p>
+          )}
+        </div>
+      )}
+    </>
   );
 };
 

@@ -56,8 +56,9 @@ export function ApiStack(context: StackContext) {
             "DELETE /customer/{customer_id}": "packages/functions/src/deleteCustomer.handler",
             "POST /inquiry": "packages/functions/src/postInquiry.handler",
             "GET /inquiry": "packages/functions/src/fetchInquiry.handler",
-            "POST /subscribe": "packages/functions/src/subscribe.handler",
 
+            // Lambda function to send SNS SMS messages to subscribed users
+            "POST /subscribe": "packages/functions/src/postSubscription.handler",
 
             "POST /inquirycustomer": "packages/functions/src/postCustomerInquiry.handler",
             "GET /inquirycustomer": "packages/functions/src/fetchCustomerInquiry.handler",
