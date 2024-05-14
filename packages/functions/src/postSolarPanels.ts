@@ -2,11 +2,11 @@ import { APIGatewayProxyHandler } from 'aws-lambda';
 import { SQL } from "./dbConfig";
 
 interface SolarPanelData {
-    ownerName: string;
-    installationAddress: string;
-    installationCoord: string;
-    numberOfPanel: number; 
-    installationDate: string; 
+    owner_name: string;
+    installation_address: string;
+    installation_coord: [number, number]; // Update data type to match the database schema
+    number_of_panel: number; 
+    installation_date: string; 
 }
 
 export const handler: APIGatewayProxyHandler = async (event) => {
@@ -18,17 +18,20 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     }
     
     // Parse the body to get contractor data
-    const { ownerName, installationAddress, installationCoord, numberOfPanel, installationDate }: SolarPanelData = JSON.parse(event.body);
+    const { owner_name, installation_address, installation_coord, number_of_panel, installation_date }: SolarPanelData = JSON.parse(event.body);
+
+    // Convert installation_coord to string
+    const formattedCoord = JSON.stringify(installation_coord);
 
     try {
         await SQL.DB
             .insertInto('solar_panels')
             .values({
-                owner_name: ownerName,
-                installation_address: installationAddress,
-                installation_coord: installationCoord,
-                number_of_panel: numberOfPanel,
-                installation_date: installationDate
+                owner_name,
+                installation_address,
+                installation_coord: formattedCoord,
+                number_of_panel,
+                installation_date
             })
             .execute();
 
@@ -42,7 +45,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
         const errorMessage = (error instanceof Error) ? error.message : 'Unknown error';
         return {
             statusCode: 500,
-            body: JSON.stringify({ message: 'Failed to insert contractor data', error: errorMessage }),
+            body: JSON.stringify({ message: 'Failed to insert solar panel data', error: errorMessage }),
         };
     }
 };

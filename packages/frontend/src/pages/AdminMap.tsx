@@ -94,14 +94,16 @@ const AdminMap = () => {
   };
 
   const handleFormSubmit = async () => {
+    // Check if all required fields are filled
     if (name && address && panels && installationDate && clickCoordinates && map) {
       const newPoint = {
-        owner_name: name, // Change name to owner_name
-        installation_address: address, // Ensure the field names match
-        number_of_panel: panels, // Ensure the field names match
-        installation_date: installationDate, // Ensure the field names match
-        installation_coord: [clickCoordinates.lat, clickCoordinates.lng] as [number, number] // Ensure the field names match
+        owner_name: name,
+        installation_address: address,
+        number_of_panel: panels,
+        installation_date: installationDate,
+        installation_coord: [clickCoordinates.lat, clickCoordinates.lng] as [number, number]
       };
+      
   
       try {
         const response = await fetch(`${API_BASE_URL}/solarpanel`, {
@@ -112,7 +114,9 @@ const AdminMap = () => {
           body: JSON.stringify(newPoint)
         });
   
-        if (!response.ok) throw new Error('Failed to add solar panel point');
+        if (!response.ok) {
+          throw new Error('Failed to add solar panel point');
+        }
   
         const responseData = await response.json();
         console.log('Solar panel point added successfully:', responseData);
@@ -129,11 +133,15 @@ const AdminMap = () => {
         setClickCoordinates(null);
         setMapClickable(false); // Disable map click after submitting form
       } catch (error) {
-        console.error('Error adding solar panel point');
-        postMessage('Failed to add solar panel point');
+        console.error('Error adding solar panel point:', error);
+        alert('Failed to add solar panel point. Please try again.');
       }
+    } else {
+      // Handle the case where some fields are not filled
+      alert('Please fill in all fields before adding a new point.');
     }
   };
+  
   
   
 
