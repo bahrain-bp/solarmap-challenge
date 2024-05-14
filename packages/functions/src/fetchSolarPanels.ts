@@ -9,7 +9,8 @@ export const handler: APIGatewayProxyHandler = async (event) => {
                 'solar_panels.solarpanel_id',
                 'solar_panels.owner_name',
                 'solar_panels.installation_address',
-                'solar_panels.installation_coord',
+                'solar_panels.latitude',
+                'solar_panels.longitude',
                 'solar_panels.number_of_panel',
                 'solar_panels.installation_date'
             ])
@@ -17,10 +18,15 @@ export const handler: APIGatewayProxyHandler = async (event) => {
 
         console.log('Query successful');
 
-        // Parse coordinates and convert to array of numbers
+        // Format the response
         const formattedRows = rows.map(row => ({
-            ...row,
-            installation_coord: row.installation_coord.split(',').map(parseFloat)
+            solarpanel_id: row.solarpanel_id,
+            owner_name: row.owner_name,
+            installation_address: row.installation_address,
+            latitude: parseFloat(row.latitude),
+            longitude: parseFloat(row.longitude),
+            number_of_panel: row.number_of_panel,
+            installation_date: row.installation_date
         }));
 
         return {
@@ -38,4 +44,4 @@ export const handler: APIGatewayProxyHandler = async (event) => {
             body: JSON.stringify({ message: 'Failed to fetch solar panel data', error: errorMessage }),
         };
     }
-}; 
+};

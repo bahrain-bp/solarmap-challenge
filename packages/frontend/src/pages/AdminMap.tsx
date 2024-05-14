@@ -17,12 +17,14 @@ const AdminMap = () => {
   const [showForm, setShowForm] = useState<boolean>(false);
   const [clickCoordinates, setClickCoordinates] = useState<L.LatLng | null>(null);
   const [additionalPoints, setAdditionalPoints] = useState<{
+    [x: string]: any;
     owner_name: string;
     installation_address: string;
     number_of_panel: number;
     installation_date: string;
     latitude: number;
     longitude: number;
+    editMode: boolean;
   }[]>([]);
   const [mapClickable, setMapClickable] = useState<boolean>(false);
 
@@ -47,7 +49,7 @@ const AdminMap = () => {
           throw new Error('Failed to fetch solar panel data');
         }
         const data = await response.json();
-        setAdditionalPoints(data);
+        setAdditionalPoints(data.map((item: any) => ({ ...item, editMode: false })));
       } catch (error) {
         console.error('Error fetching solar panel data:', error);
       }
@@ -55,6 +57,21 @@ const AdminMap = () => {
 
     fetchSolarPanels();
   }, []);
+
+  useEffect(() => {
+    if (map && additionalPoints.length > 0) {
+      additionalPoints.forEach(point => {
+        L.marker([point.latitude, point.longitude])
+          .addTo(map)
+          .bindPopup(`
+            <b>Name:</b> ${point.owner_name}<br/>
+            <b>Address:</b> ${point.installation_address}<br/>
+            <b>Panels:</b> ${point.number_of_panel}<br/>
+            <b>Installation Date:</b> ${point.installation_date}
+          `);
+      });
+    }
+  }, [map, additionalPoints]);
 
   useEffect(() => {
     if (map && clickCoordinates) {
@@ -109,7 +126,7 @@ const AdminMap = () => {
         const responseData = await response.json();
         console.log('Solar panel point added successfully:', responseData);
   
-        setAdditionalPoints([...additionalPoints, newPoint]);
+        setAdditionalPoints([...additionalPoints, { ...newPoint, editMode: false }]);
   
         setName('');
         setAddress('');
@@ -127,26 +144,77 @@ const AdminMap = () => {
     }
   };
 
-  const handleDeletePoint = (index: number) => {
+  const handleDeletePoint = async (index: number) => {
     const confirmed = window.confirm("Are you sure you want to delete this point?");
     if (confirmed) {
-      const updatedPoints = [...additionalPoints];
-      updatedPoints.splice(index, 1);
-      setAdditionalPoints(updatedPoints);
-      if (map) {
-        map.eachLayer((layer) => {
-          if (layer instanceof L.Marker) {
-            const marker = layer as L.Marker;
-            const markerLatLng = marker.getLatLng();
-            if (
-              markerLatLng.lat === additionalPoints[index].latitude &&
-              markerLatLng.lng === additionalPoints[index].longitude
-            ) {
-              map.removeLayer(marker);
-            }
-          }
+      try {
+        const solarPanelIdToDelete = additionalPoints[index].solarpanel_id;
+        const response = await fetch(`${API_BASE_URL}/solarpanel/${solarPanelIdToDelete}`, {
+          method: 'DELETE',
         });
+  
+        if (!response.ok) {
+          throw new Error('Failed to delete solar panel point');
+        }
+  
+        const responseData = await response.json();
+        console.log('Solar panel point deleted successfully:', responseData);
+  
+        const updatedPoints = [...additionalPoints];
+        updatedPoints.splice(index, 1);
+        setAdditionalPoints(updatedPoints);
+  
+        if (map) {
+          map.eachLayer((layer) => {
+            if (layer instanceof L.Marker) {
+              const marker = layer as L.Marker;
+              const markerLatLng = marker.getLatLng();
+              if (
+                markerLatLng.lat === additionalPoints[index].latitude &&
+                markerLatLng.lng === additionalPoints[index].longitude
+              ) {
+                map.removeLayer(marker);
+              }
+            }
+          });
+        }
+      } catch (error) {
+        console.error('Error deleting solar panel point:', error);
+        alert('Failed to delete solar panel point. Please try again.');
       }
+    }
+  };
+
+  const handleEditPoint = (index: number) => {
+    const updatedPoints = [...additionalPoints];
+    updatedPoints[index].editMode = true;
+    setAdditionalPoints(updatedPoints);
+  };
+
+  const handleSaveEdit = async (index: number) => {
+    try {
+      const solarPanelIdToUpdate = additionalPoints[index].solarpanel_id;
+      const response = await fetch(`${API_BASE_URL}/solarpanel/${solarPanelIdToUpdate}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(additionalPoints[index])
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update solar panel point');
+      }
+
+      const responseData = await response.json();
+      console.log('Solar panel point updated successfully:', responseData);
+
+      const updatedPoints = [...additionalPoints];
+      updatedPoints[index].editMode = false;
+      setAdditionalPoints(updatedPoints);
+    } catch (error) {
+      console.error('Error updating solar panel point:', error);
+      alert('Failed to update solar panel point. Please try again.');
     }
   };
 
@@ -247,14 +315,83 @@ const AdminMap = () => {
             <tbody>
               {additionalPoints.map((point, index) => (
                 <tr key={index}>
-                  <td>{point.owner_name}</td>
-                  <td>{point.installation_address}</td>
+                  <td>
+                    {point.editMode ? (
+                      <input
+                        type="text"
+                        value={point.owner_name}
+                        onChange={(e) => {
+                          const updatedPoints = [...additionalPoints];
+                          updatedPoints[index].owner_name = e.target.value;
+                          setAdditionalPoints(updatedPoints);
+                        }}
+                      />
+                    ) : (
+                      point.owner_name
+                    )}
+                  </td>
+                  <td>
+                    {point.editMode ? (
+                      <input
+                        type="text"
+                        value={point.installation_address}
+                        onChange={(e) => {
+                          const updatedPoints = [...additionalPoints];
+                          updatedPoints[index].installation_address = e.target.value;
+                          setAdditionalPoints(updatedPoints);
+                        }}
+                      />
+                    ) : (
+                      point.installation_address
+                    )}
+                  </td>
                   <td>{point.latitude}</td>
                   <td>{point.longitude}</td>
-                  <td>{point.number_of_panel}</td>
-                  <td>{point.installation_date}</td>
                   <td>
-                    <button className="btn btn-danger" onClick={() => handleDeletePoint(index)}>Delete</button>
+                    {point.editMode ? (
+                      <input
+                        type="number"
+                        value={point.number_of_panel}
+                        onChange={(e) => {
+                          const updatedPoints = [...additionalPoints];
+                          updatedPoints[index].number_of_panel = parseInt(e.target.value);
+                          setAdditionalPoints(updatedPoints);
+                        }}
+                      />
+                    ) : (
+                      point.number_of_panel
+                    )}
+                  </td>
+                  <td>
+                    {point.editMode ? (
+                      <input
+                        type="date"
+                        value={point.installation_date}
+                        onChange={(e) => {
+                          const updatedPoints = [...additionalPoints];
+                          updatedPoints[index].installation_date = e.target.value;
+                          setAdditionalPoints(updatedPoints);
+                        }}
+                      />
+                    ) : (
+                      point.installation_date
+                    )}
+                  </td>
+                  <td>
+                    {point.editMode ? (
+                      <Button
+                        variant="success"
+                        onClick={() => handleSaveEdit(index)}
+                        disabled={!point.owner_name || !point.installation_address || !point.number_of_panel || !point.installation_date}
+                      >
+                        Save
+                      </Button>
+                    ) : (
+                      <Button variant="warning" onClick={() => handleEditPoint(index)} disabled={point.editMode}>
+                        Edit
+                      </Button>
+                    )}
+                    <Button className="mx-2" variant="danger" onClick={() => handleDeletePoint(index)}>Delete</Button>
                   </td>
                 </tr>
               ))}
