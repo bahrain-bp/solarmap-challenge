@@ -14,6 +14,7 @@
   "devDependencies": {
     "@mapbox/mapbox-gl-draw": "^1.4.3",
     "@tsconfig/node18": "^18.2.1",
+    "@types/leaflet": "^1.9.12",
     "@types/mapbox__mapbox-gl-draw": "^1.4.6",
     "amazon-quicksight-embedding-sdk": "^2.6.0",
     "aws-cdk-lib": "^2.124.0",
