@@ -17,10 +17,16 @@ export const handler: APIGatewayProxyHandler = async (event) => {
 
         console.log('Query successful');
 
+        // Parse coordinates and convert to array of numbers
+        const formattedRows = rows.map(row => ({
+            ...row,
+            installation_coord: row.installation_coord.split(',').map(parseFloat)
+        }));
+
         return {
             statusCode: 200,
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(rows),
+            body: JSON.stringify(formattedRows),
         };
     } catch (error) {
         console.error('Error during database operation:', error);

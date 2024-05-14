@@ -4,7 +4,8 @@ import { SQL } from "./dbConfig";
 interface SolarPanelData {
     owner_name: string;
     installation_address: string;
-    installation_coord: [number, number]; // Update data type to match the database schema
+    latitude: number;
+    longitude: number;
     number_of_panel: number; 
     installation_date: string; 
 }
@@ -17,19 +18,16 @@ export const handler: APIGatewayProxyHandler = async (event) => {
         };
     }
     
-    // Parse the body to get contractor data
-    const { owner_name, installation_address, installation_coord, number_of_panel, installation_date }: SolarPanelData = JSON.parse(event.body);
-
-    // Convert installation_coord to string
-    const formattedCoord = JSON.stringify(installation_coord);
-
     try {
+        const { owner_name, installation_address, latitude, longitude, number_of_panel, installation_date }: SolarPanelData = JSON.parse(event.body);
+
         await SQL.DB
             .insertInto('solar_panels')
             .values({
                 owner_name,
                 installation_address,
-                installation_coord: formattedCoord,
+                latitude,
+                longitude,
                 number_of_panel,
                 installation_date
             })

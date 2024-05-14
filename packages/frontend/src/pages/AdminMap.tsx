@@ -5,9 +5,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Modal, Button } from 'react-bootstrap';
 import exportString from "../api_url";
 
+const apiurl: string = exportString();
+const API_BASE_URL = apiurl;
+
 const AdminMap = () => {
-  const apiurl: string = exportString();
-  const API_BASE_URL = apiurl;
   const [map, setMap] = useState<L.Map | null>(null);
   const [name, setName] = useState<string>('');
   const [address, setAddress] = useState<string>('');
@@ -20,28 +21,10 @@ const AdminMap = () => {
     installation_address: string;
     number_of_panel: number;
     installation_date: string;
-    installation_coord: [number, number];
-  }[]>([
-    {
-      owner_name: "Point 1",
-      installation_address: "Location 1",
-      installation_coord: [26.07, 50.55],
-      number_of_panel: 25,
-      installation_date: "2024-05-14" // Sample installation date
-    },
-    {
-      owner_name: "Point 2",
-      installation_address: "Location 2",
-      installation_coord: [26.08, 50.56],
-      number_of_panel: 15,
-      installation_date: "2024-05-15" // Sample installation date
-    }
-  ]);
-  const [mapClickable, setMapClickable] = useState<boolean>(false); // State to track if the map is clickable
-  const [selectedPoint, setSelectedPoint] = useState<{
-    name: string;
-    panels: number;
-  } | null>(null); // State to track the selected point
+    latitude: number;
+    longitude: number;
+  }[]>([]);
+  const [mapClickable, setMapClickable] = useState<boolean>(false);
 
   useEffect(() => {
     const leafletMap = L.map('map').setView([26.0667, 50.5577], 10);
@@ -57,28 +40,34 @@ const AdminMap = () => {
   }, []);
 
   useEffect(() => {
-    if (map) {
-      additionalPoints.forEach(point => {
-        L.marker(point.installation_coord)
-          .addTo(map)
-          .bindPopup(`<b>${point.owner_name}</b><br>${point.number_of_panel} Panels`)
-          .on('click', () => setSelectedPoint({ name: point.owner_name, panels: point.number_of_panel }));
-      });
-    }
-  }, [additionalPoints, map]);
+    const fetchSolarPanels = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/solarpanel`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch solar panel data');
+        }
+        const data = await response.json();
+        setAdditionalPoints(data);
+      } catch (error) {
+        console.error('Error fetching solar panel data:', error);
+      }
+    };
+
+    fetchSolarPanels();
+  }, []);
 
   useEffect(() => {
     if (map && clickCoordinates) {
       L.marker([clickCoordinates.lat, clickCoordinates.lng])
         .addTo(map)
         .openPopup();
-      setShowForm(true); // Show the form when user clicks on the map
-      setMapClickable(false); // Disable map click after selecting point
+      setShowForm(true);
+      setMapClickable(false);
     }
   }, [clickCoordinates, map]);
 
   useEffect(() => {
-    if (map && mapClickable) { // Check if map is clickable
+    if (map && mapClickable) {
       map.on('click', handleMapClick);
     }
 
@@ -94,16 +83,15 @@ const AdminMap = () => {
   };
 
   const handleFormSubmit = async () => {
-    // Check if all required fields are filled
     if (name && address && panels && installationDate && clickCoordinates && map) {
       const newPoint = {
         owner_name: name,
         installation_address: address,
         number_of_panel: panels,
         installation_date: installationDate,
-        installation_coord: [clickCoordinates.lat, clickCoordinates.lng] as [number, number]
+        latitude: clickCoordinates.lat,
+        longitude: clickCoordinates.lng
       };
-      
   
       try {
         const response = await fetch(`${API_BASE_URL}/solarpanel`, {
@@ -121,29 +109,23 @@ const AdminMap = () => {
         const responseData = await response.json();
         console.log('Solar panel point added successfully:', responseData);
   
-        // Update the additionalPoints state with the newly added point
         setAdditionalPoints([...additionalPoints, newPoint]);
   
-        // Reset form fields and state
         setName('');
         setAddress('');
         setPanels(0);
         setInstallationDate('');
         setShowForm(false);
         setClickCoordinates(null);
-        setMapClickable(false); // Disable map click after submitting form
+        setMapClickable(false);
       } catch (error) {
         console.error('Error adding solar panel point:', error);
         alert('Failed to add solar panel point. Please try again.');
       }
     } else {
-      // Handle the case where some fields are not filled
-      alert('Please fill in all fields before adding a new point.');
+      alert('Please fill in all fields and select a point on the map before adding a new point.');
     }
   };
-  
-  
-  
 
   const handleDeletePoint = (index: number) => {
     const confirmed = window.confirm("Are you sure you want to delete this point?");
@@ -157,8 +139,8 @@ const AdminMap = () => {
             const marker = layer as L.Marker;
             const markerLatLng = marker.getLatLng();
             if (
-              markerLatLng.lat === additionalPoints[index].installation_coord[0] &&
-              markerLatLng.lng === additionalPoints[index].installation_coord[1]
+              markerLatLng.lat === additionalPoints[index].latitude &&
+              markerLatLng.lng === additionalPoints[index].longitude
             ) {
               map.removeLayer(marker);
             }
@@ -171,7 +153,6 @@ const AdminMap = () => {
   const handleCloseForm = () => {
     setShowForm(false);
     if (clickCoordinates && map) {
-      // Remove the marker from the map
       map.eachLayer((layer) => {
         if (layer instanceof L.Marker) {
           const marker = layer as L.Marker;
@@ -185,8 +166,8 @@ const AdminMap = () => {
         }
       });
     }
-    setClickCoordinates(null); // Reset clickCoordinates to null when form is closed
-    setMapClickable(false); // Disable map click again if form is closed
+    setClickCoordinates(null);
+    setMapClickable(false);
   };
 
   return (
@@ -212,7 +193,7 @@ const AdminMap = () => {
               </div>
             )}
           </div>
-          <Button onClick={() => setMapClickable(true)} style={{ marginTop: '10px' }}>Add Point</Button> {/* Allow user to enable map click */}
+          <Button onClick={() => setMapClickable(true)} style={{ marginTop: '10px' }}>Add Point</Button>
         </div>
       </div>
       <Modal show={showForm && clickCoordinates !== null} onHide={handleCloseForm}>
@@ -256,7 +237,8 @@ const AdminMap = () => {
               <tr>
                 <th>Name</th>
                 <th>Address</th>
-                <th>Coordinates</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
                 <th>Panels</th>
                 <th>Installation Date</th>
                 <th>Action</th>
@@ -267,7 +249,8 @@ const AdminMap = () => {
                 <tr key={index}>
                   <td>{point.owner_name}</td>
                   <td>{point.installation_address}</td>
-                  <td>{point.installation_coord.join(', ')}</td> {/* Display coordinates */}
+                  <td>{point.latitude}</td>
+                  <td>{point.longitude}</td>
                   <td>{point.number_of_panel}</td>
                   <td>{point.installation_date}</td>
                   <td>
@@ -279,15 +262,6 @@ const AdminMap = () => {
           </table>
         </div>
       </div>
-      {selectedPoint && (
-        <div className="row mt-3">
-          <div className="col">
-            <h2>Selected Point</h2>
-            <p>Name: {selectedPoint.name}</p>
-            <p>Panels: {selectedPoint.panels}</p>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
