@@ -35,10 +35,10 @@ export default {
       .stack(AuthStack)
       .stack(DocumentProcessingStack) // Initialize "DocumentProcessingStack" stack before "ApiStack" stack (Dependency)
       .stack(ImgDetection)
+      .stack(WebSocketStack)
       .stack(ApiStack)
       .stack(MapStack)
       .stack(FrontendStack)
-      .stack(WebSocketStack)
     }
   }
 } satisfies SSTConfig;

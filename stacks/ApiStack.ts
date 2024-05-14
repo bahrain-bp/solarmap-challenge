@@ -7,11 +7,13 @@ import { DocumentProcessingStack } from "./DocumentProcessingStack";
 import { PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { ImgDetection } from "./ImgDetection";
 import { EmailAPIStack } from "./EmailAPIStack";
+import { WebSocketStack } from "./WebSocketStack";
 
 // Define the ApiStack function
 export function ApiStack(context: StackContext) {
     // Destructure the stack from the context parameter
     const { app, stack } = context;
+    const { table } = use(WebSocketStack);
 
     // Retrieve resources from other stacks
     const documentProcessingStack = use(DocumentProcessingStack);
@@ -30,7 +32,7 @@ export function ApiStack(context: StackContext) {
     const api = new Api(stack, "Api", {
         defaults: {
             function: {
-                bind: [db],
+                bind: [db, table],
             },
         },
         routes: {
@@ -56,7 +58,7 @@ export function ApiStack(context: StackContext) {
             "DELETE /customer/{customer_id}": "packages/functions/src/deleteCustomer.handler",
             "POST /inquiry": "packages/functions/src/postInquiry.handler",
             "GET /inquiry": "packages/functions/src/fetchInquiry.handler",
-
+            "GET /testWebSocket": "packages/functions/src/testWebSocket.handler",
 
 
             "POST /inquirycustomer": "packages/functions/src/postCustomerInquiry.handler",

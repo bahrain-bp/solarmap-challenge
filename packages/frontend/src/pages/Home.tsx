@@ -34,6 +34,7 @@ export default function Home() {
      setMessage(event.data);
    });
 
+
    // Connection closed
    newSocket.addEventListener("close", (event) => {
      console.log("WebSocket connection closed:", event);
