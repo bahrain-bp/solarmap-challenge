@@ -24,6 +24,8 @@ import Reports from './pages/Reports';
 import CalculationReccomendation from './components/CalculationRec';
 import CalcUsageStats from './components/CalculatorUsageStats';
 
+import WebsocketTest from './pages/WebsocketTest';
+
 
 
 import { Authenticator } from './components/Authenticator';
@@ -127,6 +129,7 @@ function App() {
                     <Route path="/deleteConsultant" element={<DeleteConsulantant />} />
                     <Route path="/deleteContractor" element={<DeleteContractor />} />
                     <Route path="/Reports" element={<Reports />} />
+                    <Route path="/WebsocketTest" element={<WebsocketTest />} />
                     </Routes>
                   </main>
             </Authenticator>

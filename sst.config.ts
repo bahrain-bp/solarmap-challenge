@@ -8,6 +8,8 @@ import { DocumentProcessingStack } from "./stacks/DocumentProcessingStack";
 import { MapStack } from "./stacks/MapStack";
 import { AuthStack } from "./stacks/AuthStack";
 import { ImgDetection } from "./stacks/ImgDetection";
+import { WebSocketStack } from "./stacks/WebSocketStack";
+
 
 export default {
   config(_input) {
@@ -36,6 +38,7 @@ export default {
       .stack(ApiStack)
       .stack(MapStack)
       .stack(FrontendStack)
+      .stack(WebSocketStack)
     }
   }
 } satisfies SSTConfig;
