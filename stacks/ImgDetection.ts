@@ -24,7 +24,7 @@ export function ImgDetection({ stack }: StackContext) {
     });
 
     const rooftopFunction = new Function(stack, "rooftopFunction", {
-        handler: "packages/functions/src/imageDetection.handler",
+        handler: "packages/functions/src/imageDetection.lambda_handler",
         timeout: "120 seconds", 
         memorySize: 2048, 
         retryAttempts: 0, 
