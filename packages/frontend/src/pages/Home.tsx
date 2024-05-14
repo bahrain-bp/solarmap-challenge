@@ -11,40 +11,44 @@ import { useState, useEffect } from "react";
 // import Team5 from "../assets/Team5.jpg";
 export default function Home() {
 
-   //////// Web Socket Connection //////////
 
+  const [message, setMessage] = useState("");
+
+  //////// Web Socket Connection //////////
+
+  useEffect(() => {
    const webSocketUrl = 'wss://zrzuvslvoj.execute-api.us-east-1.amazonaws.com/husain'; // Your WebSocket URL
+   console.log(webSocketUrl);
+    // Connect to the WebSocket
+   // Connect to the WebSocket
+   const newSocket = new WebSocket(webSocketUrl);
 
-   // WebSocket connection state
-   const [socket, setSocket] = useState<WebSocket | null>(null)
+   // Connection opened
+   newSocket.addEventListener("open", (event) => {
+     console.log("WebSocket connection opened:", event);
+   });
 
+   // Listen for messages
+   newSocket.addEventListener("message", (event) => {
+     console.log("WebSocket received a message:", event.data);
+     setMessage(event.data);
+   });
 
-   useEffect(() => {
-    // Establish WebSocket connection when component mounts
-    const ws = new WebSocket(webSocketUrl);
-    setSocket(ws);
-  
-    // Event listeners for WebSocket
-    ws.onopen = () => {
-      console.log('WebSocket connection established.');
-    };
-  
-    ws.onclose = (event) => {
-      console.log('WebSocket connection closed:', event);
-    };
-  
-    ws.onerror = (error) => {
-      console.error('WebSocket error:', error);
-    };
-  
-    // Clean up function to close WebSocket when component unmounts
-    return () => {
-      if (ws) {
-        ws.close();
-      }
-    };
-  }, []);
+   // Connection closed
+   newSocket.addEventListener("close", (event) => {
+     console.log("WebSocket connection closed:", event);
+   });
 
+   // Connection error
+   newSocket.addEventListener("error", (event) => {
+     console.error("WebSocket connection error:", event);
+   });
+   
+   return () => {
+     newSocket.close();
+   };
+
+   }, []);
    
   return (
     <>
