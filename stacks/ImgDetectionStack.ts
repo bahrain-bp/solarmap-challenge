@@ -18,6 +18,7 @@ export function ImgDetectionStack({ stack }: StackContext) {
         consumer: rooftopFunction,
         cdk: {
             queue: {
+                queueName: stack.stage+ 'rooftopQueue',
                 visibilityTimeout: Duration.seconds(120),
             }
         }
