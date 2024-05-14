@@ -5,9 +5,11 @@ import { Table } from "sst/node/table";
 import { WebSocketApi } from "sst/node/websocket-api";
 
 const dynamoDb = new DynamoDB.DocumentClient();
+// @ts-ignore
 const TableName = Table.connection.tableName;
 
 export const handler: APIGatewayProxyHandler = async (ticketStore: any) => {
+  // @ts-ignore
   const url = WebSocketApi.WebSocket.url;
 
   const api = new ApiGatewayManagementApi({
