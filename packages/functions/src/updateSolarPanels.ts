@@ -2,11 +2,12 @@ import { APIGatewayProxyHandler } from 'aws-lambda';
 import { SQL } from "./dbConfig";
 
 interface SolarPanelData {
-    ownerName: string;
-    installationAddress: string;
-    installationCoord: string;
-    numberOfPanels: number;
-    installationDate: string;
+    owner_name: string;
+    installation_address: string;
+    latitude: number;
+    longitude: number;
+    number_of_panel: number;
+    installation_date: string;
 }
 
 export const handler: APIGatewayProxyHandler = async (event) => {
@@ -27,22 +28,24 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     }
 
     const {
-        ownerName,
-        installationAddress,
-        installationCoord,
-        numberOfPanels,
-        installationDate
+        owner_name,
+        installation_address,
+        latitude,
+        longitude,
+        number_of_panel,
+        installation_date
     }: SolarPanelData = JSON.parse(event.body);
 
     try {
         await SQL.DB
             .updateTable('solar_panels')
             .set({
-                owner_name: ownerName,
-                installation_address: installationAddress,
-                installation_coord: installationCoord,
-                number_of_panel: numberOfPanels,
-                installation_date: installationDate
+                owner_name,
+                installation_address,
+                latitude,
+                longitude,
+                number_of_panel,
+                installation_date
             })
             .where('solarpanel_id', '=', solarPanelId)
             .execute();
