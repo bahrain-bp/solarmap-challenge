@@ -5,8 +5,8 @@ export function ImgDetection({ stack }: StackContext) {
 
     const rooftopFunction = new Function(stack, "rooftopFunction", {
         handler: "packages/functions/src/imageDetection.handler",
-        timeout: "120 seconds", 
-        memorySize: 2048, 
+        timeout: "120 seconds",
+        memorySize: 2048,
         retryAttempts: 0,
         // runtime: "python3.11",
     });
@@ -29,13 +29,13 @@ export function ImgDetection({ stack }: StackContext) {
         }
     });
 
-        // Grant permissions to the Lambda function to access the S3 bucket
-        rooftopFunction.attachPermissions([
-            new PolicyStatement({
-                actions: ['s3:*'],
-                resources: [bucket.bucketArn + '/*'],
-            })
-        ]);
+    // Grant permissions to the Lambda function to access the S3 bucket
+    rooftopFunction.attachPermissions([
+        new PolicyStatement({
+            actions: ['s3:*'],
+            resources: [bucket.bucketArn + '/*'],
+        })
+    ]);
 
 
 
