@@ -2,7 +2,7 @@ import { Bucket, EventBus, Function, Queue, StackContext } from "sst/constructs"
 import { PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { Duration } from "aws-cdk-lib";
 
-export function ImgDetection({ stack }: StackContext) {
+export function ImgDetectionStack({ stack }: StackContext) {
 
     const rooftopFunction = new Function(stack, "rooftopFunction", {
         handler: "packages/functions/src/rooftopDetection.handler",
