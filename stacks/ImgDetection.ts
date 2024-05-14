@@ -1,4 +1,3 @@
-
 import { Bucket, EventBus, Function, Queue, StackContext } from "sst/constructs";
 import { PolicyStatement } from "aws-cdk-lib/aws-iam";
 
@@ -8,7 +7,7 @@ export function ImgDetection({ stack }: StackContext) {
 
     // Create a FIFO SQS Queue
     const queue = new Queue(stack, "myQueue", {
-        consumer: "packages/functions/src/rooftopDetection.main",
+        consumer: "packages/functions/src/imageDetection.handler",
     });
 
 
@@ -23,8 +22,8 @@ export function ImgDetection({ stack }: StackContext) {
         }
     });
 
-    const rooftopDetectionFunction = new Function(stack, "rooftopDetectionFunction", {
-        handler: "packages/functions/src/rooftopDetection.main",
+    const rooftopFunction = new Function(stack, "rooftopFunction", {
+        handler: "packages/functions/src/imageDetection.handler",
         timeout: "120 seconds", 
         memorySize: 2048, 
         retryAttempts: 0, 
@@ -32,7 +31,7 @@ export function ImgDetection({ stack }: StackContext) {
             actions: ['s3:*'],
             resources: [bucket.bucketArn + '/*'],
         })],
-        runtime: "python3.11",
+        // runtime: "python3.11",
     });
 
 
