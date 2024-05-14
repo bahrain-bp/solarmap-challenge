@@ -185,6 +185,7 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
         </div>
         <button type="submit" className="btn btn-primary mt-2">Submit</button>
       </form>
+      <br></br>
       {message && <div className="alert alert-info mt-3">{message}</div>}
     </div>
           {resources.length > 0 ? (
