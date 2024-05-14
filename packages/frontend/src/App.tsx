@@ -141,9 +141,7 @@ function App() {
             <Route path="/DocumentUpload" element={<DocumentUpload />} />
             <Route path="/QuickSightDashboard" element={<QuickSightDashboard />} />
             {/* <Route path="/Map" element={<Map />} /> */}
-            <Route path="/EducationalResources" element={<EducationalResources isLoggedIn={isLoggedIn} />} />
-            <Route path="/deleteEduResource" element={<DeleteEducationalResources />} />
-            <Route path="/addEduResource" element={<AddEducationalResource />} />
+            <Route path="/EducationalResources" element={<EducationalResources  />} />
             <Route path="/MapV2" element={<MapV2 identityPoolId={identityPoolId} mapName={mapName} />} />
             <Route path="/Terms" element={<Terms />} />
             <Route path="/Privacy" element={<Privacy />} />
