@@ -1,9 +1,12 @@
-import { S3 } from 'aws-sdk';
+import aws from 'aws-sdk';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 
 // Create an S3 service object
-const s3 = new S3();
+const s3 = new aws.S3({
+    signatureVersion: 'v4',
+    region: 'us-east-1'
+  });
 
 export const handler = async (event: any): Promise<any> => {
     try {
@@ -20,12 +23,11 @@ export const handler = async (event: any): Promise<any> => {
             console.log(`Object Key: ${objectKey}`);
 
             // Download the image from S3
-            const params = {
-                Bucket: bucketName,
-                Key: objectKey,
-            };
+            const imageData = await s3.getObject({
+                Bucket: String(bucketName),
+                Key: objectKey, // Adjust the key as needed
+            }).promise();
 
-            const imageData = await s3.getObject(params).promise();
             const imageBase64 = imageData.Body?.toString('base64');
 
             // Make the POST request with the image data
@@ -41,20 +43,20 @@ export const handler = async (event: any): Promise<any> => {
                 }
             });
 
-            // Assuming the response body is the modified image you want to save
-            const modifiedImageData = Buffer.from(response.data, 'base64');
+            // // Assuming the response body is the modified image you want to save
+            // const modifiedImageData = Buffer.from(response.data, 'base64');
 
-            // Prepare parameters to upload the processed image back to S3
-            const uploadParams = {
-                Bucket: bucketName, // You might want to choose a different bucket or path
-                Key: `segmented/processed-${objectKey}`,
-                Body: modifiedImageData,
-                ContentType: 'image/jpeg', // Adjust the content type if necessary
-            };
+            // // Prepare parameters to upload the processed image back to S3
+            // const uploadParams = {
+            //     Bucket: bucketName, // You might want to choose a different bucket or path
+            //     Key: `segmented/processed-${objectKey}`,
+            //     Body: modifiedImageData,
+            //     ContentType: 'image/jpeg', // Adjust the content type if necessary
+            // };
 
-            // Upload the processed image to S3
-            await s3.putObject(uploadParams).promise();
-            console.log('Processed image has been saved to S3.');
+            // // Upload the processed image to S3
+            // await s3.putObject(uploadParams).promise();
+            // console.log('Processed image has been saved to S3.');
 
             return {
                 statusCode: 200,
