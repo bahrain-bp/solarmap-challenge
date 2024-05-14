@@ -16,25 +16,25 @@ const AdminMap = () => {
   const [showForm, setShowForm] = useState<boolean>(false);
   const [clickCoordinates, setClickCoordinates] = useState<L.LatLng | null>(null);
   const [additionalPoints, setAdditionalPoints] = useState<{
-    name: string;
-    address: string;
-    coordinates: [number, number];
-    panels: number;
-    installationDate: string;
+    owner_name: string;
+    installation_address: string;
+    number_of_panel: number;
+    installation_date: string;
+    installation_coord: [number, number];
   }[]>([
     {
-      name: "Point 1",
-      address: "Location 1",
-      coordinates: [26.07, 50.55],
-      panels: 25,
-      installationDate: "2024-05-14" // Sample installation date
+      owner_name: "Point 1",
+      installation_address: "Location 1",
+      installation_coord: [26.07, 50.55],
+      number_of_panel: 25,
+      installation_date: "2024-05-14" // Sample installation date
     },
     {
-      name: "Point 2",
-      address: "Location 2",
-      coordinates: [26.08, 50.56],
-      panels: 15,
-      installationDate: "2024-05-15" // Sample installation date
+      owner_name: "Point 2",
+      installation_address: "Location 2",
+      installation_coord: [26.08, 50.56],
+      number_of_panel: 15,
+      installation_date: "2024-05-15" // Sample installation date
     }
   ]);
   const [mapClickable, setMapClickable] = useState<boolean>(false); // State to track if the map is clickable
@@ -59,10 +59,10 @@ const AdminMap = () => {
   useEffect(() => {
     if (map) {
       additionalPoints.forEach(point => {
-        L.marker(point.coordinates)
+        L.marker(point.installation_coord)
           .addTo(map)
-          .bindPopup(`<b>${point.name}</b><br>${point.panels} Panels`)
-          .on('click', () => setSelectedPoint({ name: point.name, panels: point.panels }));
+          .bindPopup(`<b>${point.owner_name}</b><br>${point.number_of_panel} Panels`)
+          .on('click', () => setSelectedPoint({ name: point.owner_name, panels: point.number_of_panel }));
       });
     }
   }, [additionalPoints, map]);
@@ -96,11 +96,11 @@ const AdminMap = () => {
   const handleFormSubmit = async () => {
     if (name && address && panels && installationDate && clickCoordinates && map) {
       const newPoint = {
-        name,
-        address,
-        panels,
-        installationDate,
-        coordinates: [clickCoordinates.lat, clickCoordinates.lng] as [number, number]
+        owner_name: name, // Change name to owner_name
+        installation_address: address, // Ensure the field names match
+        number_of_panel: panels, // Ensure the field names match
+        installation_date: installationDate, // Ensure the field names match
+        installation_coord: [clickCoordinates.lat, clickCoordinates.lng] as [number, number] // Ensure the field names match
       };
   
       try {
@@ -135,6 +135,7 @@ const AdminMap = () => {
     }
   };
   
+  
 
   const handleDeletePoint = (index: number) => {
     const confirmed = window.confirm("Are you sure you want to delete this point?");
@@ -148,8 +149,8 @@ const AdminMap = () => {
             const marker = layer as L.Marker;
             const markerLatLng = marker.getLatLng();
             if (
-              markerLatLng.lat === additionalPoints[index].coordinates[0] &&
-              markerLatLng.lng === additionalPoints[index].coordinates[1]
+              markerLatLng.lat === additionalPoints[index].installation_coord[0] &&
+              markerLatLng.lng === additionalPoints[index].installation_coord[1]
             ) {
               map.removeLayer(marker);
             }
@@ -256,11 +257,11 @@ const AdminMap = () => {
             <tbody>
               {additionalPoints.map((point, index) => (
                 <tr key={index}>
-                  <td>{point.name}</td>
-                  <td>{point.address}</td>
-                  <td>{point.coordinates.join(', ')}</td> {/* Display coordinates */}
-                  <td>{point.panels}</td>
-                  <td>{point.installationDate}</td>
+                  <td>{point.owner_name}</td>
+                  <td>{point.installation_address}</td>
+                  <td>{point.installation_coord.join(', ')}</td> {/* Display coordinates */}
+                  <td>{point.number_of_panel}</td>
+                  <td>{point.installation_date}</td>
                   <td>
                     <button className="btn btn-danger" onClick={() => handleDeletePoint(index)}>Delete</button>
                   </td>
