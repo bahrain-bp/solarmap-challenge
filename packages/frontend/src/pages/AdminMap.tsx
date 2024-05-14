@@ -3,30 +3,38 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Modal, Button } from 'react-bootstrap';
+import exportString from "../api_url";
 
 const AdminMap = () => {
+  const apiurl: string = exportString();
+  const API_BASE_URL = apiurl;
   const [map, setMap] = useState<L.Map | null>(null);
+  const [name, setName] = useState<string>('');
   const [address, setAddress] = useState<string>('');
-  const [panels, setPanels] = useState<string>('');
+  const [panels, setPanels] = useState<number>(0);
+  const [installationDate, setInstallationDate] = useState<string>('');
   const [showForm, setShowForm] = useState<boolean>(false);
   const [clickCoordinates, setClickCoordinates] = useState<L.LatLng | null>(null);
   const [additionalPoints, setAdditionalPoints] = useState<{
     name: string;
-    address?: string;
+    address: string;
     coordinates: [number, number];
     panels: number;
+    installationDate: string;
   }[]>([
     {
       name: "Point 1",
       address: "Location 1",
       coordinates: [26.07, 50.55],
-      panels: 25
+      panels: 25,
+      installationDate: "2024-05-14" // Sample installation date
     },
     {
       name: "Point 2",
       address: "Location 2",
       coordinates: [26.08, 50.56],
-      panels: 15
+      panels: 15,
+      installationDate: "2024-05-15" // Sample installation date
     }
   ]);
   const [mapClickable, setMapClickable] = useState<boolean>(false); // State to track if the map is clickable
@@ -85,23 +93,48 @@ const AdminMap = () => {
     setClickCoordinates(e.latlng);
   };
 
-  const handleFormSubmit = () => {
-    if (address && panels && clickCoordinates && map) {
+  const handleFormSubmit = async () => {
+    if (name && address && panels && installationDate && clickCoordinates && map) {
       const newPoint = {
-        name: `Point ${additionalPoints.length + 1}`,
+        name,
         address,
-        panels: parseInt(panels),
+        panels,
+        installationDate,
         coordinates: [clickCoordinates.lat, clickCoordinates.lng] as [number, number]
       };
-      setAdditionalPoints([...additionalPoints, newPoint]);
-
-      setAddress('');
-      setPanels('');
-      setShowForm(false);
-      setClickCoordinates(null);
-      setMapClickable(false); // Disable map click after submitting form
+  
+      try {
+        const response = await fetch(`${API_BASE_URL}/solarpanel`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(newPoint)
+        });
+  
+        if (!response.ok) throw new Error('Failed to add solar panel point');
+  
+        const responseData = await response.json();
+        console.log('Solar panel point added successfully:', responseData);
+  
+        // Update the additionalPoints state with the newly added point
+        setAdditionalPoints([...additionalPoints, newPoint]);
+  
+        // Reset form fields and state
+        setName('');
+        setAddress('');
+        setPanels(0);
+        setInstallationDate('');
+        setShowForm(false);
+        setClickCoordinates(null);
+        setMapClickable(false); // Disable map click after submitting form
+      } catch (error) {
+        console.error('Error adding solar panel point');
+        postMessage('Failed to add solar panel point');
+      }
     }
   };
+  
 
   const handleDeletePoint = (index: number) => {
     const confirmed = window.confirm("Are you sure you want to delete this point?");
@@ -180,12 +213,20 @@ const AdminMap = () => {
         <Modal.Body>
           <form>
             <div className="mb-3">
+              <label className="form-label">Name:</label>
+              <input type="text" className="form-control" value={name} onChange={(e) => setName(e.target.value)} />
+            </div>
+            <div className="mb-3">
               <label className="form-label">Address:</label>
               <input type="text" className="form-control" value={address} onChange={(e) => setAddress(e.target.value)} />
             </div>
             <div className="mb-3">
               <label className="form-label">Panels:</label>
-              <input type="text" className="form-control" value={panels} onChange={(e) => setPanels(e.target.value)} />
+              <input type="number" className="form-control" value={panels} onChange={(e) => setPanels(parseInt(e.target.value))} />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Installation Date:</label>
+              <input type="date" className="form-control" value={installationDate} onChange={(e) => setInstallationDate(e.target.value)} />
             </div>
           </form>
         </Modal.Body>
@@ -208,6 +249,7 @@ const AdminMap = () => {
                 <th>Address</th>
                 <th>Coordinates</th>
                 <th>Panels</th>
+                <th>Installation Date</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -218,6 +260,7 @@ const AdminMap = () => {
                   <td>{point.address}</td>
                   <td>{point.coordinates.join(', ')}</td> {/* Display coordinates */}
                   <td>{point.panels}</td>
+                  <td>{point.installationDate}</td>
                   <td>
                     <button className="btn btn-danger" onClick={() => handleDeletePoint(index)}>Delete</button>
                   </td>
@@ -231,8 +274,8 @@ const AdminMap = () => {
         <div className="row mt-3">
           <div className="col">
             <h2>Selected Point</h2>
-            <p><strong>Name:</strong> {selectedPoint.name}</p>
-            <p><strong>Panels:</strong> {selectedPoint.panels}</p>
+            <p>Name: {selectedPoint.name}</p>
+            <p>Panels: {selectedPoint.panels}</p>
           </div>
         </div>
       )}

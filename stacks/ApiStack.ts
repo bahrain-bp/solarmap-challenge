@@ -56,11 +56,12 @@ export function ApiStack(context: StackContext) {
             "DELETE /customer/{customer_id}": "packages/functions/src/deleteCustomer.handler",
             "POST /inquiry": "packages/functions/src/postInquiry.handler",
             "GET /inquiry": "packages/functions/src/fetchInquiry.handler",
-
-
-
             "POST /inquirycustomer": "packages/functions/src/postCustomerInquiry.handler",
             "GET /inquirycustomer": "packages/functions/src/fetchCustomerInquiry.handler",
+            "POST /solarpanel": "packages/functions/src/postSolarPanels.handler",
+            "GET /solarpanel": "packages/functions/src/fetchSolarPanels.handler",
+            "DELETE /solarpanel/{solarpanel_id}": "packages/functions/src/deleteSolarPanels.handler",
+            "PUT /solarpanel/{solarpanel_id}": "packages/functions/src/updateSolarPanels.handler",
             // TypeScript lambda function for MEWA bill document processing 
             // "POST /process-pdf": "packages/functions/src/process-pdf-lambda.handler",
             "POST /send-email": {
