@@ -24,10 +24,6 @@ import Reports from './pages/Reports';
 import CalculationReccomendation from './components/CalculationRec';
 import CalcUsageStats from './components/CalculatorUsageStats';
 
-import WebsocketTest from './pages/WebsocketTest';
-
-
-
 import { Authenticator } from './components/Authenticator';
 import { getCurrentUser, signOut } from 'aws-amplify/auth';
 import '@aws-amplify/ui-react/styles.css';
@@ -38,7 +34,6 @@ import Inquiry from './pages/Inquiry';
 function App() {
   const identityPoolId = import.meta.env.VITE_IDENTITY_POOL_ID; // Cognito Identity Pool ID
   const mapName = import.meta.env.VITE_MAP_NAME; // Amazon Location Service Map Name
-
 
 
   Hub.listen('auth', ({ payload }) => {
@@ -129,7 +124,6 @@ function App() {
                     <Route path="/deleteConsultant" element={<DeleteConsulantant />} />
                     <Route path="/deleteContractor" element={<DeleteContractor />} />
                     <Route path="/Reports" element={<Reports />} />
-                    <Route path="/WebsocketTest" element={<WebsocketTest />} />
                     </Routes>
                   </main>
             </Authenticator>

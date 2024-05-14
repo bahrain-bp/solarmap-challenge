@@ -3,12 +3,36 @@ import SolarGif from "../assets/SolarGif.gif";
 import SolarGif2 from "../assets/SolarGif2.gif";
 import SolarGif3 from "../assets/SolarGif3.gif";
 import SolarGif4 from "../assets/SolarGif4.gif";
+import { useState, useEffect } from "react";
 // import Team1 from "../assets/Team1.jpg";
 // import Team2 from "../assets/Team2.jpg";
 // import Team3 from "../assets/Team3.jpg";
 // import Team4 from "../assets/Team4.jpg";
 // import Team5 from "../assets/Team5.jpg";
 export default function Home() {
+
+   //////// Web Socket Connection //////////
+
+   const webSocketUrl = 'wss://zrzuvslvoj.execute-api.us-east-1.amazonaws.com/husain'; // Your WebSocket URL
+
+   // WebSocket connection state
+   const [socket, setSocket] = useState<WebSocket | null>(null)
+
+
+   useEffect(() => {
+     // Establish WebSocket connection when component mounts
+     const ws = new WebSocket(webSocketUrl);
+     setSocket(ws);
+ 
+     // Clean up function to close WebSocket when component unmounts
+     return () => {
+       if (ws) {
+         ws.close();
+       }
+     };
+   }, []);
+
+   
   return (
     <>
       {/* Image Slider */}
