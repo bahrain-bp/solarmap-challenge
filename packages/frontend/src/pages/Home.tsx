@@ -20,17 +20,30 @@ export default function Home() {
 
 
    useEffect(() => {
-     // Establish WebSocket connection when component mounts
-     const ws = new WebSocket(webSocketUrl);
-     setSocket(ws);
- 
-     // Clean up function to close WebSocket when component unmounts
-     return () => {
-       if (ws) {
-         ws.close();
-       }
-     };
-   }, []);
+    // Establish WebSocket connection when component mounts
+    const ws = new WebSocket(webSocketUrl);
+    setSocket(ws);
+  
+    // Event listeners for WebSocket
+    ws.onopen = () => {
+      console.log('WebSocket connection established.');
+    };
+  
+    ws.onclose = (event) => {
+      console.log('WebSocket connection closed:', event);
+    };
+  
+    ws.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+  
+    // Clean up function to close WebSocket when component unmounts
+    return () => {
+      if (ws) {
+        ws.close();
+      }
+    };
+  }, []);
 
    
   return (
