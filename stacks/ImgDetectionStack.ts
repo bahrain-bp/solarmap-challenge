@@ -14,7 +14,7 @@ export function ImgDetectionStack({ stack }: StackContext) {
 
 
     // Create a FIFO SQS Queue
-    const queue = new Queue(stack, "myQueue", {
+    const queue = new Queue(stack, "rooftopQueue", {
         consumer: rooftopFunction,
         cdk: {
             queue: {
