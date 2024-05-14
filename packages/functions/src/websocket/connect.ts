@@ -6,6 +6,7 @@ const dynamoDb = new DynamoDB.DocumentClient();
 
 export const main: APIGatewayProxyHandler = async (event) => {
   const params = {
+    // @ts-ignore
     TableName: Table.Connections.tableName,
     Item: {
       id: event.requestContext.connectionId,
