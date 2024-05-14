@@ -5,7 +5,7 @@ import requests
 
 s3 = boto3.client('s3')
 
-def lambda_handler(event, context):
+def main(event, context):
     try:
         print("Received event:", event)
         records = event.get('Records', [])

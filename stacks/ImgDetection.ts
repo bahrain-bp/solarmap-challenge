@@ -8,7 +8,7 @@ export function ImgDetection({ stack }: StackContext) {
 
     // Create a FIFO SQS Queue
     const queue = new Queue(stack, "myQueue", {
-        consumer: "packages/functions/src/imageDetection.handler",
+        consumer: "packages/functions/src/rooftopDetection.main",
     });
 
 
@@ -23,8 +23,8 @@ export function ImgDetection({ stack }: StackContext) {
         }
     });
 
-    const rooftopFunction = new Function(stack, "rooftopFunction", {
-        handler: "packages/functions/src/imageDetection.lambda_handler",
+    const rooftopDetectionFunction = new Function(stack, "rooftopDetectionFunction", {
+        handler: "packages/functions/src/rooftopDetection.main",
         timeout: "120 seconds", 
         memorySize: 2048, 
         retryAttempts: 0, 
