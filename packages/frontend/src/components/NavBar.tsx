@@ -75,7 +75,6 @@ const DropdownButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-
 const RightLink = styled(Button)(({ theme }) => ({
   color: theme.palette.common.white,
   borderColor: theme.palette.common.white,
@@ -109,7 +108,6 @@ const DrawerLink = styled(Link, {
     transform: 'scale(1.05)' // Scale up slightly on hover
   },
 }));
-
 
 const icons: { [key: string]: JSX.Element } = {
   Home: <HomeIcon />,
@@ -229,7 +227,6 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
       )}
     </DrawerList>
   );
-  
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -268,6 +265,12 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
                 keepMounted
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
+                MenuListProps={{
+                  sx: {
+                    bgcolor: 'rgb(7, 55, 99)', // Same background color as NavBar
+                    color: 'white', // White text color
+                  },
+                }}
               >
                 <MenuItem onClick={handleClose} component={Link} href="/DocumentUpload" className={isActive('/DocumentUpload') ? 'active' : ''}>Document Upload</MenuItem>
                 <MenuItem onClick={handleClose} component={Link} href="/MapV2" className={isActive('/MapV2') ? 'active' : ''}>Map V2</MenuItem>
@@ -289,6 +292,12 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
                     keepMounted
                     open={Boolean(adminAnchorEl)}
                     onClose={handleClose}
+                    MenuListProps={{
+                      sx: {
+                        bgcolor: 'rgb(7, 55, 99)', // Same background color as NavBar
+                        color: 'white', // White text color
+                      },
+                    }}
                   >
                     <MenuItem onClick={handleClose} component={Link} href="/Reports" className={isActive('/Reports') ? 'active' : ''}>Reports</MenuItem>
                     <MenuItem onClick={handleClose} component={Link} href="/QuickSightDashboard" className={isActive('/QuickSightDashboard') ? 'active' : ''}>Business Dashboard</MenuItem>

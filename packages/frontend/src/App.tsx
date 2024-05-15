@@ -8,7 +8,7 @@ import About from './pages/About';
 import Providers from './pages/Provider';
 import DocumentUpload from './pages/DocumentUpload';
 import EducationalResources from './pages/EduResources';
-import Footer from './pages/Footer';
+import Footer from './components/Footer';
 import MapV2 from './components/MapV2';
 import QuickSightDashboard from './components/QuickSightDashboard';
 import CarbonFootprintCalculator from './pages/CarbonEmissionsCalculator';
