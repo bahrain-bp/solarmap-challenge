@@ -48,7 +48,7 @@ export default function SolarHero() {
         variant="contained"
         size="large"
         component="a"
-        href="/premium-themes/onepirate/sign-up/"
+        href="/MapV2"
         sx={{ minWidth: 200 }}
       >
         Get Started

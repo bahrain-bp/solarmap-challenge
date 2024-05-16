@@ -3,6 +3,7 @@ import SolarHero from '../modules/SolarHero';
 import SolarValues from '../modules/SolarValues';
 import SolarFeatures from '../modules/SolarFeatures';
 import withRoot from '../withRoot';
+import SolarGetInTouch from '../modules/SolarGetInTouch';
 
 function Home() {
   return (
@@ -10,6 +11,7 @@ function Home() {
       <SolarHero />
       <SolarValues />
       <SolarFeatures />
+      <SolarGetInTouch />
     </React.Fragment>
   );
 }
