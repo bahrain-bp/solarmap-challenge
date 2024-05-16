@@ -251,6 +251,7 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
               <StyledLink href="/" className={isActive('/') ? 'active' : ''}>Home</StyledLink>
               <StyledLink href="/About" className={isActive('/About') ? 'active' : ''}>About</StyledLink>
               <StyledLink href="/Provider" className={isActive('/Provider') ? 'active' : ''}>Providers</StyledLink>
+              <StyledLink href="/EducationalResources" className={isActive('/EducationalResources') ? 'active' : ''}>Educational Resources</StyledLink>
               <DropdownButton
                 aria-controls="map-menu"
                 aria-haspopup="true"
