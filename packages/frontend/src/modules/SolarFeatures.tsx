@@ -72,14 +72,13 @@ const images = [
     url: map,
     title: 'Map',
     link: '/Mapv2',
-    backgroundPosition: '57% 30%', // Adjust the background position for the map image
-    width: '50%',
+    width: '100%',
   },
   {
     url: costs,
     title: 'Cost Saving Calculator',
     link: '/Mapv2',
-    width: '20%',
+    width: '25%',
   },
   {
     url: energy,
@@ -91,13 +90,13 @@ const images = [
     url: providers,
     title: 'Solar Panel Providers',
     link: '/Provider',
-    width: '15%',
+    width: '25%',
   },
   {
     url: eduresources,
     title: 'Educational Resources',
     link: '/EducationalResources',
-    width: '20%',
+    width: '25%',
   },
 ];
 
@@ -124,7 +123,6 @@ export default function SolarFeatures() {
                     top: 0,
                     bottom: 0,
                     backgroundSize: 'cover',
-                    backgroundPosition: image.backgroundPosition || 'center 40%', // Apply custom background position if specified
                     backgroundImage: `url(${image.url})`,
                   }}
                 />
