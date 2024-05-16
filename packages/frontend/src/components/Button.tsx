@@ -9,8 +9,9 @@ const ButtonRoot = styled(MuiButton)(({ theme, size }) => ({
   padding: theme.spacing(2, 4),
   fontSize: theme.typography.pxToRem(14),
   boxShadow: 'none',
-  '&:active, &:focus': {
+  '&:active, &:focus, &:hover': {
     boxShadow: 'none',
+    color: theme.palette.common.white, // Ensures text color is white on hover
   },
   ...(size === 'small' && {
     padding: theme.spacing(1, 3),
