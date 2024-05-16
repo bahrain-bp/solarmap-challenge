@@ -3,6 +3,7 @@ import { Theme, styled } from '@mui/material/styles';
 import { SxProps } from '@mui/system';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
+import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 
 const SolarHeroLayoutRoot = styled('section')(({ theme }) => ({
   color: theme.palette.common.white,
@@ -29,6 +30,7 @@ const Background = styled('div')({
 
 interface SolarHeroLayoutProps {
   sxBackground: SxProps<Theme>;
+  children: React.ReactNode;
 }
 
 export default function SolarHeroLayout(
@@ -47,12 +49,6 @@ export default function SolarHeroLayout(
           alignItems: 'center',
         }}
       >
-        <img
-          src="/static/themes/onepirate/productHeroWonder.png"
-          alt="wonder"
-          width="147"
-          height="80"
-        />
         {children}
         <Box
           sx={{
@@ -67,13 +63,13 @@ export default function SolarHeroLayout(
           }}
         />
         <Background sx={sxBackground} />
-        <Box
-          component="img"
-          src="/static/themes/onepirate/productHeroArrowDown.png"
-          height="16"
-          width="12"
-          alt="arrow down"
-          sx={{ position: 'absolute', bottom: 32 }}
+        <KeyboardArrowDown
+          sx={{
+            position: 'absolute',
+            bottom: 32,
+            fontSize: 48,
+            color: 'white',
+          }}
         />
       </Container>
     </SolarHeroLayoutRoot>

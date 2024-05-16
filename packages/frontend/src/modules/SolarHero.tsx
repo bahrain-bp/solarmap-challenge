@@ -1,4 +1,5 @@
-import { Button, Typography } from '@mui/material';
+import Button from '../components/Button';
+import Typography from '../components/Typography';
 import SolarHeroLayout from './SolarHeroLayout';
 import video from '../assets/herovideo.mp4'; // Adjust the import path as needed
 
@@ -32,7 +33,7 @@ export default function SolarHero() {
       </video>
 
       <Typography color="inherit" align="center" variant="h2">
-        Upgrade your Sundays
+        Solar Map
       </Typography>
       <Typography
         color="inherit"
@@ -40,7 +41,7 @@ export default function SolarHero() {
         variant="h5"
         sx={{ mb: 4, mt: { xs: 4, sm: 10 } }}
       >
-        Enjoy secret offers up to -70% off the best luxury hotels every Sunday.
+        Welcome to Your Solar Journey!
       </Typography>
       <Button
         color="secondary"
@@ -50,7 +51,7 @@ export default function SolarHero() {
         href="/premium-themes/onepirate/sign-up/"
         sx={{ minWidth: 200 }}
       >
-        Register
+        Get Started
       </Button>
       <Typography variant="body2" color="inherit" sx={{ mt: 2 }}>
         Discover the experience

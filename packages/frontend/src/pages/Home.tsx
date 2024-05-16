@@ -1,5 +1,6 @@
 import * as React from 'react';
-import SolarHero from '../components/SolarHero';
+import SolarHero from '../modules/SolarHero';
+import withRoot from '../withRoot';
 
 function Home() {
   return (
@@ -9,4 +10,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default withRoot(Home);
