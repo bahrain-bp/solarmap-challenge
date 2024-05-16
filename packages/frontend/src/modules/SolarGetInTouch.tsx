@@ -42,7 +42,7 @@ function SolarGetInTouch() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: 'white',
+          color: 'black',
         }}
       >
         <FontAwesomeIcon icon={faLifeRing} size="3x" />
