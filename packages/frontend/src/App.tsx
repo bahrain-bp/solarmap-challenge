@@ -23,7 +23,7 @@ import DeleteContractor from './pages/deleteContractor';
 import Reports from './pages/Reports';
 import CalculationReccomendation from './components/CalculationRec';
 import CalcUsageStats from './components/CalculatorUsageStats';
-
+import SegmentationResults from './pages/SegmentationResults';
 
 
 import { Authenticator } from './components/Authenticator';
@@ -152,6 +152,7 @@ function App() {
             <Route path="/DocumentsDashboard" element={<DocumentsDashboard />} />
             <Route path="/CalculationRec" element={<CalculationReccomendation />} />
             <Route path="/AdminMap" element={<AdminMap />} />
+            <Route path="/SegmentationResults" element={<SegmentationResults />} />
 
           </Routes>
 
