@@ -26,7 +26,7 @@ export function ImgDetection({ stack }: StackContext) {
             timeout: Duration.seconds(120),
             layers: [
                 new lambda.LayerVersion(stack, "Layer", {
-                layerVersionName: stack.stage + '-inference-layer',
+                layerVersionName: stack.stage + '-inference-layer-and-dependencies',
                 code: lambda.Code.fromAsset("packages/functions/src/rooftop-segmentation/python.zip")
         }),
 
