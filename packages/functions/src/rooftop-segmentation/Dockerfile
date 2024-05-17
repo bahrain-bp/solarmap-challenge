@@ -14,4 +14,4 @@ RUN pip install -r requirements.txt
 COPY src/* ${LAMBDA_TASK_ROOT}
 
 # Set the CMD to handler
-CMD [ "samgeoAnalyze.handler" ]
+CMD [ "rooftopDetection.lambda_handler" ]
