@@ -7,7 +7,7 @@ import { OIDCForGitHubCI } from "./stacks/devops/OIDCForGitHubCI";
 import { DocumentProcessingStack } from "./stacks/DocumentProcessingStack";
 import { MapStack } from "./stacks/MapStack";
 import { AuthStack } from "./stacks/AuthStack";
-import { ImgDetection } from "./sta./stacks/ImgDetection
+import { ImgDetection } from "./stacks/ImgDetection";
 
 export default {
   config(_input) {
