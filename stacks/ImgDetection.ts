@@ -31,7 +31,7 @@ export function ImgDetection({ stack }: StackContext) {
             }),
             new lambda.LayerVersion(stack, "secondLayer", {
                 layerVersionName: stack.stage + '-charset-and-idna-layer',
-                code: lambda.Code.fromAsset("packages/functions/src/rooftop-segmentation/charset/python.zip")
+                code: lambda.Code.fromAsset("packages/functions/src/rooftop-segmentation/charset-idna/python.zip")
             }),
 
         ],
