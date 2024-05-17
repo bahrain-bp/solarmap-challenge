@@ -62,6 +62,8 @@ export function ApiStack(context: StackContext) {
             "GET /solarpanel": "packages/functions/src/fetchSolarPanels.handler",
             "DELETE /solarpanel/{solarpanel_id}": "packages/functions/src/deleteSolarPanels.handler",
             "PUT /solarpanel/{solarpanel_id}": "packages/functions/src/updateSolarPanels.handler",
+            "POST /feedback": "packages/functions/src/postFeedback.handler",
+            "GET /feedback": "packages/functions/src/fetchFeedback.handler",
             // TypeScript lambda function for MEWA bill document processing 
             // "POST /process-pdf": "packages/functions/src/process-pdf-lambda.handler",
             "POST /send-email": {
