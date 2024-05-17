@@ -26,12 +26,12 @@ export function ImgDetection({ stack }: StackContext) {
         timeout: Duration.seconds(120),
         layers: [
             new lambda.LayerVersion(stack, "firstLayer", {
-                layerVersionName: stack.stage + '-inference-and-requests-layer',
+                layerVersionName: stack.stage + '-inference-requests-layers',
                 code: lambda.Code.fromAsset("packages/functions/src/rooftop-segmentation/inference-requests/python.zip")
             }),
             new lambda.LayerVersion(stack, "secondLayer", {
-                layerVersionName: stack.stage + '-charset-and-idna-layer',
-                code: lambda.Code.fromAsset("packages/functions/src/rooftop-segmentation/charset-idna/python.zip")
+                layerVersionName: stack.stage + '-charset-idna-certifi-layers',
+                code: lambda.Code.fromAsset("packages/functions/src/rooftop-segmentation/charset-idna-certifi/python.zip")
             }),
 
         ],
