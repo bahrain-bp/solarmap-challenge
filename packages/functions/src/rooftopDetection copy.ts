@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 const s3 = new aws.S3({
     signatureVersion: 'v4',
     region: 'us-east-1'
-  });
+});
 
 export const handler = async (event: any): Promise<any> => {
     try {
@@ -43,27 +43,42 @@ export const handler = async (event: any): Promise<any> => {
                 }
             });
 
-            // // Assuming the response body is the modified image you want to save
-            // const modifiedImageData = Buffer.from(response.data, 'base64');
+            // Log the response data to inspect its format
+            console.log("Response data:", response.data);
 
-            // // Prepare parameters to upload the processed image back to S3
-            // const uploadParams = {
-            //     Bucket: bucketName, // You might want to choose a different bucket or path
-            //     Key: `segmented/processed-${objectKey}`,
-            //     Body: modifiedImageData,
-            //     ContentType: 'image/jpeg', // Adjust the content type if necessary
-            // };
+            // Check if the response contains predictions
+            if (response.data && response.data.predictions) {
+                const predictions = response.data.predictions;
+                const processedData = {
+                    originalImageKey: objectKey,
+                    predictions: predictions
+                };
 
-            // // Upload the processed image to S3
-            // await s3.putObject(uploadParams).promise();
-            // console.log('Processed image has been saved to S3.');
+                // Convert the processed data to JSON string
+                const processedDataJson = JSON.stringify(processedData);
 
-            return {
-                statusCode: 200,
-                body: JSON.stringify({
-                    message: "Image processed and saved successfully",
-                }),
-            };
+                // Prepare parameters to upload the processed data back to S3
+                const uploadParams = {
+                    Bucket: bucketName, // You might want to choose a different bucket or path
+                    Key: `segmentations/processed-${objectKey.replace('.png', '.json')}`,
+                    Body: processedDataJson,
+                    ContentType: 'application/json', // Adjust the content type if necessary
+                };
+
+                // Upload the processed data to S3
+                await s3.putObject(uploadParams).promise();
+                console.log('Processed data has been saved to S3.');
+
+                return {
+                    statusCode: 200,
+                    body: JSON.stringify({
+                        message: "Image processed and saved successfully",
+                    }),
+                };
+            } else {
+                console.error("Unexpected response data format:", response.data);
+                throw new Error("Unexpected response data format");
+            }
         }
 
         return {

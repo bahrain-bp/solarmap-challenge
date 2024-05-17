@@ -1,7 +1,7 @@
 import { Bucket, EventBus, Function, Queue, StackContext } from "sst/constructs";
-import { PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { aws_lambda as lambda } from 'aws-cdk-lib';
 import { Duration } from "aws-cdk-lib/core";
+import * as iam from "aws-cdk-lib/aws-iam";
 
 export function ImgDetection({ stack }: StackContext) {
 
@@ -35,12 +35,20 @@ export function ImgDetection({ stack }: StackContext) {
 
     // Create a FIFO SQS Queue
     const queue = new Queue(stack, "rooftopQueue", {
-        consumer: rooftopFunction,
+        consumer: {
+            cdk: {
+                function: lambda.Function.fromFunctionAttributes(stack, "IFunction", {
+                    functionArn: rooftopInferenceFunction.functionArn,
+                    role: rooftopInferenceFunction.role,
+                }),
+
+            },
+        },
         cdk: {
             queue: {
-                queueName: stack.stage+ 'rooftopQueue',
+                queueName: stack.stage + 'rooftopQueue',
                 visibilityTimeout: Duration.seconds(120),
-            }
+            },
         }
     });
 
@@ -57,12 +65,10 @@ export function ImgDetection({ stack }: StackContext) {
     });
 
     // Grant permissions to the Lambda function to access the S3 bucket
-    rooftopFunction.attachPermissions([
-        new PolicyStatement({
-            actions: ['s3:*'],
-            resources: [bucket.bucketArn, bucket.bucketArn + '/*'],
-        })
-    ]);
+    rooftopInferenceFunction.addToRolePolicy(new iam.PolicyStatement({
+        actions: ['s3:*'],
+        resources: [bucket.bucketArn, `${bucket.bucketArn}/*`],
+    }));
 
 
 
@@ -83,11 +89,11 @@ export function ImgDetection({ stack }: StackContext) {
     */
 
 
-        // Output Results 
+    // Output Results 
 
-        stack.addOutputs({
-            Bucket: bucket.bucketName,
-        });
+    stack.addOutputs({
+        Bucket: bucket.bucketName,
+    });
 
     return {
         queue,
