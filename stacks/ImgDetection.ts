@@ -26,8 +26,8 @@ export function ImgDetection({ stack }: StackContext) {
         timeout: Duration.seconds(120),
         layers: [
             new lambda.LayerVersion(stack, "firstLayer", {
-                layerVersionName: stack.stage + '-inference-requests-layers',
-                code: lambda.Code.fromAsset("packages/functions/src/rooftop-segmentation/inference-requests/python.zip")
+                layerVersionName: stack.stage + '-inference-requests-rich-layers',
+                code: lambda.Code.fromAsset("packages/functions/src/rooftop-segmentation/inference-requests-rich/python.zip")
             }),
             new lambda.LayerVersion(stack, "secondLayer", {
                 layerVersionName: stack.stage + '-charset-idna-certifi-dotenv-layers',
