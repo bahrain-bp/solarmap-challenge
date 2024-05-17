@@ -5,7 +5,7 @@ import { CacheHeaderBehavior, CachePolicy } from "aws-cdk-lib/aws-cloudfront";
 import { Duration } from "aws-cdk-lib/core";
 import { DocumentProcessingStack } from "./DocumentProcessingStack";
 import { PolicyStatement } from "aws-cdk-lib/aws-iam";
-import { ImgDetectionStack } from "./ImgDetectionStack";
+import { ImgDetection } from "./ImgDetection";
 import { EmailAPIStack } from "./EmailAPIStack";
 
 // Define the ApiStack function
@@ -17,8 +17,8 @@ export function ApiStack(context: StackContext) {
     const documentProcessingStack = use(DocumentProcessingStack);
     const artifactsBucket = documentProcessingStack.artificatsBucket;
 
-    const imgDetectionStack = use(ImgDetectionStack);
-    const mapsBucket = imgDetectionStack.bucket;
+    const imgDetection = use(ImgDetection);
+    const mapsBucket = imgDetection.bucket;
 
     // Call the EmailAPIStack function to get the email API
     const { api: emailApi } = EmailAPIStack({ app, stack });

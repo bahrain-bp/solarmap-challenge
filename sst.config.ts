@@ -7,7 +7,7 @@ import { OIDCForGitHubCI } from "./stacks/devops/OIDCForGitHubCI";
 import { DocumentProcessingStack } from "./stacks/DocumentProcessingStack";
 import { MapStack } from "./stacks/MapStack";
 import { AuthStack } from "./stacks/AuthStack";
-import { ImgDetectionStack } from "./stacks/ImgDetectionStack";
+import { ImgDetection } from "./sta./stacks/ImgDetection
 
 export default {
   config(_input) {
@@ -32,7 +32,7 @@ export default {
       app.stack(DBStack)
       .stack(AuthStack)
       .stack(DocumentProcessingStack) // Initialize "DocumentProcessingStack" stack before "ApiStack" stack (Dependency)
-      .stack(ImgDetectionStack)
+      .stack(ImgDetection)
       .stack(ApiStack)
       .stack(MapStack)
       .stack(FrontendStack)
