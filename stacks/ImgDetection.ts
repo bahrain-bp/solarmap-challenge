@@ -24,8 +24,14 @@ export function ImgDetection({ stack }: StackContext) {
             handler: "rooftopDetection.handler", // Adjust the handler path as necessary
             memorySize: 2048,
             timeout: Duration.seconds(120),
-        });
+            layers: [
+                new lambda.LayerVersion(stack, "Layer", {
+                layerVersionName: stack.stage + '-inference-layer',
+                code: lambda.Code.fromAsset("packages/functions/rooftop-segmentation/python.zip")
+        }),
 
+        ], 
+    });
 
     // Create a FIFO SQS Queue
     const queue = new Queue(stack, "rooftopQueue", {
