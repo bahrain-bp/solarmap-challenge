@@ -30,8 +30,8 @@ export function ImgDetection({ stack }: StackContext) {
                 code: lambda.Code.fromAsset("packages/functions/src/rooftop-segmentation/inference-requests/python.zip")
             }),
             new lambda.LayerVersion(stack, "secondLayer", {
-                layerVersionName: stack.stage + '-charset-idna-certifi-layers',
-                code: lambda.Code.fromAsset("packages/functions/src/rooftop-segmentation/charset-idna-certifi/python.zip")
+                layerVersionName: stack.stage + '-charset-idna-certifi-dotenv-layers',
+                code: lambda.Code.fromAsset("packages/functions/src/rooftop-segmentation/charset-idna-certifi-dotenv/python.zip")
             }),
 
         ],
