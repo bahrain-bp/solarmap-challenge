@@ -17,20 +17,24 @@ export function ImgDetection({ stack }: StackContext) {
 
     */
 
-        // Inside your ApiStack function
-        const rooftopInferenceFunction = new lambda.Function(stack, 'rooftopInferenceFunction', {
-            runtime: lambda.Runtime.PYTHON_3_11, // Specify the Python 3.8 runtime
-            code: lambda.Code.fromAsset("packages/functions/src/rooftop-segmentation/"), // Assuming the Lambda handler code is in this directory
-            handler: "rooftopDetection.lambda_handler", // Adjust the handler path as necessary
-            memorySize: 2048,
-            timeout: Duration.seconds(120),
-            layers: [
-                new lambda.LayerVersion(stack, "Layer", {
-                layerVersionName: stack.stage + '-inference-layer-and-dependencies',
-                code: lambda.Code.fromAsset("packages/functions/src/rooftop-segmentation/python.zip")
-        }),
+    // Inside your ApiStack function
+    const rooftopInferenceFunction = new lambda.Function(stack, 'rooftopInferenceFunction', {
+        runtime: lambda.Runtime.PYTHON_3_11, // Specify the Python 3.8 runtime
+        code: lambda.Code.fromAsset("packages/functions/src/rooftop-segmentation/"), // Assuming the Lambda handler code is in this directory
+        handler: "rooftopDetection.lambda_handler", // Adjust the handler path as necessary
+        memorySize: 2048,
+        timeout: Duration.seconds(120),
+        layers: [
+            new lambda.LayerVersion(stack, "firstLayer", {
+                layerVersionName: stack.stage + '-inference-and-requests-layer',
+                code: lambda.Code.fromAsset("packages/functions/src/rooftop-segmentation/inference-requests/python.zip")
+            }),
+            new lambda.LayerVersion(stack, "secondLayer", {
+                layerVersionName: stack.stage + '-charset-layer',
+                code: lambda.Code.fromAsset("packages/functions/src/rooftop-segmentation/charset/python.zip")
+            }),
 
-        ], 
+        ],
     });
 
     // Create a FIFO SQS Queue
