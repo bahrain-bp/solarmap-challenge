@@ -23,6 +23,7 @@ import DeleteContractor from './pages/deleteContractor';
 import Reports from './pages/Reports';
 import CalculationReccomendation from './components/CalculationRec';
 import CalcUsageStats from './components/CalculatorUsageStats';
+import AdminMapAnalytics from './pages/AdminMapAnalytics';
 
 
 
@@ -128,6 +129,9 @@ function App() {
                     <Route path="/deleteConsultant" element={<DeleteConsulantant />} />
                     <Route path="/deleteContractor" element={<DeleteContractor />} />
                     <Route path="/Reports" element={<Reports />} />
+                    <Route path="/CalculationRec" element={<CalculationReccomendation />} />
+                    <Route path="/AdminMap" element={<AdminMap />} />
+                    <Route path="/AdminMapAnalytics" element={<AdminMapAnalytics identityPoolId={identityPoolId} mapName={mapName} />} />
                     </Routes>
                   </main>
             </Authenticator>
@@ -140,19 +144,12 @@ function App() {
             <Route path="/Provider" element={<Providers isLoggedIn={isLoggedIn} />} />
             <Route path="/CarbonEmissionsCalculator" element={<CarbonFootprintCalculator />} />
             <Route path="/DocumentUpload" element={<DocumentUpload />} />
-            <Route path="/QuickSightDashboard" element={<QuickSightDashboard />} />
             {/* <Route path="/Map" element={<Map />} /> */}
             <Route path="/EducationalResources" element={<EducationalResources isLoggedIn={isLoggedIn} />} />
-            <Route path="/deleteEduResource" element={<DeleteEducationalResources />} />
-            <Route path="/addEduResource" element={<AddEducationalResource />} />
             <Route path="/MapV2" element={<MapV2 identityPoolId={identityPoolId} mapName={mapName} />} />
             <Route path="/Terms" element={<Terms />} />
             <Route path="/Privacy" element={<Privacy />} />
             <Route path="/Inquiry" element={<Inquiry />} />
-            <Route path="/DocumentsDashboard" element={<DocumentsDashboard />} />
-            <Route path="/CalculationRec" element={<CalculationReccomendation />} />
-            <Route path="/AdminMap" element={<AdminMap />} />
-
           </Routes>
 
         </div>

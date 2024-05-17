@@ -21,7 +21,9 @@
     "aws-amplify": "^6.2.0",
     "aws-lambda": "^1.0.7",
     "bootstrap": "^5.3.3",
+    "leaflet": "^1.9.4",
     "react": "^18.2.0",
+    "react-bootstrap": "^2.10.2",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.3",
     "react-toastify": "^10.0.5"

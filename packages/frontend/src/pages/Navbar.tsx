@@ -62,6 +62,7 @@ const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
                                 <li className="nav-item"><a className="nav-link" href="/calcUsageStats" style={{ color: '#FFF' }}>Statistics</a></li>
                                 <li className="nav-item"><a className="nav-link" href="/DocumentsDashboard" style={{ color: '#FFF' }}>Documents Dashboard</a></li>
                                 <li className="nav-item"><a className="nav-link" href="/AdminMap" style={{ color: '#FFF' }}>Map Visualization</a></li>
+                                <li className="nav-item"><a className="nav-link" href="/AdminMapAnalytics" style={{ color: '#FFF' }}>Admin Map</a></li>
                             </ul>
                         </div>
                     }
