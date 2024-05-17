@@ -1,7 +1,7 @@
 import { Bucket, EventBus, Function, Queue, StackContext } from "sst/constructs";
-import { PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { aws_lambda as lambda } from 'aws-cdk-lib';
 import { Duration } from "aws-cdk-lib/core";
+import * as iam from "aws-cdk-lib/aws-iam";
 
 export function ImgDetection({ stack }: StackContext) {
 
@@ -17,24 +17,31 @@ export function ImgDetection({ stack }: StackContext) {
 
     */
 
-        // Inside your ApiStack function
-        const rooftopInferenceFunction = new lambda.Function(stack, 'rooftopInferenceFunction', {
-            runtime: lambda.Runtime.PYTHON_3_8, // Specify the Python 3.8 runtime
-            code: lambda.Code.fromAsset("packages/functions/rooftop-segmentation/"), // Assuming the Lambda handler code is in this directory
-            handler: "rooftopDetection.handler", // Adjust the handler path as necessary
-            memorySize: 2048,
-            timeout: Duration.seconds(120),
-        });
+    // Inside your ApiStack function
+    const rooftopInferenceFunction = new lambda.Function(stack, 'rooftopInferenceFunction', {
+        runtime: lambda.Runtime.PYTHON_3_8, // Specify the Python 3.8 runtime
+        code: lambda.Code.fromAsset("packages/functions/src/rooftop-segmentation/"), // Assuming the Lambda handler code is in this directory
+        handler: "rooftopDetection.lambda_handler", // Adjust the handler path as necessary
+        memorySize: 2048,
+    });
 
 
     // Create a FIFO SQS Queue
     const queue = new Queue(stack, "rooftopQueue", {
-        consumer: rooftopFunction,
+        consumer: {
+            cdk: {
+                function: lambda.Function.fromFunctionAttributes(stack, "IFunction", {
+                    functionArn: rooftopInferenceFunction.functionArn,
+                    role: rooftopInferenceFunction.role,
+                }),
+
+            },
+        },
         cdk: {
             queue: {
-                queueName: stack.stage+ 'rooftopQueue',
+                queueName: stack.stage + 'rooftopQueue',
                 visibilityTimeout: Duration.seconds(120),
-            }
+            },
         }
     });
 
@@ -51,12 +58,10 @@ export function ImgDetection({ stack }: StackContext) {
     });
 
     // Grant permissions to the Lambda function to access the S3 bucket
-    rooftopFunction.attachPermissions([
-        new PolicyStatement({
-            actions: ['s3:*'],
-            resources: [bucket.bucketArn, bucket.bucketArn + '/*'],
-        })
-    ]);
+    rooftopInferenceFunction.addToRolePolicy(new iam.PolicyStatement({
+        actions: ['s3:*'],
+        resources: [bucket.bucketArn, `${bucket.bucketArn}/*`],
+    }));
 
 
 
@@ -77,11 +82,11 @@ export function ImgDetection({ stack }: StackContext) {
     */
 
 
-        // Output Results 
+    // Output Results 
 
-        stack.addOutputs({
-            Bucket: bucket.bucketName,
-        });
+    stack.addOutputs({
+        Bucket: bucket.bucketName,
+    });
 
     return {
         queue,
