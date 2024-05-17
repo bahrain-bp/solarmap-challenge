@@ -1,7 +1,7 @@
 import boto3
 import json
 import base64
-# import requests
+import inference
 
 # Create an S3 client
 s3 = boto3.client('s3')
@@ -18,22 +18,13 @@ def lambda_handler(event, context):
             print("Bucket Name: ", bucket_name)
             print("Object Key: ", object_key)
 
-    #     # Download the image from S3
-    #     image_data = s3.get_object(Bucket=bucket_name, Key=object_key)
-    #     image_body = image_data['Body'].read()
-    #     image_base64 = base64.b64encode(image_body).decode('utf-8')
+        # Download the image from S3
+        image_data = s3.get_object(Bucket=bucket_name, Key=object_key)
+        image_body = image_data['Body'].read()
+        image_base64 = base64.b64encode(image_body).decode('utf-8')
 
-    #     # Make the POST request with the image data
-    #     response = requests.post(
-    #         url="https://detect.roboflow.com/satellite-map/5",
-    #         params={"api_key": "3xmlZCsWRDCXapBb4Ydx"},
-    #         data=image_base64,
-    #         headers={"Content-Type": "application/x-www-form-urlencoded"}
-    #     )
-
-    #     # Log the response data to inspect its format
-    #     response_data = response.json()
-    #     print("Response data:", response_data)
+ 
+ 
 
     #     # Check if the response contains predictions
     #     if response_data and 'predictions' in response_data:
