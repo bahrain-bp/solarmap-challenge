@@ -19,7 +19,7 @@ export function ImgDetection({ stack }: StackContext) {
 
         // Inside your ApiStack function
         const rooftopInferenceFunction = new lambda.Function(stack, 'rooftopInferenceFunction', {
-            runtime: lambda.Runtime.PYTHON_3_8, // Specify the Python 3.8 runtime
+            runtime: lambda.Runtime.PYTHON_3_11, // Specify the Python 3.8 runtime
             code: lambda.Code.fromAsset("packages/functions/src/rooftop-segmentation/"), // Assuming the Lambda handler code is in this directory
             handler: "rooftopDetection.lambda_handler", // Adjust the handler path as necessary
             memorySize: 2048,
