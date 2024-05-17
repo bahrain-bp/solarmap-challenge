@@ -16,6 +16,7 @@ export function ImgDetection({ stack }: StackContext) {
     });
 
     */
+   /*
 
     // Inside your ApiStack function
     const rooftopInferenceFunction = new lambda.Function(stack, 'rooftopInferenceFunction', {
@@ -37,13 +38,22 @@ export function ImgDetection({ stack }: StackContext) {
         ],
     });
 
+    */
+
+    const rooftopInferenceDockerFunction = new lambda.DockerImageFunction(stack, 'rooftopInferenceDockerFunction', {
+        code: lambda.DockerImageCode.fromImageAsset("packages/functions/src/rooftop-segmentation/"), 
+        memorySize: 2048,
+        timeout: Duration.seconds(120),
+        architecture: lambda.Architecture.X86_64,
+    });
+
     // Create a FIFO SQS Queue
     const queue = new Queue(stack, "rooftopQueue", {
         consumer: {
             cdk: {
                 function: lambda.Function.fromFunctionAttributes(stack, "IFunction", {
-                    functionArn: rooftopInferenceFunction.functionArn,
-                    role: rooftopInferenceFunction.role,
+                    functionArn: rooftopInferenceDockerFunction.functionArn,
+                    role: rooftopInferenceDockerFunction.role,
                 }),
 
             },
@@ -69,7 +79,7 @@ export function ImgDetection({ stack }: StackContext) {
     });
 
     // Grant permissions to the Lambda function to access the S3 bucket
-    rooftopInferenceFunction.addToRolePolicy(new iam.PolicyStatement({
+    rooftopInferenceDockerFunction.addToRolePolicy(new iam.PolicyStatement({
         actions: ['s3:*'],
         resources: [bucket.bucketArn, `${bucket.bucketArn}/*`],
     }));
