@@ -1,8 +1,11 @@
 import { Bucket, EventBus, Function, Queue, StackContext } from "sst/constructs";
 import { PolicyStatement } from "aws-cdk-lib/aws-iam";
-import { Duration } from "aws-cdk-lib";
+import { aws_lambda as lambda } from 'aws-cdk-lib';
+import { Duration } from "aws-cdk-lib/core";
 
 export function ImgDetection({ stack }: StackContext) {
+
+    /*
 
     const rooftopFunction = new Function(stack, "rooftopFunction", {
         handler: "packages/functions/src/rooftopDetection.handler",
@@ -11,6 +14,17 @@ export function ImgDetection({ stack }: StackContext) {
         retryAttempts: 0,
         // runtime: "python3.11",
     });
+
+    */
+
+        // Inside your ApiStack function
+        const rooftopInferenceFunction = new lambda.Function(stack, 'rooftopInferenceFunction', {
+            runtime: lambda.Runtime.PYTHON_3_8, // Specify the Python 3.8 runtime
+            code: lambda.Code.fromAsset("packages/functions/rooftop-segmentation/"), // Assuming the Lambda handler code is in this directory
+            handler: "rooftopDetection.handler", // Adjust the handler path as necessary
+            memorySize: 2048,
+            timeout: Duration.seconds(120),
+        });
 
 
     // Create a FIFO SQS Queue
