@@ -51,6 +51,8 @@ export default function Home() {
    newSocket.addEventListener("error", (event) => {
      console.error("WebSocket connection error:", event);
    });
+
+    console.log(message);
    
    return () => {
      newSocket.close();
