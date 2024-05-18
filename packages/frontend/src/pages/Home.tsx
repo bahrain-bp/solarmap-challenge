@@ -3,13 +3,21 @@ import SolarGif from "../assets/SolarGif.gif";
 import SolarGif2 from "../assets/SolarGif2.gif";
 import SolarGif3 from "../assets/SolarGif3.gif";
 import SolarGif4 from "../assets/SolarGif4.gif";
+
 import { useState, useEffect } from "react";
+
+import { SetStateAction, useState } from "react";
+import exportString from "../api_url";
+const API_BASE_URL = exportString();
+
 // import Team1 from "../assets/Team1.jpg";
 // import Team2 from "../assets/Team2.jpg";
 // import Team3 from "../assets/Team3.jpg";
 // import Team4 from "../assets/Team4.jpg";
 // import Team5 from "../assets/Team5.jpg";
+
 export default function Home() {
+
 
 
   const [message, setMessage] = useState("");
@@ -52,7 +60,43 @@ export default function Home() {
 
    }, []);
    
+
+  const [feedback, setFeedback] = useState("");
+  const [submitSuccess, setSubmitSuccess] = useState(false); // New state for submit success message
+
+  const handleFeedbackChange = (e: { target: { value: SetStateAction<string>; }; }) => {
+    setFeedback(e.target.value);
+  };
+
+
+  const handleSubmit = async (e: { preventDefault: () => void; }) => {
+    e.preventDefault();
+
+    try {
+      await fetch(`${API_BASE_URL}/feedback`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ feedback_content: feedback }),
+      });
+
+      // Show success message
+      setSubmitSuccess(true);
+
+      // Hide success message after 3 seconds
+      setTimeout(() => {
+        setSubmitSuccess(false);
+      }, 3000);
+    } catch (error) {
+      console.error("Error submitting feedback:", error);
+    } finally {
+      setFeedback("");
+    }
+  };
+
+
+
   return (
+
     <>
       {/* Image Slider */}
       <div id="slides" className="carousel slide" data-ride="carousel">
@@ -197,7 +241,7 @@ export default function Home() {
       </div>
       <br /> */}
 
-{/* Team Section with Cards
+      {/* Team Section with Cards
 <div className="container">
                 <h2 className="display-4 text-center">Meet Our Team</h2>
                 <div className="row">
@@ -250,6 +294,61 @@ export default function Home() {
             </div> */}
       <br />
       <br />
+      {/* Feedback Section */}
+      <div className="container-fluid padding">
+        <div className="row text-center">
+          <div className="col-12">
+            <h2>We Value Your Feedback</h2>
+            <p className="lead" style={{ fontSize: "24px" }}>
+              Click the button below to give us your feedback on the application. Your feedback is anonymous unless you choose to provide your email address or phone number for us to reach out to you.
+            </p>
+            <button type="button" className="btn btn-outline-secondary btn-lg" data-toggle="modal" data-target="#feedbackModal">
+              Give Feedback
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Feedback Modal */}
+<div className="modal fade" id="feedbackModal" role="dialog" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+  <div className="modal-dialog" role="document">
+    <div className="modal-content">
+      <div className="modal-header">
+        <h5 className="modal-title" id="feedbackModalLabel">Feedback</h5>
+        <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div className="modal-body">
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="feedback">Your Feedback</label>
+            <textarea
+              className="form-control"
+              id="feedback"
+              value={feedback}
+              onChange={handleFeedbackChange}
+              required
+            ></textarea>
+          </div>
+          <button type="submit" className="btn btn-primary">Submit</button>
+          {/* Success Message */}
+          {submitSuccess && (
+            <div className="alert alert-success alert-dismissible fade show mt-3" role="alert">
+              Feedback submitted successfully!
+              <button type="button" className="close" data-dismiss="alert" aria-label="Close" onClick={() => setSubmitSuccess(false)}>
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          )}
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <br></br>
+
       {/* Connect Socials */}
       <div className="container-fluid padding">
         <div className="row text-center padding">
@@ -265,8 +364,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-    <br />
-      
+      <br />
     </>
   );
 }

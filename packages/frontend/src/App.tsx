@@ -29,7 +29,9 @@ import { getCurrentUser, signOut } from 'aws-amplify/auth';
 import '@aws-amplify/ui-react/styles.css';
 
 import { Hub } from 'aws-amplify/utils';
+import Chatbot from './components/AmazonLexSolarMapChatbot';
 import Inquiry from './pages/Inquiry';
+import AdminMap from './pages/AdminMap';
 
 function App() {
   const identityPoolId = import.meta.env.VITE_IDENTITY_POOL_ID; // Cognito Identity Pool ID
@@ -139,20 +141,20 @@ function App() {
             <Route path="/QuickSightDashboard" element={<QuickSightDashboard />} />
             {/* <Route path="/Map" element={<Map />} /> */}
             <Route path="/EducationalResources" element={<EducationalResources isLoggedIn={isLoggedIn} />} />
-            <Route path="/deleteEduResource" element={<DeleteEducationalResources />} />
-            <Route path="/addEduResource" element={<AddEducationalResource />} />
             <Route path="/MapV2" element={<MapV2 identityPoolId={identityPoolId} mapName={mapName} />} />
             <Route path="/Terms" element={<Terms />} />
             <Route path="/Privacy" element={<Privacy />} />
             <Route path="/Inquiry" element={<Inquiry />} />
             <Route path="/DocumentsDashboard" element={<DocumentsDashboard />} />
             <Route path="/CalculationRec" element={<CalculationReccomendation />} />
+            <Route path="/AdminMap" element={<AdminMap />} />
 
           </Routes>
 
         </div>
         {/* Footer */}
         <Footer />
+        <Chatbot />
       </div>
     </BrowserRouter>
   )
