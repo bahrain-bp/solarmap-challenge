@@ -31,7 +31,7 @@ const QuestionSlide: React.FC<QuestionSlideProps> = ({ label, value, onChange, m
     </div>
 );
 
-const StatusAndSuggestions: React.FC<{ footprint: number, status: string, suggestions: string[] }> = ({ footprint, status, suggestions }) => {
+const StatusAndSuggestions: React.FC<{ footprint: number, status: string, suggestions: string[], timeToReduce: string }> = ({ footprint, status, suggestions, timeToReduce }) => {
     const alertClass = status === 'Good' ? 'alert-success' :
                        status === 'Moderate' ? 'alert-warning' : 'alert-danger';
 
@@ -40,6 +40,7 @@ const StatusAndSuggestions: React.FC<{ footprint: number, status: string, sugges
             <div className={`alert ${alertClass}`} role="alert">
                 <h4 className="alert-heading">{status} Carbon Footprint</h4>
                 <p>Your carbon footprint is {footprint.toFixed(2)} kg CO2. {status} - here are some suggestions to improve:</p>
+                <p>Estimated time to reduce by 50%: {timeToReduce}</p>
             </div>
             <ul className="list-group">
                 {suggestions.map((suggestion, index) => (
@@ -59,25 +60,29 @@ const CarbonFootprintCalculator: React.FC = () => {
     const [carbonFootprint, setCarbonFootprint] = useState<number | null>(null);
     const [footprintStatus, setFootprintStatus] = useState<string>('');
     const [suggestions, setSuggestions] = useState<string[]>([]);
+    const [timeToReduce, setTimeToReduce] = useState<string>('Calculating...');
     const API_BASE_URL = exportString();
     const splineCanvasRef = useRef<HTMLCanvasElement>(null);
 
-    const getFootprintStatusAndSuggestions = (footprint: number): [string, string[]] => {
+    const getFootprintStatusAndSuggestions = (footprint: number): [string, string[], string] => {
         let status = '';
         let suggestions: string[] = [];
-    
+        let timeEstimate = '10 years'; // Default estimate
+
         if (footprint <= 2000) {
             status = 'Good';
             suggestions.push('Maintain your habits!', 'Consider investing in renewable energy sources.');
         } else if (footprint <= 4000) {
             status = 'Moderate';
             suggestions.push('Try reducing your car usage.', 'Consider upgrading to energy-efficient appliances.');
+            timeEstimate = '5 years';
         } else {
             status = 'High';
             suggestions.push('Consider carpooling or using public transportation.', 'Reduce unnecessary electricity usage.', 'Recycle and manage waste efficiently.');
+            timeEstimate = '2 years';
         }
     
-        return [status, suggestions];
+        return [status, suggestions, timeEstimate];
     };
     
     useEffect(() => {
@@ -130,25 +135,32 @@ const CarbonFootprintCalculator: React.FC = () => {
                                (carMiles * carEF) +
                                ((wasteAmount * 4) * wasteEF); // Convert weekly to monthly
         setCarbonFootprint(totalEmissions);
-        const [status, tips] = getFootprintStatusAndSuggestions(totalEmissions);
+        const [status, tips, timeEstimate] = getFootprintStatusAndSuggestions(totalEmissions);
         setFootprintStatus(status);
         setSuggestions(tips);
-        saveCarbonFootprint(totalEmissions);
+        setTimeToReduce(timeEstimate);
+        const timeToReduceAsInt = parseInt(timeEstimate, 10);
+
+        saveCarbonFootprint(totalEmissions, timeToReduceAsInt);
     };
 
-    const saveCarbonFootprint = async (footprint: number) => {
-        try {
-            const response = await fetch(`${API_BASE_URL}/carboncalculator`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ecologicalFootprint: footprint })
-            });
-            const data = await response.json();
-            console.log('Save successful:', data);
-        } catch (error) {
-            console.error('Error saving carbon footprint:', error);
-        }
-    };
+    const saveCarbonFootprint = async (footprint: number, timeToReduce: number) => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/carboncalculator`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                ecologicalFootprint: footprint,
+                reducedTime: timeToReduce  
+            })
+        });
+        const data = await response.json();
+        console.log('Save successful:', data);
+    } catch (error) {
+        console.error('Error saving carbon footprint:', error);
+    }
+};
+
 
     return (
         <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
@@ -170,11 +182,12 @@ const CarbonFootprintCalculator: React.FC = () => {
                             </button>
                         </div>
                     ) : (
-                        <StatusAndSuggestions footprint={carbonFootprint} status={footprintStatus} suggestions={suggestions} />
+                        <StatusAndSuggestions footprint={carbonFootprint} status={footprintStatus} suggestions={suggestions} timeToReduce={timeToReduce} />
                     )}
                 </div>
             </div>
         </div>
     );
 };
+
 export default CarbonFootprintCalculator;

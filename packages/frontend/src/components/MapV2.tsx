@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Feature, Polygon } from 'geojson';
 import maplibregl from 'maplibre-gl';
 import React, { useEffect, useRef, useState } from 'react';
-import SolarPanelCalculator from './SolarPanelCalculator';
+// import SolarPanelCalculator from './SolarPanelCalculator';
 
 // Define coordinates array here
 let coordinates = [
@@ -28,6 +28,7 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const mapRef = useRef<maplibregl.Map | null>(null);
+  const [boxSize, setBoxSize] = useState<number>(0.001);  // Initial size of the box in degrees
 
 
   useEffect(() => {
@@ -86,6 +87,16 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
               }
             },
           );
+          // Add geolocate control to the map.
+          mapRef.current?.addControl(
+            new maplibregl.GeolocateControl({
+              positionOptions: {
+                enableHighAccuracy: true
+              },
+              trackUserLocation: true
+            }),
+            'top-left', // Positioning the control at the top left
+          );
           const draw = new MapboxDraw({
             displayControlsDefault: false,
             controls: {
@@ -137,7 +148,7 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
     };
   }, [identityPoolId, mapName]); // Effect dependencies
 
-  const drawBoxAroundPoint = (center: number[], size = 0.001) => {
+  const drawBoxAroundPoint = (center: number[], size: number = boxSize) => {
     const [lng, lat] = center;
     coordinates = [
       [
@@ -177,6 +188,25 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
             'fill-opacity': 0.4
           }
         });
+
+
+        /*
+
+        // Load an image to use as the pattern
+        const image = mapRef.current.loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/64px-Cat_silhouette.svg.png');
+        // Declare the image
+        mapRef.current.addImage('pattern', (await image).data);
+
+                // Use it
+                mapRef.current?.addLayer({
+                  'id': 'pattern-layer',
+                  'type': 'fill',
+                  'source': 'box-source',
+                  'paint': {
+                      'fill-pattern': 'pattern'
+                  }
+              });
+              */
       }
     }
   };
@@ -219,11 +249,11 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
   const handleSubmit = () => {
     setIsModalVisible(false);
     // Hide or remove the draw control and any drawn features before capturing the image
-      // Temporarily remove the 3D buildings layer
-  if (mapRef.current?.getLayer('3d-buildings')) {
-    mapRef.current.removeLayer('3d-buildings');
-    mapRef.current.removeSource('openmaptiles');
-  }
+    // Temporarily remove the 3D buildings layer
+    if (mapRef.current?.getLayer('3d-buildings')) {
+      mapRef.current.removeLayer('3d-buildings');
+      mapRef.current.removeSource('openmaptiles');
+    }
 
     if (drawControl) {
       mapRef.current?.removeControl(drawControl as any);
@@ -273,34 +303,36 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
 
       console.log('blob:', blob);
       console.log('mime:', mimeString);
+
+
       // Save the Blob locally
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = 'cropped_map.png'; // Update the file name
-      link.click();
+      // const link = document.createElement('a');
+      // link.href = window.URL.createObjectURL(blob);
+      // link.download = 'cropped_map.png'; // Update the file name
+      // link.click();
 
 
 
-// Assuming `dataUrl` is your image encoded as a data URL
-fetch(dataUrl)
-    .then(res => res.blob())
-    .then(blob => {
-        const formData = new FormData();
-        formData.append('file', blob, 'cropped_map.png');
+      // Assuming `dataUrl` is your image encoded as a data URL
+      fetch(dataUrl)
+        .then(res => res.blob())
+        .then(blob => {
+          const formData = new FormData();
+          formData.append('file', blob, 'cropped_map.png');
 
-        // POST request to the server
-        fetch(import.meta.env.VITE_API_URL+'/detectionUpload', { // Assuming the endpoint is relative
+          // POST request to the server
+          fetch(import.meta.env.VITE_API_URL + '/detectionUpload', { // Assuming the endpoint is relative
             method: 'POST',
             body: formData,  // Sending as FormData, not JSON
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Success:', data);
-        })
-        .catch(error => {
-            console.error('Error:', error);
+          })
+            .then(response => response.json())
+            .then(data => {
+              console.log('Success:', data);
+            })
+            .catch(error => {
+              console.error('Error:', error);
+            });
         });
-    });
 
 
 
@@ -308,43 +340,43 @@ fetch(dataUrl)
       // Optionally re-add removed elements if needed
       reAddDrawControl();
       reAddBoxLayer();
-   // Re-add 3D buildings layer if it was previously visible
-   if (!mapRef.current?.getLayer('3d-buildings')) {
-    // Add 3D buildings layer back to the map
-    mapRef.current?.addSource('openmaptiles', {
-      url: `https://api.maptiler.com/tiles/v3/tiles.json?key=UGho1CzUl0HDsQMTTKJ0`,
-      type: 'vector',
-    });
-    mapRef.current?.addLayer({
-      'id': '3d-buildings',
-      'source': 'openmaptiles',
-      'source-layer': 'building',
-      'type': 'fill-extrusion',
-      'minzoom': 15,
-      'paint': {
-        'fill-extrusion-color': [
-          'interpolate',
-          ['linear'],
-          ['get', 'render_height'], 0, 'lightgray', 200, 'royalblue', 400, 'lightblue'
-        ],
-        'fill-extrusion-height': [
-          'interpolate',
-          ['linear'],
-          ['zoom'],
-          15,
-          0,
-          16,
-          ['get', 'render_height']
-        ],
-        'fill-extrusion-base': ['case',
-          ['>=', ['get', 'zoom'], 16],
-          ['get', 'render_min_height'], 0
-        ]
+      // Re-add 3D buildings layer if it was previously visible
+      if (!mapRef.current?.getLayer('3d-buildings')) {
+        // Add 3D buildings layer back to the map
+        mapRef.current?.addSource('openmaptiles', {
+          url: `https://api.maptiler.com/tiles/v3/tiles.json?key=UGho1CzUl0HDsQMTTKJ0`,
+          type: 'vector',
+        });
+        mapRef.current?.addLayer({
+          'id': '3d-buildings',
+          'source': 'openmaptiles',
+          'source-layer': 'building',
+          'type': 'fill-extrusion',
+          'minzoom': 15,
+          'paint': {
+            'fill-extrusion-color': [
+              'interpolate',
+              ['linear'],
+              ['get', 'render_height'], 0, 'lightgray', 200, 'royalblue', 400, 'lightblue'
+            ],
+            'fill-extrusion-height': [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              15,
+              0,
+              16,
+              ['get', 'render_height']
+            ],
+            'fill-extrusion-base': ['case',
+              ['>=', ['get', 'zoom'], 16],
+              ['get', 'render_min_height'], 0
+            ]
+          }
+        });
       }
     });
-  }
-});
-};
+  };
 
 
 
@@ -374,9 +406,27 @@ fetch(dataUrl)
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
-              <div className="modal-body" style={{ padding: '10px' }}> {/* Reduced padding */}
+              <div className="modal-body" style={{ padding: '10px' }}>
                 <p>Please confirm if your property is within the drawn box.</p>
+                <label>Adjust box size:</label>
+                <input
+                  type="range"
+                  min="0.0005"
+                  max="0.005"
+                  step="0.0001"
+                  value={boxSize}
+                  onChange={(e) => {
+                    const newSize = parseFloat(e.target.value);
+                    setBoxSize(newSize);
+                    if (featureCoordinates) {
+                      drawBoxAroundPoint(featureCoordinates[0], newSize);
+                    }
+                  }}
+
+                  style={{ width: '100%' }}
+                />
               </div>
+
               <div className="modal-footer" style={{ padding: '10px' }}>
                 <button type="button" className="btn btn-primary" onClick={handleSubmit}>Confirm</button>
                 <button type="button" className="btn btn-secondary" onClick={handleReset}>Reset</button>
@@ -385,8 +435,9 @@ fetch(dataUrl)
           </div>
         </div>
       )}
+
       <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
-        <SolarPanelCalculator />
+        {/* <SolarPanelCalculator /> */}
         <div id="map" style={{ width: '100%', height: '100%' }}>
           {errorMessage && (
             <div style={{ color: 'red', position: 'absolute', top: '10px', left: '10px' }}>{errorMessage}</div>

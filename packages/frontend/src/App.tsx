@@ -21,6 +21,9 @@ import DeleteConsulantant from './pages/deleteConsultant';
 import AddContractor from './pages/addContractor';
 import DeleteContractor from './pages/deleteContractor';
 import Reports from './pages/Reports';
+import CalculationReccomendation from './components/CalculationRec';
+import CalcUsageStats from './components/CalculatorUsageStats';
+
 
 
 import { Authenticator } from './components/Authenticator';
@@ -29,6 +32,8 @@ import '@aws-amplify/ui-react/styles.css';
 
 import { Hub } from 'aws-amplify/utils';
 import Chatbot from './components/AmazonLexSolarMapChatbot';
+import Inquiry from './pages/Inquiry';
+import AdminMap from './pages/AdminMap';
 
 function App() {
   const identityPoolId = import.meta.env.VITE_IDENTITY_POOL_ID; // Cognito Identity Pool ID
@@ -116,6 +121,7 @@ function App() {
                     <Routes>
                     <Route path="/QuickSightDashboard" element={<QuickSightDashboard />} />
                     <Route path="/DocumentsDashboard" element={<DocumentsDashboard/>}/>
+                    <Route path="/calcUsageStats" element={<CalcUsageStats />} />
                     <Route path="/deleteEduResource" element={<DeleteEducationalResources />} />
                     <Route path="/addEduResource" element={<AddEducationalResource />} />
                     <Route path="/addConsultants" element={<AddConsultants />} />
@@ -135,10 +141,17 @@ function App() {
             <Route path="/Provider" element={<Providers isLoggedIn={isLoggedIn} />} />
             <Route path="/CarbonEmissionsCalculator" element={<CarbonFootprintCalculator />} />
             <Route path="/DocumentUpload" element={<DocumentUpload />} />
-            <Route path="/MapV2" element={<MapV2 identityPoolId={identityPoolId} mapName={mapName}/>}/>
-            <Route path="/Terms" element={<Terms/>}/>
-            <Route path="/Privacy" element={<Privacy/>}/>
+            <Route path="/QuickSightDashboard" element={<QuickSightDashboard />} />
+            {/* <Route path="/Map" element={<Map />} /> */}
             <Route path="/EducationalResources" element={<EducationalResources isLoggedIn={isLoggedIn} />} />
+            <Route path="/MapV2" element={<MapV2 identityPoolId={identityPoolId} mapName={mapName} />} />
+            <Route path="/Terms" element={<Terms />} />
+            <Route path="/Privacy" element={<Privacy />} />
+            <Route path="/Inquiry" element={<Inquiry />} />
+            <Route path="/DocumentsDashboard" element={<DocumentsDashboard />} />
+            <Route path="/CalculationRec" element={<CalculationReccomendation />} />
+            <Route path="/AdminMap" element={<AdminMap />} />
+
           </Routes>
 
         </div>
