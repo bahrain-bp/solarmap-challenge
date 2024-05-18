@@ -5,6 +5,12 @@ import * as iam from "aws-cdk-lib/aws-iam";
 
 export function ImgDetection({ stack }: StackContext) {
 
+ // Create a policy statement for ECR
+ const ecrPolicy = new iam.PolicyStatement({
+    actions: ['ecr:GetAuthorizationToken', 'ecr:PutImage'],
+    resources: ['*'], 
+    effect: iam.Effect.ALLOW
+});
     /*
 
     const rooftopFunction = new Function(stack, "rooftopFunction", {
@@ -47,24 +53,27 @@ export function ImgDetection({ stack }: StackContext) {
         architecture: lambda.Architecture.X86_64,
     });
 
-    // Create a FIFO SQS Queue
-    const queue = new Queue(stack, "rooftopQueue", {
-        consumer: {
-            cdk: {
-                function: lambda.Function.fromFunctionAttributes(stack, "IFunction", {
-                    functionArn: rooftopInferenceDockerFunction.functionArn,
-                    role: rooftopInferenceDockerFunction.role,
-                }),
-
-            },
-        },
+    
+// Attach the ECR policy to the Lambda function's role
+rooftopInferenceDockerFunction.role?.addToPrincipalPolicy(ecrPolicy);
+// Create a FIFO SQS Queue
+const queue = new Queue(stack, "rooftopQueue", {
+    consumer: {
         cdk: {
-            queue: {
-                queueName: stack.stage + 'rooftopQueue',
-                visibilityTimeout: Duration.seconds(120),
-            },
-        }
-    });
+            function: lambda.Function.fromFunctionAttributes(stack, "IFunction", {
+                functionArn: rooftopInferenceDockerFunction.functionArn,
+                role: rooftopInferenceDockerFunction.role,
+            }),
+
+        },
+    },
+    cdk: {
+        queue: {
+            queueName: stack.stage + 'rooftopQueue',
+            visibilityTimeout: Duration.seconds(120),
+        },
+    }
+});
 
 
     // Create an S3 bucket and configure it to send notifications to an EventBus
