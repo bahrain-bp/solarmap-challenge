@@ -80,12 +80,32 @@ def GetSolarPanelInstallationEstimateIntent(intent_request):
     # Return the calculated estimate
     return close(intent_request, session_attributes, fulfillment_State, message)
 
+def WelcomeIntent(intent_request):
+
+    session_attributes = get_session_attributes(intent_request)
+
+    # Calculaton to be added here
+    
+    text = "Intent Recieved By Bot"
+
+    message = {
+        'contentType': 'PlainText',
+        'content': text
+    }
+
+    fulfillment_State ="Fulfilled"
+    # Return the calculated estimate
+    return close(intent_request, session_attributes, fulfillment_State, message)
+
+
 def dispatch(intent_request):
     intent_name = intent_request['sessionState']['intent']['name']
     response = None
     # Dispatch to your bot's intent handlers
-    if intent_name == 'GetSolarPanelInstallationEstimateIntent':
-        return GetSolarPanelInstallationEstimateIntent(intent_request)
+    if intent_name == 'WelcomeIntent':
+        return WelcomeIntent(intent_request)
+    # if intent_name == 'GetSolarPanelInstallationEstimateIntent':
+    #     return GetSolarPanelInstallationEstimateIntent(intent_request)
     # elif intent_name == 'FollowupCheckBalance':
     #     return FollowupCheckBalance(intent_request)
     else:

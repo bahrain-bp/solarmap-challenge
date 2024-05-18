@@ -13,7 +13,7 @@ import { AmazonLexSolarMapFulfillment } from "./AmazonLexSolarMapFulfillment";
 export function AmazonLexSolarMapBot({ stack }: StackContext) {
 
     const amazonLexSolarMapFulfillment = use(AmazonLexSolarMapFulfillment);
-    const fulfillmentFunction = amazonLexSolarMapFulfillment.lambdaFunction;
+    const fulfillmentFunction = amazonLexSolarMapFulfillment.fulfillmentFunction;
     
 
     // Setup our custom resource from the AWS Serverless Application Repo.
@@ -54,6 +54,7 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
         },
     });
 
+
     locale.addSlotType({
         slotTypeName: 'SolarMapSlot',
         description: 'Everything Solar Map',
@@ -71,7 +72,7 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
         ],
     });
 
-    const orderFlowers = locale.addIntent({
+    const welcomeIntent = locale.addIntent({
         intentName: 'WelcomeIntent',
         description: 'Intent to provide user with all around solar map information',
         sampleUtterances: [
@@ -82,8 +83,9 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
             { utterance: 'What is this?' },
             { utterance: 'Who are you?' },
             { utterance: 'How can I get started?' },
-            { utterance: 'Who are my ' },
+            { utterance: 'Good morning' },
             { utterance: 'Good afternoon' },
+            { utterance: 'Explain'},
         ],
         fulfillmentCodeHook: {
             enabled: true,
@@ -119,7 +121,7 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
                     {
                         message: {
                             plainTextMessage: {
-                                value: 'Okay, your selected category is {SolarMapSlot} , please confrim.',
+                                value: 'Okay, your selected category is "{SolarMapSlot}", please confirm.',
                             },
                         },
                     },
@@ -140,7 +142,7 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
         },
     });
 
-    orderFlowers.addSlot({
+    welcomeIntent.addSlot({
         slotName: 'SolarMapSlot',
         slotTypeName: 'SolarMapSlot',
         description: 'The type of category to learn about',
@@ -151,7 +153,7 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
                     {
                         message: {
                             plainTextMessage: {
-                                value: 'Which of the following categories from `About`, `Contractors`, `Consultants`, `Consultants`, `Calculation`, `Process`, `Data & Privacy`, or `More, would you like to learn about?',
+                                value: 'Welcome to Solar Map Bot. Which of the following categories from "About", "Contractors", "consultants", "Consultants", "Calculation", "Process", "Data & Privacy", or "More", would you like to learn about?',
                             },
                         },
                     },
@@ -170,7 +172,7 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
 
     // create an alias and assign it to the latest bot version
     bot.addAlias({
-        botAliasName: 'live',
+        botAliasName: 'liveAlias',
         botVersion: version.botVersion(),
         botAliasLocaleSettings: {
             en_US: {
@@ -184,4 +186,7 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
             },
         },
     });
+
+    
+    
 }

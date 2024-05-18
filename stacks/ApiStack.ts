@@ -5,6 +5,7 @@ import { Duration } from "aws-cdk-lib/core";
 import { DocumentProcessingStack } from "./DocumentProcessingStack";
 import { PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { ImgDetection } from "./ImgDetection";
+import { AmazonLexSolarMapFulfillment } from "./AmazonLexSolarMapFulfillment";
 
 export function ApiStack({ stack }: StackContext) {
 
@@ -15,6 +16,9 @@ export function ApiStack({ stack }: StackContext) {
 
     const imgDetection = use(ImgDetection);
     const mapsBucket = imgDetection.bucket;
+
+    const amazonLexSolarMapFulfillment = use(AmazonLexSolarMapFulfillment);
+    const communicationFunction = amazonLexSolarMapFulfillment.communicationFunction;
 
 
 
@@ -70,6 +74,11 @@ export function ApiStack({ stack }: StackContext) {
                     environment: {
                         BUCKET_NAME: mapsBucket.bucketName,
                     }
+                }
+            },
+            "GET /communicate": {
+                cdk: {
+                    function: communicationFunction,
                 }
             },
             // Sample Pyhton lambda function
