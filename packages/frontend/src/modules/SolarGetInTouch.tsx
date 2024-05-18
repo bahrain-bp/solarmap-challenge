@@ -69,11 +69,11 @@ function SolarGetInTouch() {
         }}
       >
         <Typography variant="h4" component="span">
-          Got any questions? Need help?
+          Let us know your feedback!
         </Typography>
       </Button>
       <Typography variant="subtitle1">
-        We are here to help. Get in touch!
+      Spotted a bug? Let us know!
       </Typography>
       <Box
         sx={{
