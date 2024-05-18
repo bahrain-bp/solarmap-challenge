@@ -29,7 +29,7 @@ import { Authenticator } from './modules/Authenticator';
 import { getCurrentUser, signOut } from 'aws-amplify/auth';
 import '@aws-amplify/ui-react/styles.css';
 import { Hub } from 'aws-amplify/utils';
-// import Chatbot from './components/AmazonLexSolarMapChatbot';
+import Chatbot from './components/AmazonLexSolarMapChatbot';
 import Inquiry from './pages/Inquiry';
 import AdminMap from './pages/AdminMap';
 
@@ -109,6 +109,7 @@ function App() {
         <Box display="flex" flexDirection="column" minHeight="100vh">
           <NavBar isLoggedIn={isLoggedIn} onLogInButton={handleLoginButton} />
           {showLogin && (
+             <Box position="fixed" top={0} left={0} width="100%" height="100%" zIndex={9999} display="flex" justifyContent="center" alignItems="center" bgcolor="rgba(0, 0, 0, 0.4)">
             <Authenticator onCloseClick={closeLoginDialog}>
               <main>
                 <Routes>
@@ -125,6 +126,7 @@ function App() {
                 </Routes>
               </main>
             </Authenticator>
+            </Box>
           )}
           <Box component="main" flexGrow={1}>
             <Routes>
@@ -145,7 +147,7 @@ function App() {
             </Routes>
           </Box>
           <Footer />
-          {/* <Chatbot /> */}
+          <Chatbot /> 
         </Box>
       </BrowserRouter>
     </ThemeProvider>
