@@ -6,6 +6,7 @@ import { Duration } from "aws-cdk-lib/core";
 import { DocumentProcessingStack } from "./DocumentProcessingStack";
 import { PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { ImgDetection } from "./ImgDetection";
+// import { AmazonLexSolarMapFulfillment } from "./AmazonLexSolarMapFulfillment";
 import { EmailAPIStack } from "./EmailAPIStack";
 
 // Define the ApiStack function
@@ -20,8 +21,14 @@ export function ApiStack(context: StackContext) {
     const imgDetection = use(ImgDetection);
     const mapsBucket = imgDetection.bucket;
 
+
+    // const amazonLexSolarMapFulfillment = use(AmazonLexSolarMapFulfillment);
+    // const communicationFunction = amazonLexSolarMapFulfillment.communicationFunction;
+
+
     // Call the EmailAPIStack function to get the email API
     const { api: emailApi } = EmailAPIStack({ app, stack });
+
 
     // Retrieve the DB stack
     const { db } = use(DBStack);
@@ -105,6 +112,11 @@ export function ApiStack(context: StackContext) {
                     }
                 }
             },
+            // "GET /communicate": {
+            //     cdk: {
+            //         function: communicationFunction,
+            //     }
+            // },
             // Sample Pyhton lambda function
             "GET /": {
                 function: {

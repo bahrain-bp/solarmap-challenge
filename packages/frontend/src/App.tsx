@@ -31,6 +31,7 @@ import { getCurrentUser, signOut } from 'aws-amplify/auth';
 import '@aws-amplify/ui-react/styles.css';
 
 import { Hub } from 'aws-amplify/utils';
+import Chatbot from './components/AmazonLexSolarMapChatbot';
 import Inquiry from './pages/Inquiry';
 import AdminMap from './pages/AdminMap';
 
@@ -156,6 +157,7 @@ function App() {
         </div>
         {/* Footer */}
         <Footer />
+        <Chatbot />
       </div>
     </BrowserRouter>
   )
