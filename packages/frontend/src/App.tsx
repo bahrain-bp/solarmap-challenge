@@ -29,7 +29,7 @@ import { Authenticator } from './modules/Authenticator';
 import { getCurrentUser, signOut } from 'aws-amplify/auth';
 import '@aws-amplify/ui-react/styles.css';
 import { Hub } from 'aws-amplify/utils';
-import Chatbot from './components/AmazonLexSolarMapChatbot';
+// import Chatbot from './components/AmazonLexSolarMapChatbot';
 import Inquiry from './pages/Inquiry';
 import AdminMap from './pages/AdminMap';
 
@@ -136,12 +136,14 @@ function App() {
               <Route path="/MapV2" element={<MapV2 identityPoolId={identityPoolId} mapName={mapName} />} />
               <Route path="/Terms" element={<Terms />} />
               <Route path="/Privacy" element={<Privacy />} />
+              <Route path="/Inquiry" element={<Inquiry />} />
               <Route path="/CalculationRec" element={<CalculationReccomendation />} />
               <Route path="/AdminMap" element={<AdminMap />} />
               <Route path="/EducationalResources" element={<EducationalResources isLoggedIn={isLoggedIn} />} />
             </Routes>
           </Box>
           <Footer />
+          {/* <Chatbot /> */}
         </Box>
       </BrowserRouter>
     </ThemeProvider>
