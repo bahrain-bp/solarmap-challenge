@@ -4,9 +4,7 @@ import SolarGif2 from "../assets/SolarGif2.gif";
 import SolarGif3 from "../assets/SolarGif3.gif";
 import SolarGif4 from "../assets/SolarGif4.gif";
 
-import { useState, useEffect } from "react";
-
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useState, useEffect } from "react";
 import exportString from "../api_url";
 const API_BASE_URL = exportString();
 
