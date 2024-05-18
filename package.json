@@ -14,6 +14,7 @@
   "devDependencies": {
     "@mapbox/mapbox-gl-draw": "^1.4.3",
     "@tsconfig/node18": "^18.2.1",
+    "@types/leaflet": "^1.9.12",
     "@types/mapbox__mapbox-gl-draw": "^1.4.6",
     "amazon-quicksight-embedding-sdk": "^2.6.0",
     "aws-cdk-lib": "^2.124.0",
@@ -25,16 +26,25 @@
     "packages/*"
   ],
   "dependencies": {
-    "@aws-amplify/ui-react": "^6.1.8",
+    "@amaabca/aws-lex-custom-resources": "^4.1.0",
+    "@aws-amplify/ui-react": "^6.1.9",
     "@aws-sdk/client-quicksight": "^3.564.0",
     "@aws/amazon-location-utilities-auth-helper": "^1.0.5",
+    "@fortawesome/fontawesome-svg-core": "^6.5.2",
+    "@fortawesome/free-solid-svg-icons": "^6.5.2",
+    "@fortawesome/react-fontawesome": "^0.2.1",
+    "@mui/material": "^5.15.17",
     "@splinetool/runtime": "^1.2.0",
-    "aws-amplify": "^6.0.28",
+    "aws-amplify": "^6.3.0",
     "axios": "^1.6.8",
     "jquery": "^3.7.1",
     "lambda-multipart-parser": "^1.0.1",
+    "leaflet": "^1.9.4",
     "maplibre-gl": "^4.1.3",
     "moment": "^2.30.1",
+    "proxy-agent": "^6.4.0",
+    "react-bootstrap": "^2.10.2",
+    "react-leaflet": "^4.2.1",
     "react-router-dom": "^6.22.3",
     "vite": "^5.2.7"
   }

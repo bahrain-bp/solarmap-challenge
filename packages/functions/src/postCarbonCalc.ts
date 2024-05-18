@@ -1,8 +1,9 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
-import { SQL } from "./sql";
+import { SQL } from "./dbConfig";
 
 interface CarbonFootprintData {
     ecologicalFootprint: number;
+    reducedTime: number;
 }
 
 export const handler: APIGatewayProxyHandler = async (event) => {
@@ -13,13 +14,15 @@ export const handler: APIGatewayProxyHandler = async (event) => {
         };
     }
     
-    const { ecologicalFootprint }: CarbonFootprintData = JSON.parse(event.body);
+    const { ecologicalFootprint, reducedTime }: CarbonFootprintData = JSON.parse(event.body);
 
     try {
         await SQL.DB
             .insertInto('carbon_footprint_calculator')
             .values({
-                ecological_footprint: ecologicalFootprint
+                ecological_footprint: ecologicalFootprint,
+                reduced_time: reducedTime
+
             })
             .execute();
 

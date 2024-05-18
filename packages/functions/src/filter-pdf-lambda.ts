@@ -1,4 +1,4 @@
-import { SQL } from "./sql";
+import { SQL } from "./dbConfig";
 import moment from 'moment';
 
 

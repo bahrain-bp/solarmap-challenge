@@ -22,10 +22,16 @@ import DeleteConsulantant from './pages/deleteConsultant';
 import AddContractor from './pages/addContractor';
 import DeleteContractor from './pages/deleteContractor';
 import Reports from './pages/Reports';
+import CalculationReccomendation from './components/CalculationRec';
+import CalcUsageStats from './components/CalculatorUsageStats';
+
 import { Authenticator } from './modules/Authenticator';
 import { getCurrentUser, signOut } from 'aws-amplify/auth';
 import '@aws-amplify/ui-react/styles.css';
 import { Hub } from 'aws-amplify/utils';
+import Chatbot from './components/AmazonLexSolarMapChatbot';
+import Inquiry from './pages/Inquiry';
+import AdminMap from './pages/AdminMap';
 
 function App() {
   const identityPoolId = import.meta.env.VITE_IDENTITY_POOL_ID; // Cognito Identity Pool ID
@@ -108,6 +114,7 @@ function App() {
                 <Routes>
                   <Route path="/QuickSightDashboard" element={<QuickSightDashboard />} />
                   <Route path="/DocumentsDashboard" element={<DocumentsDashboard />} />
+                  <Route path="/calcUsageStats" element={<CalcUsageStats />} />
                   <Route path="/deleteEduResource" element={<DeleteEducationalResources />} />
                   <Route path="/addEduResource" element={<AddEducationalResource />} />
                   <Route path="/addConsultants" element={<AddConsultants />} />
@@ -129,6 +136,8 @@ function App() {
               <Route path="/MapV2" element={<MapV2 identityPoolId={identityPoolId} mapName={mapName} />} />
               <Route path="/Terms" element={<Terms />} />
               <Route path="/Privacy" element={<Privacy />} />
+              <Route path="/CalculationRec" element={<CalculationReccomendation />} />
+              <Route path="/AdminMap" element={<AdminMap />} />
               <Route path="/EducationalResources" element={<EducationalResources isLoggedIn={isLoggedIn} />} />
             </Routes>
           </Box>
