@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Chatbot.css'; // Ensure this path matches your CSS file location
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+
+
 type Message = {
     text: string;
     sender: 'user' | 'bot';
@@ -38,15 +42,15 @@ const Chatbot = () => {
         <div id="body">
             {!isOpen && (
                 <div id="chat-circle" className="btn btn-raised" onClick={toggleChatBox}>
-                    <i className="material-icons">speaker_phone</i>
+                    <i className="material-icons" style={{marginTop: "3px"}}>chat</i>
                 </div>
             )}
             
             {isOpen && (
                 <div className="chat-box">
                     <div className="chat-box-header">
-                        ChatBot
-                        <span className="chat-box-toggle" onClick={toggleChatBox}><i className="material-icons">close</i></span>
+                        Solar Map
+                        <span className="chat-box-toggle" onClick={toggleChatBox}><i className="material-icons" style={{marginTop: "15px", fontSize: "30px"}}>close</i></span>
                     </div>
                     <div className="chat-box-body">
                         <div className="chat-logs">
@@ -60,7 +64,7 @@ const Chatbot = () => {
                     <div className="chat-input">
                         <form onSubmit={handleSendMessage}>
                             <input type="text" id="chat-input" placeholder="Send a message..." value={inputValue} onChange={handleMessageChange}/>
-                            <button type="submit" className="chat-submit" id="chat-submit"><i className="material-icons">send</i></button>
+                            <button type="submit" className="chat-submit" id="chat-submit"> <FontAwesomeIcon icon={faPaperPlane} /></button>
                         </form>
                     </div>
                 </div>
