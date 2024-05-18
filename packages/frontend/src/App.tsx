@@ -109,6 +109,7 @@ function App() {
         <Box display="flex" flexDirection="column" minHeight="100vh">
           <NavBar isLoggedIn={isLoggedIn} onLogInButton={handleLoginButton} />
           {showLogin && (
+             <Box top={0} left={0} width="100%" height="100%" zIndex={9999} display="flex" justifyContent="center" alignItems="center" bgcolor="rgba(0, 0, 0, 0.4)">
             <Authenticator onCloseClick={closeLoginDialog}>
               <main>
                 <Routes>
@@ -125,6 +126,7 @@ function App() {
                 </Routes>
               </main>
             </Authenticator>
+            </Box>
           )}
           <Box component="main" flexGrow={1}>
             <Routes>
