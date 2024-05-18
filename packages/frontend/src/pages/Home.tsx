@@ -17,7 +17,8 @@ export default function Home() {
   //////// Web Socket Connection //////////
 
   useEffect(() => {
-   const webSocketUrl = import.meta.env.VITE_WEB_SOCKET_API_KEY; // Your WebSocket URL
+  // const url = "wss://zrzuvslvoj.execute-api.us-east-1.amazonaws.com/husain" // WebSocket URL
+  const webSocketUrl = import.meta.env.VITE_WEB_SOCKET_API_KEY; 
    console.log(webSocketUrl);
     // Connect to the WebSocket
    // Connect to the WebSocket

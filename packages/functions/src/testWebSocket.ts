@@ -1,18 +1,16 @@
 import { DynamoDB, ApiGatewayManagementApi } from "aws-sdk";
 import { Table } from "sst/node/table";
 import { APIGatewayProxyHandler } from "aws-lambda";
-import { use } from 'sst/constructs';
-import { WebSocketStack } from '../../../stacks/WebSocketStack';
 
 // @ts-ignore
 const TableName = Table.Connections.tableName;
 const dynamoDb = new DynamoDB.DocumentClient();
 
-const { ws } = await use(WebSocketStack);
+const url = "wss://zrzuvslvoj.execute-api.us-east-1.amazonaws.com/husain"
 
 export const handler: APIGatewayProxyHandler = async (event) => {
 //   const messageData = JSON.parse(event.body).data;
-const messageData =  "hi :)"
+const messageData =  "Hello SolarMapian, Welcome, your current Session ID is: "
 
 
   // Get all the connections
@@ -20,7 +18,7 @@ const messageData =  "hi :)"
     .scan({ TableName, ProjectionExpression: "id" })
     .promise();
 
-    const url = ws.url;
+
     const apiG = new ApiGatewayManagementApi({
         apiVersion: "2018-11-29",
         endpoint: url.replace("wss://", "https://"),
@@ -31,7 +29,7 @@ const messageData =  "hi :)"
     try {
       // Send the message to the given client
       await apiG
-        .postToConnection({ ConnectionId: id, Data: messageData })
+        .postToConnection({ ConnectionId: id, Data: messageData + id })
         .promise();
     } catch (e) {
       // @ts-ignore
