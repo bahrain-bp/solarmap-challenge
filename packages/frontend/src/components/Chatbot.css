@@ -46,7 +46,7 @@ html, body {
     border-top-left-radius: 15px; /* Match the rounded edges */
     border-top-right-radius: 15px; /* Match the rounded edges */
     text-align: center;
-    line-height: 70px;
+    line-height: auto;
     position: relative;
 }
 
@@ -137,4 +137,18 @@ html, body {
     float: left;  /* Aligns bot messages to the left */
     clear: both;  /* Ensures this element does not float next to any other elements */
     border-bottom-left-radius: 0; /* Adjust for smoothness */
+}
+
+.chat-box-header .chat-title {
+    padding-top: 3%;
+    display: block;
+    font-size: 1em;
+    color: #ffffff; 
+}
+
+.chat-box-header .chat-subtitle {
+    display: float;
+    font-style: italic;
+    font-size: 0.85em;
+    color: #ffffff; 
 }

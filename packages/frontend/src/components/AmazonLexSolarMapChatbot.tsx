@@ -29,7 +29,7 @@ const Chatbot = () => {
         const userMessage: Message = { text: inputValue, sender: 'user' }; // Explicitly typed as 'Message'
         setMessages([...messages, userMessage]);
         setInputValue('');
-    
+
         // Set a delay for the bot's response
         setTimeout(() => {
             const botResponse: Message = { text: 'Processing...', sender: 'bot' }; // Explicitly typed as 'Message'
@@ -42,15 +42,17 @@ const Chatbot = () => {
         <div id="body">
             {!isOpen && (
                 <div id="chat-circle" className="btn btn-raised" onClick={toggleChatBox}>
-                    <i className="material-icons" style={{marginTop: "3px"}}>chat</i>
+                    <i className="material-icons" style={{ marginTop: "3px" }}>chat</i>
                 </div>
             )}
-            
+
             {isOpen && (
                 <div className="chat-box">
                     <div className="chat-box-header">
-                        Solar Map
-                        <span className="chat-box-toggle" onClick={toggleChatBox}><i className="material-icons" style={{marginTop: "15px", fontSize: "30px"}}>close</i></span>
+                        <span className="chat-title">SolarMap Assistant</span>
+                        <span className="chat-subtitle">Your Solar Guide</span>
+
+                        <span className="chat-box-toggle" onClick={toggleChatBox}><i className="material-icons" style={{ marginTop: "15px", fontSize: "30px" }}>close</i></span>
                     </div>
                     <div className="chat-box-body">
                         <div className="chat-logs">
@@ -63,7 +65,7 @@ const Chatbot = () => {
                     </div>
                     <div className="chat-input">
                         <form onSubmit={handleSendMessage}>
-                            <input type="text" id="chat-input" placeholder="Send a message..." value={inputValue} onChange={handleMessageChange}/>
+                            <input type="text" id="chat-input" placeholder="Send a message..." value={inputValue} onChange={handleMessageChange} />
                             <button type="submit" className="chat-submit" id="chat-submit"> <FontAwesomeIcon icon={faPaperPlane} /></button>
                         </form>
                     </div>
