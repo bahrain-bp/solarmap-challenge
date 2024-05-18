@@ -132,6 +132,8 @@ function App() {
               <Route path="/About" element={<About />} />
               <Route path="/Provider" element={<Providers isLoggedIn={isLoggedIn} />} />
               <Route path="/CarbonEmissionsCalculator" element={<CarbonFootprintCalculator />} />
+
+              {/* <Route path="/Map" element={<Map />} /> */}
               <Route path="/DocumentUpload" element={<DocumentUpload />} />
               <Route path="/MapV2" element={<MapV2 identityPoolId={identityPoolId} mapName={mapName} />} />
               <Route path="/Terms" element={<Terms />} />
