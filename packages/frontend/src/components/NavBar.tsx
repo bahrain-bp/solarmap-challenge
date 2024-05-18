@@ -60,7 +60,7 @@ const StyledLink = styled(Link)(({ theme }) => ({
   '&:hover, &.active': {
     textDecoration: 'none',
     backgroundColor: theme.palette.primary.dark,
-    color: theme.palette.common.white,
+    color: theme.palette.common.white, // Ensure the color remains white
     borderRadius: theme.shape.borderRadius,
     padding: theme.spacing(1),
     marginRight: theme.spacing(1),
