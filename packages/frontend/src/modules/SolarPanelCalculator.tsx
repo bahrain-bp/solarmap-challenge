@@ -15,7 +15,8 @@ const SolarPanelCalculator = () => {
   const [emissionsSaved, setEmissionsSaved] = useState<number>(0);
   const [treesPlanted, setTreesPlanted] = useState<number>(0);
   const API_BASE_URL = exportString();
-
+  const [showInquireButton, setShowInquireButton] = useState(false);
+  
   const handleRooftopSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRooftopSize(parseFloat(event.target.value));
   };
@@ -93,7 +94,22 @@ const SolarPanelCalculator = () => {
       roiYears
     );
     calculateCarbonFootprint(maximumSavings);
-    
+
+    setNumPanels(panelsFit);
+    setInstallationCost(installationCost);
+    setElectricityCost(electricityCost);
+    setSavingsPerMonth(potentialSavings);
+    setRoiYears(roiYears);
+
+    // Store results in sessionStorage
+    sessionStorage.setItem('calculationResults', JSON.stringify({
+        numPanels: panelsFit,
+        installationCost,
+        electricityCost,
+        monthlySavings: potentialSavings, 
+        roiYears
+    }));
+    setShowInquireButton(true);
   };
 
   const calculateCarbonFootprint = (kilowattsSaved: number) => {
@@ -133,7 +149,17 @@ const SolarPanelCalculator = () => {
                 <input type="checkbox" className="form-check-input" id="subsidized" checked={subsidized} onChange={handleSubsidizedChange} />
                 <label className="form-check-label" htmlFor="subsidized">Subsidized</label>
               </div>
-              <button type="button" className="btn btn-primary" onClick={calculateSolarPanels}>Calculate</button>
+              {/* Calculate and Inquire buttons side by side */}
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div className="form-group">
+                  <button type="button" className="btn btn-primary" onClick={calculateSolarPanels}>Calculate</button>
+                </div>
+                {showInquireButton && (
+                  <div className="form-group">
+                    <a href="/Inquiry" className="btn btn-success">Inquire</a>
+                  </div>
+                )}
+              </div>
             </form>
           </div>
         </div>

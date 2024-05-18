@@ -1,0 +1,154 @@
+html, body {
+    background: #efefef;      
+    height: 100%;  
+}
+
+#body {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    margin: 20px;
+}
+
+#chat-circle {
+    background: #1a317b; /* Navy blue color */
+    color: white;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 80px;
+    cursor: pointer;
+    /* Removed the box-shadow for a cleaner look */
+}
+
+.material-icons {
+    font-size: 35px; /* Adjust icon size */
+    color: white;
+}
+
+.chat-box {
+    background: #ffffff;
+    width: 350px;
+    max-width: 85vw;
+    max-height: 100vh;
+    border-radius: 15px; /* Rounded edges */
+    /* Removed the box-shadow for a cleaner look */
+}
+
+.chat-box-header {
+    background: #1a317b; /* Navy blue color */
+    color: white;
+    height: 70px;
+    border-top-left-radius: 15px; /* Match the rounded edges */
+    border-top-right-radius: 15px; /* Match the rounded edges */
+    text-align: center;
+    line-height: auto;
+    position: relative;
+}
+
+.chat-box-toggle {
+    position: absolute;
+    right: 15px;
+    top: 0;
+    cursor: pointer;
+    font-size: 24px; /* Icon size */
+}
+
+.chat-box-body {
+    overflow-y: auto;
+    height: 300px; /* Adjust height based on your preference */
+}
+
+.chat-logs {
+    padding: 15px;
+    height: 300px; /* Match height of chat-box-body if necessary */
+    overflow-y: scroll;
+}
+
+.chat-msg {
+    margin-bottom: 15px;
+}
+
+.cm-msg-text {
+    background: white;
+    padding: 10px 15px;
+    color: #666;
+    border-radius: 20px;
+    max-width: 75%;
+    position: relative;
+}
+
+.chat-msg.self .cm-msg-text {
+    background: #1F3A93; /* Navy blue color */
+    color: white;
+    float: right;
+    border-bottom-right-radius: 0; /* Adjust for smoothness */
+}
+
+.chat-input {
+    padding: 10px;
+    border-top: 1px solid #ccc;
+    background: #f9f9f9;
+    border-bottom-left-radius: 15px; /* Match the rounded edges */
+    border-bottom-right-radius: 15px; /* Match the rounded edges */
+}
+
+#chat-input {
+    width: calc(100% - 50px);
+    border: none;
+    padding: 10px;
+    resize: none;
+    outline: none;
+    border-radius: 5px;
+}
+
+.chat-submit {
+    position: absolute;
+    right: 10px;
+    bottom: 30px;
+    background: #1a317b; /* Navy blue color */
+    border: none;
+    border-radius: 50%;
+    color: white;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+}
+
+.chat-submit .material-icons {
+    font-size: 24px; /* Icon size */
+}
+
+.chat-msg.user .cm-msg-text {
+    background: #1F3A93;  /* Navy blue background for user messages */
+    color: white;
+    float: right;  /* Aligns user messages to the right */
+    clear: both;   /* Ensures this element does not float next to any other elements */
+    border-top-right-radius: 0; /* Adjust for smoothness */
+}
+
+.chat-msg.bot .cm-msg-text {
+    background: #E0E0E0;  /* Gray background for bot messages */
+    color: #333;
+    float: left;  /* Aligns bot messages to the left */
+    clear: both;  /* Ensures this element does not float next to any other elements */
+    border-bottom-left-radius: 0; /* Adjust for smoothness */
+}
+
+.chat-box-header .chat-title {
+    padding-top: 3%;
+    display: block;
+    font-size: 1em;
+    color: #ffffff; 
+}
+
+.chat-box-header .chat-subtitle {
+    display: float;
+    font-style: italic;
+    font-size: 0.85em;
+    color: #ffffff; 
+}
