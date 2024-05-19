@@ -16,6 +16,7 @@ import SvgColor from '../../components/svg-color';
 
 type PostCardProps = {
   post: {
+    id: string;
     cover: string;
     title: string;
     view: number;
@@ -34,7 +35,6 @@ export default function PostCard({ post, index }: PostCardProps) {
   const { cover, title, view, comment, share, author, createdAt } = post;
 
   const latestPostLarge = index === 0;
-
   const latestPost = index === 1 || index === 2;
 
   const renderAvatar = (
@@ -188,9 +188,7 @@ export default function PostCard({ post, index }: PostCardProps) {
           }}
         >
           {renderShape}
-
           {renderAvatar}
-
           {renderCover}
         </Box>
 
@@ -205,9 +203,7 @@ export default function PostCard({ post, index }: PostCardProps) {
           }}
         >
           {renderDate}
-
           {renderTitle}
-
           {renderInfo}
         </Box>
       </Card>
@@ -217,6 +213,7 @@ export default function PostCard({ post, index }: PostCardProps) {
 
 PostCard.propTypes = {
   post: PropTypes.shape({
+    id: PropTypes.string.isRequired,
     cover: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     view: PropTypes.number.isRequired,
