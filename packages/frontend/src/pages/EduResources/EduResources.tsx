@@ -15,6 +15,7 @@ import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import AddEducationalResource from './addEduResource';
+import EduRes from '../../assets/Educationalresources.jpg';
 
 const apiurl: string = exportString();
 const API_BASE_URL = apiurl;
@@ -170,9 +171,39 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
 
   return (
     <Box sx={{ backgroundColor: 'white', display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <Box sx={{ position: 'relative', width: '100%', height: '300px', mb: 4, overflow: 'hidden' }}>
+        <img
+          src={EduRes}
+          alt="Educational Resources"
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            filter: 'brightness(70%) blur(3px)',
+            marginBottom: '-5px',
+            borderRadius: '0'
+          }}
+        />
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            color: 'white',
+            textAlign: 'center',
+          }}
+        >
+          <Typography variant="h3" component="h1" gutterBottom>
+            Educational Resources
+          </Typography>
+          <Typography variant="h6">
+            Explore our comprehensive database of educational materials. Search by topic or type to find your resources.
+          </Typography>
+        </Box>
+      </Box>
       <Container sx={{ flex: 1, py: 4, pb: 8 }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4">Educational Resources</Typography>
           {isLoggedIn && (
             <Button
               variant="contained"
@@ -257,13 +288,13 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
                         <img
                           src={`data:image/jpeg;base64,${resource.resource_img}`}
                           alt={resource.title}
-                          style={{ height: '150px', objectFit: 'cover', borderRadius: '4px' }}
+                          style={{ height: '150px', objectFit: 'cover', borderRadius: '0' }}
                         />
                       ) : (
                         <img
                           src={fallback}
                           alt={resource.title}
-                          style={{ height: '150px', objectFit: 'cover', borderRadius: '4px' }}
+                          style={{ height: '150px', objectFit: 'cover', borderRadius: '0' }}
                         />
                       )}
                       <Box sx={{ flexGrow: 1, mt: 2 }}>
