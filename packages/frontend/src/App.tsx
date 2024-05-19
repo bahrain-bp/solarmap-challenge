@@ -7,7 +7,7 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Providers from './pages/Provider';
 import DocumentUpload from './pages/DocumentUpload';
-import EducationalResources from './pages/EduResources';
+import EducationalResources from './pages/EduResources/EduResources';
 import Footer from './components/Footer';
 import MapV2 from './modules/MapV2';
 import QuickSightDashboard from './modules/QuickSightDashboard';
