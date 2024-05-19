@@ -10,6 +10,7 @@ import Iconify from '../../components/iconify';
 import PostCard from './post-card';
 import PostSort from './post-sort';
 import PostSearch from './post-search';
+import fallback from '../../assets/default-fallback-image.png';
 
 const apiurl: string = exportString();
 const API_BASE_URL = apiurl;
@@ -95,16 +96,22 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
         <Grid container spacing={3}>
           {resources.length > 0 ? (
             resources.map((resource, index) => (
-              <PostCard key={resource.resource_id} post={{
-                id: resource.resource_id,
-                cover: resource.resource_img ? `data:image/jpeg;base64,${resource.resource_img}` : '',
-                title: resource.title,
-                view: 0, // Add view count if available
-                comment: 0, // Add comment count if available
-                share: 0, // Add share count if available
-                author: { name: '', avatarUrl: '' }, // Add author details if available
-                createdAt: new Date() // Replace with actual createdAt if available
-              }} index={index} />
+              <PostCard
+                key={resource.resource_id}
+                post={{
+                  id: resource.resource_id,
+                  cover: resource.resource_img
+                    ? `data:image/jpeg;base64,${resource.resource_img}`
+                    : fallback, // Use the imported fallback image path
+                  title: resource.title,
+                  view: 0,
+                  comment: 0,
+                  share: 0,
+                  author: { name: '', avatarUrl: '' },
+                  createdAt: new Date(),
+                }}
+                index={index}
+              />
             ))
           ) : (
             <Typography variant="body1" align="center">
