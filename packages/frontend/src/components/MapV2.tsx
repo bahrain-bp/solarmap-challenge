@@ -6,6 +6,13 @@ import maplibregl from 'maplibre-gl';
 import React, { useEffect, useRef, useState } from 'react';
 // import SolarPanelCalculator from './SolarPanelCalculator';
 
+// @ts-ignore
+MapboxDraw.constants.classes.CONTROL_BASE = "maplibregl-ctrl";
+// @ts-ignore
+MapboxDraw.constants.classes.CONTROL_PREFIX = "maplibregl-ctrl-";
+// @ts-ignore
+MapboxDraw.constants.classes.CONTROL_GROUP = "maplibregl-ctrl-group";
+
 // Define coordinates array here
 let coordinates = [
   [
@@ -51,6 +58,13 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
           ...authHelper.getMapAuthenticationOptions(),
         });
 
+        mapRef.current.getCanvas().className = 'mapboxgl-canvas maplibregl-canvas';
+        mapRef.current.getContainer().classList.add('mapboxgl-map');
+const canvasContainer = mapRef.current.getCanvasContainer();
+canvasContainer.classList.add('mapboxgl-canvas-container');
+if (canvasContainer.classList.contains('maplibregl-interactive')) {
+  canvasContainer.classList.add('mapboxgl-interactive');
+}
         mapRef.current.on('load', () => {
           // Insert the layer beneath any symbol layer.
           mapRef.current?.addSource('openmaptiles', {
