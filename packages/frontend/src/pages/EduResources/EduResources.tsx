@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import exportString from '../../api_url';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
-import Grid from '@mui/material/Unstable_Grid2';
+import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
@@ -14,6 +13,8 @@ import fallback from '../../assets/default-fallback-image.png';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
+import AddEducationalResource from './addEduResource';
 
 const apiurl: string = exportString();
 const API_BASE_URL = apiurl;
@@ -24,24 +25,43 @@ interface EducationalResource {
   body: string;
   resource_url: string;
   resource_img: string | null;
+  created_at: string; // added created_at attribute
+  edited_at: string | null; // added edited_at attribute
 }
 
 interface EducationalResourcesProps {
   isLoggedIn: boolean;
 }
 
+const formatDate = (dateString: string) => {
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+    hour12: true,
+    timeZone: 'Asia/Bahrain'
+  };
+  return new Date(dateString).toLocaleDateString('en-us', options);
+};
+
 const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn }) => {
-  const navigate = useNavigate();
   const [resources, setResources] = useState<EducationalResource[]>([]);
   const [filteredResources, setFilteredResources] = useState<EducationalResource[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [sortOption, setSortOption] = useState<string>('az');
+  const [sortOption, setSortOption] = useState<string>('latest');
   const [page, setPage] = useState<number>(1);
   const [rowsPerPage, setRowsPerPage] = useState<number>(6);
   const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
   const [snackbarMessage, setSnackbarMessage] = useState<string>('');
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+
+  const handleOpenModal = () => setModalOpen(true);
+  const handleCloseModal = () => setModalOpen(false);
 
   useEffect(() => {
     const fetchResources = async () => {
@@ -74,6 +94,12 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
         break;
       case 'za':
         filtered.sort((a, b) => b.title.localeCompare(a.title));
+        break;
+      case 'latest':
+        filtered.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        break;
+      case 'oldest':
+        filtered.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
         break;
       default:
         break;
@@ -136,7 +162,7 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
       case 2:
         return '#98FB98'; // light green
       case 3:
-        return '#FFDAB9'; // baby purple
+        return '#FFA07A'; // baby orange
       default:
         return '#FFFFFF'; // default white
     }
@@ -152,7 +178,7 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
               variant="contained"
               color="inherit"
               startIcon={<Iconify icon="eva:plus-fill" />}
-              onClick={() => navigate('/addEduResource')}
+              onClick={handleOpenModal}
             >
               New Resource
             </Button>
@@ -176,10 +202,12 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
               onChange={handleSortChange}
               variant="outlined"
               size="small"
-              sx={{ width: 150 }}
+              sx={{ width: 180 }}
             >
               <MenuItem value="az">A-Z</MenuItem>
               <MenuItem value="za">Z-A</MenuItem>
+              <MenuItem value="latest">Latest to Oldest</MenuItem>
+              <MenuItem value="oldest">Oldest to Latest</MenuItem>
             </TextField>
             <Typography variant="body2">Items per page:</Typography>
             <TextField
@@ -214,39 +242,66 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
             <Grid container spacing={3}>
               {paginatedResources.length > 0 ? (
                 paginatedResources.map((resource, index) => (
-                  <Grid key={resource.resource_id} xs={12} sm={6} md={4}>
-                    <div className="card h-100" style={{ backgroundColor: getCardBackgroundColor(index) }}>
+                  <Grid key={resource.resource_id} item xs={12} sm={6} md={4}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        height: '100%',
+                        backgroundColor: getCardBackgroundColor(index),
+                        padding: 2,
+                        borderRadius: 1,
+                      }}
+                    >
                       {resource.resource_img ? (
                         <img
                           src={`data:image/jpeg;base64,${resource.resource_img}`}
                           alt={resource.title}
-                          className="card-img-top"
+                          style={{ height: '150px', objectFit: 'cover', borderRadius: '4px' }}
                         />
                       ) : (
-                        <img src={fallback} alt={resource.title} className="card-img-top" />
+                        <img
+                          src={fallback}
+                          alt={resource.title}
+                          style={{ height: '150px', objectFit: 'cover', borderRadius: '4px' }}
+                        />
                       )}
-                      <div className="card-body">
-                        <h5 className="card-title">{resource.title}</h5>
-                        <p className="card-text">{resource.body}</p>
-                        <Stack direction="row" spacing={2} mt={2}>
-                          {resource.resource_url && (
-                            <a href={resource.resource_url} className="btn btn-dark text-white">
-                              Learn More
-                            </a>
-                          )}
-                          {isLoggedIn && (
-                            <Button
-                              variant="contained"
-                              color="secondary"
-                              startIcon={<Iconify icon="eva:trash-2-outline" />}
-                              onClick={() => handleDeleteResource(resource.resource_id)}
-                            >
-                              Delete Resource
-                            </Button>
-                          )}
-                        </Stack>
-                      </div>
-                    </div>
+                      <Box sx={{ flexGrow: 1, mt: 2 }}>
+                        <Typography variant="h6" fontWeight="bold">{resource.title}</Typography>
+                        <Typography variant="body2" sx={{ mb: 2 }}>{resource.body}</Typography>
+                        <Typography variant="caption" color="textSecondary">
+                          Created at: {formatDate(resource.created_at)}
+                        </Typography>
+                        {resource.edited_at && (
+                          <Typography variant="caption" color="textSecondary">
+                            Edited at: {formatDate(resource.edited_at)}
+                          </Typography>
+                        )}
+                      </Box>
+                      <Stack direction="row" spacing={2} mt={2}>
+                        {resource.resource_url && (
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            href={resource.resource_url}
+                            sx={{ fontSize: '0.75rem' }}
+                          >
+                            Learn More
+                          </Button>
+                        )}
+                        {isLoggedIn && (
+                          <Button
+                            variant="contained"
+                            color="secondary"
+                            startIcon={<Iconify icon="eva:trash-2-outline" />}
+                            onClick={() => handleDeleteResource(resource.resource_id)}
+                            sx={{ fontSize: '0.75rem' }}
+                          >
+                            Delete Resource
+                          </Button>
+                        )}
+                      </Stack>
+                    </Box>
                   </Grid>
                 ))
               ) : (
@@ -270,6 +325,11 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
             {snackbarMessage}
           </Alert>
         </Snackbar>
+        <Modal open={modalOpen} onClose={handleCloseModal}>
+          <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4, borderRadius: 1 }}>
+            <AddEducationalResource onClose={handleCloseModal} />
+          </Box>
+        </Modal>
       </Container>
     </Box>
   );

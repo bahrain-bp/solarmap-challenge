@@ -19,7 +19,9 @@ export async function handler(): Promise<GetEduResponse> {
         'title',
         'body',
         'resource_url',
-        'resource_img'  // Retrieve the binary image data directly
+        'resource_img',  // Retrieve the binary image data directly
+        'created_at', 
+        'editted_at'
       ])
       .execute();
 

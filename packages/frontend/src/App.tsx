@@ -16,7 +16,7 @@ import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import DocumentsDashboard from './pages/DocumentsDashboard';
 import DeleteEducationalResources from './pages/deleteEduResource';
-import AddEducationalResource from './pages/addEduResource';
+import AddEducationalResource from './pages/EduResources/addEduResource';
 import AddConsultants from './pages/addConsultants';
 import DeleteConsulantant from './pages/deleteConsultant';
 import AddContractor from './pages/addContractor';
