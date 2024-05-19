@@ -75,7 +75,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     console.log(`Sending SNS messages to ${subscriptions.length} subscribers...`);
     const snsPromises = subscriptions.map(({ phone, first_name, last_name }) => {
       const snsParams = {
-        Message: `Hi ${first_name} ${last_name}!\n\nA new educational resource titled "${title}" has been posted: ${truncatedBody}\n\nFor more information: ${resource_url}`,
+        Message: `Hi ${first_name} ${last_name}!\n\nA new educational resource titled "${title}" has been posted: ${truncatedBody}...\n\nFor more information, visit our website!`,
         PhoneNumber: phone,
       };
 

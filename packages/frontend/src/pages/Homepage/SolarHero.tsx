@@ -1,7 +1,7 @@
-import Button from '../components/Button';
-import Typography from '../components/Typography';
+import Button from '../../components/Button';
+import Typography from '../../components/Typography';
 import SolarHeroLayout from './SolarHeroLayout';
-import video from '../assets/herovideo.mp4'; // Adjust the import path as needed
+import video from '../../assets/herovideo.mp4'; // Adjust the import path as needed
 
 export default function SolarHero() {
   return (
