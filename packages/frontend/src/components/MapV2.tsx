@@ -162,6 +162,31 @@ if (canvasContainer.classList.contains('maplibregl-interactive')) {
     };
   }, [identityPoolId, mapName]); // Effect dependencies
 
+
+  useEffect(() => {
+    const styleMapControls = () => {
+      const buttons = document.querySelectorAll(
+        ".mapbox-gl-draw_ctrl-draw-btn, .mapboxgl-ctrl-geolocate, .maplibregl-ctrl-geolocate"
+      );
+      buttons.forEach((button) => {
+        (button as HTMLElement).style.margin = "10px";
+        (button as HTMLElement).style.width = "40px";
+        (button as HTMLElement).style.height = "40px";
+        (button as HTMLElement).style.backgroundColor = "white";
+        (button as HTMLElement).style.borderRadius = "2px";
+        (button as HTMLElement).style.display = "flex";
+        (button as HTMLElement).style.justifyContent = "center";
+        (button as HTMLElement).style.alignItems = "center";
+      });
+    };
+
+    styleMapControls();
+
+    if (mapRef.current) {
+      mapRef.current.on("draw.create", styleMapControls);
+    }
+  }, [drawControl]);
+
   const drawBoxAroundPoint = (center: number[], size: number = boxSize) => {
     const [lng, lat] = center;
     coordinates = [
