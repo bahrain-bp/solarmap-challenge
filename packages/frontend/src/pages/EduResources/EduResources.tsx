@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import exportString from '../../api_url';
 import Stack from '@mui/material/Stack';
@@ -7,9 +7,6 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 import Iconify from '../../components/iconify';
-import PostCard from './post-card';
-import PostSort from './post-sort';
-import PostSearch from './post-search';
 import fallback from '../../assets/default-fallback-image.png';
 
 const apiurl: string = exportString();
@@ -30,8 +27,10 @@ interface EducationalResourcesProps {
 const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn }) => {
   const navigate = useNavigate();
   const [resources, setResources] = useState<EducationalResource[]>([]);
+  const [filteredResources, setFilteredResources] = useState<EducationalResource[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   useEffect(() => {
     const fetchResources = async () => {
@@ -42,6 +41,7 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
         }
         const data: EducationalResource[] = await response.json();
         setResources(data);
+        setFilteredResources(data);
       } catch (err) {
         setError((err as Error).message);
       } finally {
@@ -51,6 +51,14 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
 
     fetchResources();
   }, []);
+
+  useEffect(() => {
+    setFilteredResources(
+      resources.filter(resource =>
+        resource.title.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+  }, [searchQuery, resources]);
 
   return (
     <Container>
@@ -70,14 +78,6 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
 
       <Stack mb={5} direction="row" alignItems="center" justifyContent="space-between">
         <PostSearch posts={resources.map(resource => ({ id: resource.resource_id, title: resource.title }))} />
-        <PostSort
-          options={[
-            { value: 'latest', label: 'Latest' },
-            { value: 'popular', label: 'Popular' },
-            { value: 'oldest', label: 'Oldest' },
-          ]}
-          onSort={() => {}} // Add your sorting logic here
-        />
       </Stack>
 
       {isLoading && (
@@ -94,24 +94,30 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
       )}
       {!isLoading && !error && (
         <Grid container spacing={3}>
-          {resources.length > 0 ? (
-            resources.map((resource, index) => (
-              <PostCard
-                key={resource.resource_id}
-                post={{
-                  id: resource.resource_id,
-                  cover: resource.resource_img
-                    ? `data:image/jpeg;base64,${resource.resource_img}`
-                    : fallback, // Use the imported fallback image path
-                  title: resource.title,
-                  view: 0,
-                  comment: 0,
-                  share: 0,
-                  author: { name: '', avatarUrl: '' },
-                  createdAt: new Date(),
-                }}
-                index={index}
-              />
+          {filteredResources.length > 0 ? (
+            filteredResources.map(resource => (
+              <Grid key={resource.resource_id} xs={12} sm={6} md={4}>
+                <div className="card h-100">
+                  {resource.resource_img ? (
+                    <img
+                      src={`data:image/jpeg;base64,${resource.resource_img}`}
+                      alt={resource.title}
+                      className="card-img-top"
+                    />
+                  ) : (
+                    <img src={fallback} alt={resource.title} className="card-img-top" />
+                  )}
+                  <div className="card-body">
+                    <h5 className="card-title">{resource.title}</h5>
+                    <p className="card-text">{resource.body}</p>
+                    {resource.resource_url && (
+                      <a href={resource.resource_url} className="btn btn-primary">
+                        Learn More
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </Grid>
             ))
           ) : (
             <Typography variant="body1" align="center">
