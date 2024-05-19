@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Box, CssBaseline } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import NavBar from './components/NavBar';
-import Home from './pages/Home';
+import Home from './pages/Homepage/Home';
 import About from './pages/About';
 import Providers from './pages/Provider';
 import DocumentUpload from './pages/DocumentUpload';

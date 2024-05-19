@@ -2,13 +2,13 @@ import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import ButtonBase from '@mui/material/ButtonBase';
 import Container from '@mui/material/Container';
-import Typography from '../components/Typography';
+import Typography from '../../components/Typography';
 import { Link } from 'react-router-dom';
-import map from '../assets/worldmap.jpg';
-import costs from '../assets/costsavings.jpg';
-import energy from '../assets/energysavings.jpg';
-import providers from '../assets/providers.jpg';
-import eduresources from '../assets/eduresources.jpg';
+import map from '../../assets/worldmap.jpg';
+import costs from '../../assets/costsavings.jpg';
+import energy from '../../assets/energysavings.jpg';
+import providers from '../../assets/providers.jpg';
+import eduresources from '../../assets/eduresources.jpg';
 
 const ImageBackdrop = styled('div')(({ theme }) => ({
   position: 'absolute',
