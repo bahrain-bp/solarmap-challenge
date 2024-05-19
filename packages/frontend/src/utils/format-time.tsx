@@ -2,16 +2,12 @@ import { format, getTime, formatDistanceToNow } from 'date-fns';
 
 // ----------------------------------------------------------------------
 
-export function fDate(date: string | number | Date, newFormat: string) {
-  const fm = newFormat || 'dd MMM yyyy';
-
-  return date ? format(new Date(date), fm) : '';
+export function fDate(date: string | number | Date, newFormat: string = 'dd MMM yyyy') {
+  return date ? format(new Date(date), newFormat) : '';
 }
 
-export function fDateTime(date: string | number | Date, newFormat: string) {
-  const fm = newFormat || 'dd MMM yyyy p';
-
-  return date ? format(new Date(date), fm) : '';
+export function fDateTime(date: string | number | Date, newFormat: string = 'dd MMM yyyy p') {
+  return date ? format(new Date(date), newFormat) : '';
 }
 
 export function fTimestamp(date: string | number | Date) {

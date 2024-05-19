@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types';
-
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import Card from '@mui/material/Card';
@@ -12,13 +11,26 @@ import Typography from '@mui/material/Typography';
 import { fDate } from '../../utils/format-time';
 import { fShortenNumber } from '../../utils/format-number';
 
-import Iconify from 'src/components/iconify';
-import SvgColor from 'src/components/svg-color';
+import Iconify from '../../components/iconify';
+import SvgColor from '../../components/svg-color';
 
+type PostCardProps = {
+  post: {
+    cover: string;
+    title: string;
+    view: number;
+    comment: number;
+    share: number;
+    author: {
+      name: string;
+      avatarUrl: string;
+    };
+    createdAt: Date;
+  };
+  index: number;
+};
 
-// ----------------------------------------------------------------------
-
-export default function PostCard({ post, index }) {
+export default function PostCard({ post, index }: PostCardProps) {
   const { cover, title, view, comment, share, author, createdAt } = post;
 
   const latestPostLarge = index === 0;
@@ -94,6 +106,7 @@ export default function PostCard({ post, index }) {
             }),
           }}
         >
+          <Iconify width={16} icon={info.icon} sx={{ mr: 0.5 }} />
           <Typography variant="caption">{fShortenNumber(info.number)}</Typography>
         </Stack>
       ))}
@@ -203,6 +216,17 @@ export default function PostCard({ post, index }) {
 }
 
 PostCard.propTypes = {
-  post: PropTypes.object.isRequired,
-  index: PropTypes.number,
+  post: PropTypes.shape({
+    cover: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    view: PropTypes.number.isRequired,
+    comment: PropTypes.number.isRequired,
+    share: PropTypes.number.isRequired,
+    author: PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      avatarUrl: PropTypes.string.isRequired,
+    }).isRequired,
+    createdAt: PropTypes.instanceOf(Date).isRequired,
+  }).isRequired,
+  index: PropTypes.number.isRequired,
 };
