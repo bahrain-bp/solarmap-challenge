@@ -7,6 +7,7 @@ import inference
 s3 = boto3.client('s3')
 
 def lambda_handler(event, context):
+    print(event)
     if 'Records' in event and len(event['Records']) > 0:
         payload = json.loads(event['Records'][0]['body'])
         records = payload.get('Records')
@@ -24,6 +25,10 @@ def lambda_handler(event, context):
         image_base64 = base64.b64encode(image_body).decode('utf-8')
 
  
+        model = inference.get_model("satellite-map/5")
+        response = model.infer(image=image_base64)
+
+        print(response)
  
 
     #     # Check if the response contains predictions
