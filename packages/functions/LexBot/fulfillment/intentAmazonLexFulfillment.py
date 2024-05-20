@@ -91,7 +91,7 @@ def WelcomeIntent(intent_request):
     # Get specific slot for SolarMap
     category = get_slot(intent_request, 'SolarMapSlot')
 
-    text = "Recieved"
+    text = "Recieved Category is not valid. Please choose another category from the provided list."
     # Initialize text variable based on category
     if category == 'About':
         text = "SolarMap is a revolutionary platform that utilizes AI and AWS Ground Station to map and manage solar panel installations across Bahrain, supporting efficient energy policies and sustainable development."
