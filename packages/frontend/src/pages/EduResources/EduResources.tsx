@@ -16,6 +16,7 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import AddEducationalResource from './addEduResource';
 import EduRes from '../../assets/Educationalresources.jpg';
+import Subscribe from './Subscribe'; // Update the import path as needed
 
 const apiurl: string = exportString();
 const API_BASE_URL = apiurl;
@@ -153,21 +154,7 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
     page * rowsPerPage
   );
 
-  const getCardBackgroundColor = (index: number) => {
-    const rowIndex = Math.floor(index / 3);
-    switch (rowIndex % 4) {
-      case 0:
-        return '#FFFF99'; // baby yellow
-      case 1:
-        return '#87CEEB'; // sky blue
-      case 2:
-        return '#98FB98'; // light green
-      case 3:
-        return '#FFA07A'; // baby orange
-      default:
-        return '#FFFFFF'; // default white
-    }
-  };
+  const cardBackgroundColor = '#073763'; // Same color as the "Learn More" button
 
   return (
     <Box sx={{ backgroundColor: 'white', display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
@@ -202,6 +189,7 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
           </Typography>
         </Box>
       </Box>
+      <Subscribe />
       <Container sx={{ flex: 1, py: 4, pb: 8 }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           {isLoggedIn && (
@@ -272,16 +260,17 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
           <>
             <Grid container spacing={3}>
               {paginatedResources.length > 0 ? (
-                paginatedResources.map((resource, index) => (
+                paginatedResources.map((resource) => (
                   <Grid key={resource.resource_id} item xs={12} sm={6} md={4}>
                     <Box
                       sx={{
                         display: 'flex',
                         flexDirection: 'column',
                         height: '100%',
-                        backgroundColor: getCardBackgroundColor(index),
+                        backgroundColor: cardBackgroundColor,
                         padding: 2,
                         borderRadius: 1,
+                        color: 'white' // Set the text color to white
                       }}
                     >
                       {resource.resource_img ? (
@@ -298,13 +287,13 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
                         />
                       )}
                       <Box sx={{ flexGrow: 1, mt: 2 }}>
-                        <Typography variant="h6" fontWeight="bold">{resource.title}</Typography>
-                        <Typography variant="body2" sx={{ mb: 2 }}>{resource.body}</Typography>
-                        <Typography variant="caption" color="textSecondary">
+                        <Typography variant="h6" fontWeight="bold" sx={{ color: 'white' }}>{resource.title}</Typography>
+                        <Typography variant="body2" sx={{ mb: 2, color: 'white' }}>{resource.body}</Typography>
+                        <Typography variant="caption" color="textSecondary" sx={{ color: 'white' }}>
                           Created at: {formatDate(resource.created_at)}
                         </Typography>
                         {resource.edited_at && (
-                          <Typography variant="caption" color="textSecondary">
+                          <Typography variant="caption" color="textSecondary" sx={{ color: 'white' }}>
                             Edited at: {formatDate(resource.edited_at)}
                           </Typography>
                         )}
@@ -313,9 +302,8 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
                         {resource.resource_url && (
                           <Button
                             variant="contained"
-                            color="primary"
+                            sx={{ backgroundColor: 'black', color: 'white', fontSize: '0.75rem' }}
                             href={resource.resource_url}
-                            sx={{ fontSize: '0.75rem' }}
                           >
                             Learn More
                           </Button>

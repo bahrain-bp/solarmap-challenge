@@ -1,16 +1,12 @@
-import React, { useState } from 'react';
-import exportString from "../api_url";
-import { Box, Button, Container, Grid, Link, Typography, TextField, Modal, Alert } from '@mui/material';
+import { useState } from 'react';
+import { Box, Button, Container, Grid, Link, Typography } from '@mui/material';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXTwitter } from '@fortawesome/free-brands-svg-icons';
-import PhoneInput from 'react-phone-input-2';
-import 'react-phone-input-2/lib/style.css';
-
-const apiurl: string = exportString();
-const API_BASE_URL = apiurl;
+import SubscribeForm from './SubscribeForm'; // Update the import path as needed
+import TextField from './TextField';
 
 const LANGUAGES = [
   {
@@ -69,56 +65,6 @@ function Copyright() {
 
 export default function AppFooter() {
   const [open, setOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    first_name: '',
-    last_name: '',
-    email: '',
-    phone: '',
-  });
-  const [message, setMessage] = useState<string | null>(null);
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = event.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const handlePhoneChange = (value: string) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      phone: `+${value}`,
-    }));
-  };
-
-  const handleFormSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-
-    console.log('Submitting form data:', formData); // Log the data being submitted
-
-    try {
-      const response = await fetch(`${API_BASE_URL}/subscribe`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const result = await response.json();
-      console.log('Response:', result); // Log the response
-
-      if (response.ok) {
-        setMessage(result.message);
-      } else {
-        setMessage(result.error);
-      }
-    } catch (error) {
-      console.error('Error submitting form data:', error); // Log any errors
-      setMessage('Failed to add resource and send SMS');
-    }
-  };
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -258,82 +204,7 @@ export default function AppFooter() {
         </Grid>
       </Container>
 
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="subscribe-modal-title"
-        aria-describedby="subscribe-modal-description"
-      >
-        <Box
-          component="form"
-          onSubmit={handleFormSubmit}
-          sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: 400,
-            bgcolor: 'background.paper',
-            boxShadow: 24,
-            p: 4,
-            borderRadius: 2,
-          }}
-        >
-          <Typography id="subscribe-modal-title" variant="h6" component="h2">
-            Subscribe to the Newsletter
-          </Typography>
-          <TextField
-            id="first_name"
-            name="first_name"
-            label="First Name"
-            value={formData.first_name}
-            onChange={handleInputChange}
-            fullWidth
-            required
-            sx={{ mt: 2 }}
-          />
-          <TextField
-            id="last_name"
-            name="last_name"
-            label="Last Name"
-            value={formData.last_name}
-            onChange={handleInputChange}
-            fullWidth
-            required
-            sx={{ mt: 2 }}
-          />
-          <TextField
-            id="email"
-            name="email"
-            label="Email"
-            value={formData.email}
-            onChange={handleInputChange}
-            fullWidth
-            required
-            sx={{ mt: 2 }}
-          />
-          <PhoneInput
-            country={'bh'}
-            value={formData.phone}
-            onChange={handlePhoneChange}
-            inputStyle={{ width: '100%' }}
-            containerStyle={{ width: '100%', marginTop: '16px' }}
-            inputProps={{
-              name: 'phone',
-              required: true,
-              autoFocus: true,
-            }}
-          />
-          <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
-            Submit
-          </Button>
-          {message && (
-            <Alert severity="info" sx={{ mt: 2 }}>
-              {message}
-            </Alert>
-          )}
-        </Box>
-      </Modal>
+      <SubscribeForm open={open} onClose={handleClose} />
     </Box>
   );
 }
