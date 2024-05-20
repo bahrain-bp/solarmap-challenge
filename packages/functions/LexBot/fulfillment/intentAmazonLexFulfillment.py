@@ -81,19 +81,40 @@ def GetSolarPanelInstallationEstimateIntent(intent_request):
     return close(intent_request, session_attributes, fulfillment_State, message)
 
 def WelcomeIntent(intent_request):
-
+    # Retrieve session attributes
     session_attributes = get_session_attributes(intent_request)
 
-    # Calculaton to be added here
+    # Extracting slot values from the event
+    slots = get_slots(intent_request)
+    print(slots)
     
-    text = "Intent Recieved By Bot"
+    # Get specific slot for SolarMap
+    category = get_slot(intent_request, 'SolarMapSlot')
 
+    # Initialize text variable based on category
+    if category == 'About':
+        text = "SolarMap is a revolutionary platform that utilizes AI and AWS Ground Station to map and manage solar panel installations across Bahrain, supporting efficient energy policies and sustainable development."
+    elif category == 'Contractors':
+        text = "Contractors can utilize SolarMap to access real-time data and analytics for the precise placement and management of solar installations, ensuring optimal performance and efficiency."
+    elif category == 'Consultants':
+        text = "Consultants benefit from SolarMap by getting detailed insights and analytics that aid in strategic planning and advising on solar energy projects."
+    elif category == 'Calculation':
+        text = "SolarMap calculates the optimal number of solar panels and cost estimates based on real-time satellite data, size of the property, and energy consumption details from EWA bills."
+    elif category == 'Process':
+        text = "The process involves homeowners signing up, submitting EWA bills and house coordinates, and receiving estimates for solar panels. MEWA supervisors review and approve applications on the platform."
+    elif category == 'More':
+        text = "For more information or to dive deeper into how SolarMap is transforming Bahrain's approach to solar energy, please visit the MEWA website or contact our Renewable Energy Department."
+    elif category == 'Data & Privacy':
+        text = "SolarMap ensures strict adherence to data privacy standards, securely processing and storing all user data and energy consumption details with robust protection measures."
+
+    # Construct the response message
     message = {
         'contentType': 'PlainText',
         'content': text
     }
 
-    fulfillment_State ="Fulfilled"
+    fulfillment_State = "Fulfilled"
+    
     # Return the calculated estimate
     return close(intent_request, session_attributes, fulfillment_State, message)
 
