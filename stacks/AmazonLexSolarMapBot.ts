@@ -86,6 +86,9 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
             { utterance: 'Good morning' },
             { utterance: 'Good afternoon' },
             { utterance: 'Explain'},
+            { utterance: 'Another'},
+            { utterance: 'Next'},
+            { utterance: 'Again'},
         ],
         fulfillmentCodeHook: {
             enabled: true,
@@ -153,7 +156,7 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
                     {
                         message: {
                             plainTextMessage: {
-                                value: 'Welcome to Solar Map Bot. Which of the following categories from "About", "Contractors", "consultants", "Consultants", "Calculation", "Process", "Data & Privacy", or "More", would you like to learn about?',
+                                value: 'Welcome to Solar Map Bot. Which of the following categories from "About", "Contractors", "Consultants", "Calculation", "Process", "Data & Privacy", or "More", would you like to learn about?',
                             },
                         },
                     },
