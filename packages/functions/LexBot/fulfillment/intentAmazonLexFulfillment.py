@@ -11,7 +11,7 @@ def get_slots(intent_request):
 def get_slot(intent_request, slotName):
     slots = get_slots(intent_request)
     if slots is not None and slotName in slots and slots[slotName] is not None:
-        return slots[slotName]['value']['resolvedValues']
+        return slots[slotName]['value']['interpretedValue']
     else:
         return None    
 
@@ -91,6 +91,7 @@ def WelcomeIntent(intent_request):
     # Get specific slot for SolarMap
     category = get_slot(intent_request, 'SolarMapSlot')
 
+    text = "Recieved"
     # Initialize text variable based on category
     if category == 'About':
         text = "SolarMap is a revolutionary platform that utilizes AI and AWS Ground Station to map and manage solar panel installations across Bahrain, supporting efficient energy policies and sustainable development."
