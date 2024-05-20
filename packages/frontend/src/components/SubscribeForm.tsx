@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Box, Button, TextField, Typography, Modal, Alert } from '@mui/material';
+import { Box, Button, TextField, Typography, Modal, Alert, CircularProgress } from '@mui/material';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import exportString from '../api_url';
+import solargif from '../assets/SolarGif4.gif';
 
 const apiurl: string = exportString();
 const API_BASE_URL = apiurl;
@@ -21,6 +22,7 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({ open, onClose }) => {
   });
   const [message, setMessage] = useState<string | null>(null);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = event.target;
@@ -39,6 +41,7 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({ open, onClose }) => {
 
   const handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setLoading(true);
 
     try {
       const response = await fetch(`${API_BASE_URL}/subscribe`, {
@@ -59,6 +62,8 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({ open, onClose }) => {
       }
     } catch (error) {
       setMessage('Failed to add resource and send SMS');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -73,19 +78,31 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({ open, onClose }) => {
           left: '50%',
           transform: 'translate(-50%, -50%)',
           width: 400,
-          bgcolor: 'background.paper',
+          backgroundColor: '#303434',
           boxShadow: 24,
-          p: 4,
+          p: 0,
           borderRadius: 2,
+          border: 'none',
         }}
       >
         {formSubmitted ? (
-          <Typography variant="h5" component="h2" align="center">
-            Thank you for subscribing!
-          </Typography>
+          <Box
+            sx={{
+              textAlign: 'center',
+              backgroundColor: '#303434',
+              p: 4,
+              borderRadius: 2,
+              color: 'white',
+            }}
+          >
+            <Typography variant="h5" component="h2" sx={{ color: 'white' }}>
+              Thank you for subscribing!
+            </Typography>
+            <img src={solargif} alt="Thank you" style={{ marginTop: '16px', width: '100%', height: 'auto' }} />
+          </Box>
         ) : (
           <>
-            <Typography id="subscribe-modal-title" variant="h6" component="h2">
+            <Typography id="subscribe-modal-title" variant="h6" component="h2" sx={{ color: 'white' }}>
               Subscribe to the Newsletter
             </Typography>
             <TextField
@@ -96,7 +113,8 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({ open, onClose }) => {
               onChange={handleInputChange}
               fullWidth
               required
-              sx={{ mt: 2 }}
+              disabled={loading}
+              sx={{ mt: 2, backgroundColor: 'white' }}
             />
             <TextField
               id="last_name"
@@ -106,7 +124,8 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({ open, onClose }) => {
               onChange={handleInputChange}
               fullWidth
               required
-              sx={{ mt: 2 }}
+              disabled={loading}
+              sx={{ mt: 2, backgroundColor: 'white' }}
             />
             <TextField
               id="email"
@@ -116,25 +135,27 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({ open, onClose }) => {
               onChange={handleInputChange}
               fullWidth
               required
-              sx={{ mt: 2 }}
+              disabled={loading}
+              sx={{ mt: 2, backgroundColor: 'white' }}
             />
             <PhoneInput
               country={'bh'}
               value={formData.phone}
               onChange={handlePhoneChange}
-              inputStyle={{ width: '100%' }}
+              inputStyle={{ width: '100%', backgroundColor: 'white' }}
               containerStyle={{ width: '100%', marginTop: '16px' }}
               inputProps={{
                 name: 'phone',
                 required: true,
                 autoFocus: true,
+                disabled: loading,
               }}
             />
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-              <Button type="submit" variant="contained" color="primary">
-                Submit
+              <Button type="submit" variant="contained" color="primary" disabled={loading}>
+                {loading ? <CircularProgress size={24} /> : 'Submit'}
               </Button>
-              <Button variant="outlined" color="secondary" onClick={onClose}>
+              <Button variant="outlined" color="secondary" onClick={onClose} disabled={loading}>
                 Cancel
               </Button>
             </Box>
