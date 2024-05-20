@@ -6,6 +6,13 @@ import maplibregl from 'maplibre-gl';
 import React, { useEffect, useRef, useState } from 'react';
 // import SolarPanelCalculator from './SolarPanelCalculator';
 
+// @ts-ignore
+MapboxDraw.constants.classes.CONTROL_BASE = "maplibregl-ctrl";
+// @ts-ignore
+MapboxDraw.constants.classes.CONTROL_PREFIX = "maplibregl-ctrl-";
+// @ts-ignore
+MapboxDraw.constants.classes.CONTROL_GROUP = "maplibregl-ctrl-group";
+
 // Define coordinates array here
 let coordinates = [
   [
@@ -51,6 +58,13 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
           ...authHelper.getMapAuthenticationOptions(),
         });
 
+        mapRef.current.getCanvas().className = 'mapboxgl-canvas maplibregl-canvas';
+        mapRef.current.getContainer().classList.add('mapboxgl-map');
+const canvasContainer = mapRef.current.getCanvasContainer();
+canvasContainer.classList.add('mapboxgl-canvas-container');
+if (canvasContainer.classList.contains('maplibregl-interactive')) {
+  canvasContainer.classList.add('mapboxgl-interactive');
+}
         mapRef.current.on('load', () => {
           // Insert the layer beneath any symbol layer.
           mapRef.current?.addSource('openmaptiles', {
@@ -148,6 +162,34 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
     };
   }, [identityPoolId, mapName]); // Effect dependencies
 
+
+
+
+  const styleMapControls = () => {
+    const buttons = document.querySelectorAll(
+      ".mapbox-gl-draw_ctrl-draw-btn, .mapboxgl-ctrl-geolocate, .maplibregl-ctrl-geolocate"
+    );
+    buttons.forEach((button) => {
+      (button as HTMLElement).style.margin = "10px";
+      (button as HTMLElement).style.width = "40px";
+      (button as HTMLElement).style.height = "40px";
+      (button as HTMLElement).style.backgroundColor = "white";
+      (button as HTMLElement).style.borderRadius = "2px";
+      (button as HTMLElement).style.display = "flex";
+      (button as HTMLElement).style.justifyContent = "center";
+      (button as HTMLElement).style.alignItems = "center";
+      });
+    };
+
+    useEffect(() => {
+      styleMapControls();
+  
+      if (mapRef.current) {
+        mapRef.current.on("draw.create", styleMapControls);
+      }
+    }, [drawControl]);
+
+
   const drawBoxAroundPoint = (center: number[], size: number = boxSize) => {
     const [lng, lat] = center;
     coordinates = [
@@ -214,6 +256,7 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
   const reAddDrawControl = () => {
     if (drawControl && mapRef.current) {
       mapRef.current.addControl(drawControl as any);
+      styleMapControls();
     }
   };
 
