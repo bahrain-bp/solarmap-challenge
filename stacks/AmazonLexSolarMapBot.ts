@@ -55,6 +55,8 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
     });
 
 
+    /////////////////////////////////////////////////Welcome Intent/////////////////////////////////////////////////
+
     locale.addSlotType({
         slotTypeName: 'SolarMapSlot',
         description: 'Everything Solar Map',
@@ -166,6 +168,323 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
         },
     });
 
+
+
+    /////////////////////////////////////////////////Calculation Intent/////////////////////////////////////////////////
+
+    locale.addSlotType({
+        slotTypeName: 'ElectricityConsumptionSlot',
+        description: 'Types of electricity consumption levels',
+        valueSelectionSetting: {
+            resolutionStrategy: 'OriginalValue'
+        },
+        slotTypeValues: [
+            { sampleValue: { value: 'Low' } },
+            { sampleValue: { value: 'Medium' } },
+            { sampleValue: { value: 'High' } },
+            { sampleValue: { value: '300 kilowatt' } },
+        ],
+    });
+
+    locale.addSlotType({
+        slotTypeName: 'RoofTypeSlot',
+        description: 'Types of rooftops materials',
+        valueSelectionSetting: {
+            resolutionStrategy: 'OriginalValue'
+        },
+        slotTypeValues: [
+            { sampleValue: { value: 'Flat' } },
+            { sampleValue: { value: 'Sloped' } },
+            { sampleValue: { value: 'Metal' } },
+            { sampleValue: { value: 'Tile' } },
+            { sampleValue: { value: 'Asphalt' } },
+            { sampleValue: { value: 'Something else' } },
+        ],
+    });
+
+    locale.addSlotType({
+        slotTypeName: 'InstallationTimelineSlot',
+        description: 'Types of installation time periods',
+        valueSelectionSetting: {
+            resolutionStrategy: 'OriginalValue'
+        },
+        slotTypeValues: [
+            { sampleValue: { value: 'ASAP' } },
+            { sampleValue: { value: '3 months' } },
+            { sampleValue: { value: 'Anything' } },
+            { sampleValue: { value: 'Flexible' } },
+        ],
+    });
+
+    locale.addSlotType({
+        slotTypeName: 'ShadingSlot',
+        description: 'Types of shading levels',
+        valueSelectionSetting: {
+            resolutionStrategy: 'OriginalValue'
+        },
+        slotTypeValues: [
+            { sampleValue: { value: 'Low' } },
+            { sampleValue: { value: 'Medium' } },
+            { sampleValue: { value: 'High' } },
+        ],
+    });
+
+    locale.addSlotType({
+        slotTypeName: 'PropertySizeSlot',
+        description: 'Types of property size categories',
+        valueSelectionSetting: {
+            resolutionStrategy: 'OriginalValue'
+        },
+        slotTypeValues: [
+            { sampleValue: { value: 'Small' } },
+            { sampleValue: { value: 'Medium' } },
+            { sampleValue: { value: 'Large' } },
+            { sampleValue: { value: '200 square meters' } },
+        ],
+    });
+
+    locale.addSlotType({
+        slotTypeName: 'BudgetSlot',
+        description: 'Types of budget categories',
+        valueSelectionSetting: {
+            resolutionStrategy: 'OriginalValue'
+        },
+        slotTypeValues: [
+            { sampleValue: { value: 'Low' } },
+            { sampleValue: { value: 'Medium' } },
+            { sampleValue: { value: 'High' } },
+        ],
+    });
+
+    locale.addSlotType({
+        slotTypeName: 'LocationSlot',
+        description: 'Types of location areas',
+        valueSelectionSetting: {
+            resolutionStrategy: 'OriginalValue'
+        },
+        slotTypeValues: [
+            { sampleValue: { value: 'City center' } },
+            { sampleValue: { value: 'Suburb' } },
+            { sampleValue: { value: 'Rural area' } },
+        ],
+    });
+
+    locale.addSlotType({
+        slotTypeName: 'RoofOrientationSlot',
+        description: 'Types of rooftop orientation angles',
+        valueSelectionSetting: {
+            resolutionStrategy: 'OriginalValue'
+        },
+        slotTypeValues: [
+            { sampleValue: { value: 'South' } },
+            { sampleValue: { value: 'East' } },
+            { sampleValue: { value: 'Multiple directions' } },
+        ],
+    });
+
+    const GetSolarPanelInstallationEstimateIntent = locale.addIntent({
+        intentName: 'GetSolarPanelInstallationEstimateIntent',
+        description: 'Intent to provide user with solar panel calculation',
+        sampleUtterances: [
+            { utterance: 'Calculate my house' },
+            { utterance: 'Calculate' },
+            { utterance: 'Estimate' },
+            { utterance: 'Start calculation' },
+            { utterance: 'How many solar panels do I need?' },
+            { utterance: 'Calculate my solar panel installation' },
+            { utterance: 'How much does it cost to install solar panels on my property?' },
+        ],
+        fulfillmentCodeHook: {
+            enabled: true,
+        },
+        intentConfirmationSetting: {
+            promptSpecification: {
+                messageGroups: [
+                    {
+                        message: {
+                            plainTextMessage: {
+                                value: 'Thank you for providing the necessary information, should I proceed with the calculation?',
+                            },
+                        },
+                    },
+                ],
+                maxRetries: 2,
+            },
+            declinationResponse: {
+                messageGroups: [
+                    {
+                        message: {
+                            plainTextMessage: {
+                                value: 'Okay, I have canceled your calculation request.'
+                            },
+                        },
+                    },
+                ],
+            },
+        },
+    });
+
+    GetSolarPanelInstallationEstimateIntent.addSlot({
+        slotName: 'PropertySizeSlot',
+        slotTypeName: 'PropertySizeSlot',
+        valueElicitationSetting: {
+            slotConstraint: 'Required',
+            promptSpecification: {
+                messageGroups: [
+                    {
+                        message: {
+                            plainTextMessage: {
+                                value: 'Please specify the size of your property. Is it small, medium, large, or would you prefer a custom estimate based on square meters?',
+                            },
+                        },
+                    },
+                ],
+                maxRetries: 2,
+            },
+        },
+    });
+
+    GetSolarPanelInstallationEstimateIntent.addSlot({
+        slotName: 'LocationSlot',
+        slotTypeName: 'LocationSlot',
+        valueElicitationSetting: {
+            slotConstraint: 'Required',
+            promptSpecification: {
+                messageGroups: [
+                    {
+                        message: {
+                            plainTextMessage: {
+                                value: 'Could you tell me the location of your property? Is it in the city center, suburb, or rural area?',
+                            },
+                        },
+                    },
+                ],
+                maxRetries: 2,
+            },
+        },
+    });
+
+    GetSolarPanelInstallationEstimateIntent.addSlot({
+        slotName: 'ElectricityConsumptionSlot',
+        slotTypeName: 'ElectricityConsumptionSlot',
+        valueElicitationSetting: {
+            slotConstraint: 'Required',
+            promptSpecification: {
+                messageGroups: [
+                    {
+                        message: {
+                            plainTextMessage: {
+                                value: 'To provide an accurate estimate, could you please share your average electricity consumption? Would you say it is low, medium, or high, or do you have a specific value in kilowatt?',
+                            },
+                        },
+                    },
+                ],
+                maxRetries: 2,
+            },
+        },
+    });
+
+    GetSolarPanelInstallationEstimateIntent.addSlot({
+        slotName: 'RoofOrientationSlot',
+        slotTypeName: 'RoofOrientationSlot',
+        valueElicitationSetting: {
+            slotConstraint: 'Required',
+            promptSpecification: {
+                messageGroups: [
+                    {
+                        message: {
+                            plainTextMessage: {
+                                value: 'What is the orientation of your roof? Does it face north, south, east, west, or multiple directions?',
+                            },
+                        },
+                    },
+                ],
+                maxRetries: 2,
+            },
+        },
+    });
+
+    GetSolarPanelInstallationEstimateIntent.addSlot({
+        slotName: 'RoofTypeSlot',
+        slotTypeName: 'RoofTypeSlot',
+        valueElicitationSetting: {
+            slotConstraint: 'Required',
+            promptSpecification: {
+                messageGroups: [
+                    {
+                        message: {
+                            plainTextMessage: {
+                                value: 'What type of roof do you have? Is it flat, sloped, metal, tile, asphalt, or something else?',
+                            },
+                        },
+                    },
+                ],
+                maxRetries: 2,
+            },
+        },
+    });
+
+
+    GetSolarPanelInstallationEstimateIntent.addSlot({
+        slotName: 'ShadingSlot',
+        slotTypeName: 'ShadingSlot',
+        valueElicitationSetting: {
+            slotConstraint: 'Required',
+            promptSpecification: {
+                messageGroups: [
+                    {
+                        message: {
+                            plainTextMessage: {
+                                value: 'Does your roof receive much shading? Would you say it is low, medium, or high?',
+                            },
+                        },
+                    },
+                ],
+                maxRetries: 2,
+            },
+        },
+    });
+
+
+    GetSolarPanelInstallationEstimateIntent.addSlot({
+        slotName: 'BudgetSlot',
+        slotTypeName: 'BudgetSlot',
+        valueElicitationSetting: {
+            slotConstraint: 'Required',
+            promptSpecification: {
+                messageGroups: [
+                    {
+                        message: {
+                            plainTextMessage: {
+                                value: 'What is your budget for the solar panel installation? Are you looking for a low-cost, medium-cost, or high-cost installation?',
+                            },
+                        },
+                    },
+                ],
+                maxRetries: 2,
+            },
+        },
+    });
+
+    GetSolarPanelInstallationEstimateIntent.addSlot({
+        slotName: 'InstallationTimelineSlot',
+        slotTypeName: 'InstallationTimelineSlot',
+        valueElicitationSetting: {
+            slotConstraint: 'Required',
+            promptSpecification: {
+                messageGroups: [
+                    {
+                        message: {
+                            plainTextMessage: {
+                                value: 'When do you need the installation to be completed? Are you looking for an ASAP installation, within 3 months, within 6 months, or are you flexible with the timeline?',
+                            },
+                        },
+                    },
+                ],
+                maxRetries: 2,
+            },
+        },
+    });
 
     // create/update the bot resource
     const bot = botDefinition.build();

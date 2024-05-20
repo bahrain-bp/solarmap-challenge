@@ -100,7 +100,7 @@ def WelcomeIntent(intent_request):
     elif category == 'Consultants':
         text = "Consultants benefit from SolarMap by getting detailed insights and analytics that aid in strategic planning and advising on solar energy projects."
     elif category == 'Calculation':
-        text = "SolarMap calculates the optimal number of solar panels and cost estimates based on real-time satellite data, size of the property, and energy consumption details from EWA bills."
+        text = "SolarMap calculates the optimal number of solar panels and cost estimates based on real-time satellite data, size of the property, and energy consumption details from EWA bills. You can start your calculation process in chat right away using the 'Calculate' or by using the Document or Map Calculator."
     elif category == 'Process':
         text = "The process involves homeowners signing up, submitting EWA bills and house coordinates, and receiving estimates for solar panels. MEWA supervisors review and approve applications on the platform."
     elif category == 'More':
@@ -126,8 +126,8 @@ def dispatch(intent_request):
     # Dispatch to your bot's intent handlers
     if intent_name == 'WelcomeIntent':
         return WelcomeIntent(intent_request)
-    # if intent_name == 'GetSolarPanelInstallationEstimateIntent':
-    #     return GetSolarPanelInstallationEstimateIntent(intent_request)
+    elif intent_name == 'GetSolarPanelInstallationEstimateIntent':
+        return GetSolarPanelInstallationEstimateIntent(intent_request)
     # elif intent_name == 'FollowupCheckBalance':
     #     return FollowupCheckBalance(intent_request)
     else:
