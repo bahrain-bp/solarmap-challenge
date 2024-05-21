@@ -4,9 +4,10 @@ import L from 'leaflet';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Modal, Button } from 'react-bootstrap';
 import exportString from "../api_url";
-import "leaflet/dist/images/marker-icon.png";
-import "leaflet/dist/images/marker-shadow.png";
-import "leaflet/dist/images/marker-icon-2x.png";
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+
 
 const apiurl: string = exportString();
 const API_BASE_URL = apiurl;
@@ -35,6 +36,17 @@ const AdminMap = () => {
       map.setView([point.latitude, point.longitude], 15);
     }
   };
+  const customIcon = new L.Icon({
+    iconRetinaUrl: markerIcon2x,
+    iconUrl: markerIcon,
+    shadowUrl: markerShadow,
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    tooltipAnchor: [16, -28],
+    shadowSize: [41, 41],
+  });
+  
   
 
   useEffect(() => {
@@ -70,7 +82,7 @@ const AdminMap = () => {
   useEffect(() => {
     if (map && additionalPoints.length > 0) {
       additionalPoints.forEach(point => {
-        L.marker([point.latitude, point.longitude])
+        L.marker([point.latitude, point.longitude], { icon: customIcon })
           .addTo(map)
           .bindPopup(`
             <b>Name:</b> ${point.owner_name}<br/>
@@ -81,16 +93,18 @@ const AdminMap = () => {
       });
     }
   }, [map, additionalPoints]);
+  
 
   useEffect(() => {
     if (map && clickCoordinates) {
-      L.marker([clickCoordinates.lat, clickCoordinates.lng])
+      L.marker([clickCoordinates.lat, clickCoordinates.lng], { icon: customIcon })
         .addTo(map)
         .openPopup();
       setShowForm(true);
       setMapClickable(false);
     }
   }, [clickCoordinates, map]);
+  
 
   useEffect(() => {
     if (map && mapClickable) {
