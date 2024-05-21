@@ -508,7 +508,5 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
             },
         },
     });
-
-    
     
 }
