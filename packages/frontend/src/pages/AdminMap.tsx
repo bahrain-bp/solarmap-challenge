@@ -8,8 +8,6 @@ import "leaflet/dist/images/marker-icon.png";
 import "leaflet/dist/images/marker-shadow.png";
 import "leaflet/dist/images/marker-icon-2x.png";
 
-
-
 const apiurl: string = exportString();
 const API_BASE_URL = apiurl;
 
@@ -32,6 +30,12 @@ const AdminMap = () => {
     editMode: boolean;
   }[]>([]);
   const [mapClickable, setMapClickable] = useState<boolean>(false);
+  const handleTableRowClick = (point: any) => {
+    if (map) {
+      map.setView([point.latitude, point.longitude], 15);
+    }
+  };
+  
 
   useEffect(() => {
     const leafletMap = L.map('map').setView([26.0667, 50.5577], 10);
@@ -243,6 +247,13 @@ const AdminMap = () => {
     setMapClickable(false);
   };
 
+  // Insights calculation
+  const totalPanels = additionalPoints.reduce((sum, point) => sum + point.number_of_panel, 0);
+  const averagePanels = additionalPoints.length > 0 ? (totalPanels / additionalPoints.length).toFixed(2) : 0;
+  const totalInstallations = additionalPoints.length;
+  const earliestInstallation = additionalPoints.length > 0 ? new Date(Math.min(...additionalPoints.map(point => new Date(point.installation_date).getTime()))).toLocaleDateString() : 'N/A';
+  const latestInstallation = additionalPoints.length > 0 ? new Date(Math.max(...additionalPoints.map(point => new Date(point.installation_date).getTime()))).toLocaleDateString() : 'N/A';
+
   return (
     <div className="container mt-3">
       <div className="row">
@@ -304,7 +315,7 @@ const AdminMap = () => {
       </Modal>
       <div className="row mt-3">
         <div className="col">
-          <h2>Additional Points</h2>
+          <h2>All Installations</h2>
           <table className="table">
             <thead>
               <tr>
@@ -319,7 +330,7 @@ const AdminMap = () => {
             </thead>
             <tbody>
               {additionalPoints.map((point, index) => (
-                <tr key={index}>
+                <tr key={index} onClick={() => handleTableRowClick(point)}>
                   <td>
                     {point.editMode ? (
                       <input
@@ -404,8 +415,40 @@ const AdminMap = () => {
           </table>
         </div>
       </div>
+      {/* Insights Table */}
+      <div className="row mt-3">
+        <div className="col">
+          <h2>Insights</h2>
+          <table className="table">
+            <tbody>
+              <tr>
+                <td>Total Panels</td>
+                <td>{totalPanels}</td>
+              </tr>
+              <tr>
+                <td>Average Panels per Installation</td>
+                <td>{averagePanels}</td>
+              </tr>
+              <tr>
+                <td>Total Installations</td>
+                <td>{totalInstallations}</td>
+              </tr>
+              <tr>
+                <td>Earliest Installation Date</td>
+                <td>{earliestInstallation}</td>
+              </tr>
+              <tr>
+                <td>Latest Installation Date</td>
+                <td>{latestInstallation}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 };
 
 export default AdminMap;
+
+
