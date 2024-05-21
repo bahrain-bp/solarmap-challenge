@@ -20,9 +20,9 @@ def lambda_handler(event, context):
         sessionId=sessionId,
         text=user_input_text)
     
-    print("Intent:", response['sessionState']['intent']['name'])
-    print("Next Action:", response['sessionState']['dialogAction']['type'])
-    print("Next Slot:", response['sessionState']['dialogAction']['slotToElicit'])
+    # print("Intent:", response['sessionState']['intent']['name'])
+    # print("Next Action:", response['sessionState']['dialogAction']['type'])
+    # print("Next Slot:", response['sessionState']['dialogAction']['slotToElicit'])
     print("Prompt or Msg:", response['messages'][0]['content'])
 
     # Prepare the response message
