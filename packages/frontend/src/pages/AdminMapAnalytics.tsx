@@ -1,8 +1,10 @@
 import { withIdentityPoolId } from "@aws/amazon-location-utilities-auth-helper";
+import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Feature, Polygon } from 'geojson';
 import maplibregl from 'maplibre-gl';
 import React, { useEffect, useRef, useState } from 'react';
+// import SolarPanelCalculator from './SolarPanelCalculator';
 
 // Define coordinates array here
 let coordinates = [
@@ -15,54 +17,33 @@ let coordinates = [
   ]
 ];
 
-interface AdminMapAnalytics {
+interface AdminMapAnalyticsProps {
   identityPoolId: string;
   mapName: string;
 }
 
-const AdminMapAnalytics: React.FC<AdminMapAnalytics> = ({ identityPoolId, mapName }) => {
+const AdminMapAnalytics: React.FC<AdminMapAnalyticsProps> = ({ identityPoolId, mapName }) => {
   const [featureCoordinates, setFeatureCoordinates] = useState<number[][] | null>(null);
+  const [drawControl, setDrawControl] = useState<MapboxDraw | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
-  const [isHeatmapVisible, setIsHeatmapVisible] = useState<boolean>(true);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const [boxSize, setBoxSize] = useState<number>(0.001);  // Initial size of the box in degrees
 
-  // Placeholder for your API key
-  const weatherApiKey = '7e88d5867ab30cdbeebb0e81c523d89c';
+  const fetchWeatherData = async (points: any[]) => {
+    const baseUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&lat=";
+    const apiKey = '385df3d81f3a89c1c99c115735540c6d';
+    const urls = points.map((point: { lat: string; lng: string; }) => baseUrl + point.lat + "&lon=" + point.lng + "&appid=" + apiKey);
 
-  const fetchWeatherData = async (): Promise<GeoJSON.FeatureCollection<GeoJSON.Point>> => {
-    // Define the bounds of your area of interest
-    const bounds = {
-      north: 26.3870,
-      south: 25.5357,
-      west: 50.3,
-      east: 50.8120
-    };
-
-    // Fetch weather data from the API (example uses OpenWeatherMap)
-    const response = await fetch(`https://api.openweathermap.org/data/2.5/box/city?bbox=${bounds.west},${bounds.south},${bounds.east},${bounds.north},10&appid=${weatherApiKey}`);
-    if (!response.ok) {
-      throw new Error(`Error fetching weather data: ${response.statusText}`);
-    }
-    const data = await response.json();
-
-    // Process data to create a GeoJSON feature collection
-    const features = data.list.map((city: any) => ({
-      type: 'Feature',
-      geometry: {
-        type: 'Point',
-        coordinates: [city.coord.Lon, city.coord.Lat]
-      },
-      properties: {
-        temperature: city.main.temp // Use temperature as the property for heatmap
-      }
+    const weathers = await Promise.all(urls.map(async (url: RequestInfo | URL) => {
+      const response = await fetch(url);
+      return response.json();
     }));
 
-    return {
-      type: 'FeatureCollection',
-      features
-    };
+    return weathers.map((weather, index) => ({
+      ...points[index],
+      val: weather.main.temp
+    }));
   };
 
   useEffect(() => {
@@ -71,99 +52,206 @@ const AdminMapAnalytics: React.FC<AdminMapAnalytics> = ({ identityPoolId, mapNam
         const region = identityPoolId.split(":")[0];
         const authHelper = await withIdentityPoolId(identityPoolId);
 
+        let bound = new maplibregl.LngLatBounds(
+          new maplibregl.LngLat(50.3, 25.5357),
+          new maplibregl.LngLat(50.8120, 26.3870)
+        );
+
         mapRef.current = new maplibregl.Map({
           container: "map",
           center: [50.5860, 26.15],
           zoom: 10,
+          maxBounds: bound,
           style: `https://maps.geo.${region}.amazonaws.com/maps/v0/maps/${mapName}/style-descriptor`,
           ...authHelper.getMapAuthenticationOptions(),
         });
 
         mapRef.current.on('load', async () => {
-          if (mapRef.current) {
-            // Hide all existing layers to ensure the heatmap is visible
-            const layers = mapRef.current.getStyle().layers;
-            if (layers) {
-              for (const layer of layers) {
-                mapRef.current.setLayoutProperty(layer.id, 'visibility', 'none');
-              }
-            }
+          // Insert the layer beneath any symbol layer.
+          mapRef.current?.addSource('openmaptiles', {
+            url: `https://api.maptiler.com/tiles/v3/tiles.json?key=UGho1CzUl0HDsQMTTKJ0`,
+            type: 'vector',
+          });
 
-            // Fetch weather data and add heatmap source and layer
-            const weatherData = await fetchWeatherData();
-            if (!mapRef.current.getSource('heatmap-source')) {
-              mapRef.current.addSource('heatmap-source', {
-                type: 'geojson',
-                data: weatherData
+          mapRef.current?.addLayer(
+            {
+              'id': '3d-buildings',
+              'source': 'openmaptiles',
+              'source-layer': 'building',
+              'type': 'fill-extrusion',
+              'minzoom': 15,
+              'paint': {
+                'fill-extrusion-color': [
+                  'interpolate',
+                  ['linear'],
+                  ['get', 'render_height'], 0, 'lightgray', 200, 'royalblue', 400, 'lightblue'
+                ],
+                'fill-extrusion-height': [
+                  'interpolate',
+                  ['linear'],
+                  ['zoom'],
+                  15,
+                  0,
+                  16,
+                  ['get', 'render_height']
+                ],
+                'fill-extrusion-base': ['case',
+                  ['>=', ['get', 'zoom'], 16],
+                  ['get', 'render_min_height'], 0
+                ]
+              }
+            },
+          );
+          // Add geolocate control to the map.
+          mapRef.current?.addControl(
+            new maplibregl.GeolocateControl({
+              positionOptions: {
+                enableHighAccuracy: true
+              },
+              trackUserLocation: true
+            }),
+            'top-left', // Positioning the control at the top left
+          );
+          const draw = new MapboxDraw({
+            displayControlsDefault: false,
+            controls: {
+              point: true, // Enable only point drawing
+              // trash: true
+            }
+          });
+
+          setDrawControl(draw);
+          mapRef.current?.addControl(draw as any);
+
+          mapRef.current?.on('draw.create', (event) => {
+            const feature = event.features[0];
+            if (feature.geometry.type === 'Point') {
+              const coordinates = feature.geometry.coordinates;
+              setFeatureCoordinates([coordinates]);
+              drawBoxAroundPoint(coordinates);
+              setIsModalVisible(true); // Show modal after drawing the box
+
+              mapRef.current?.flyTo({
+                center: coordinates,
+                zoom: 17, // Set the desired zoom level here
+                essential: true // This ensures the transition is not interrupted
               });
             }
+          });
 
-            if (!mapRef.current.getLayer('heatmap-layer')) {
-              mapRef.current.addLayer({
-                id: 'heatmap-layer',
-                type: 'heatmap',
-                source: 'heatmap-source',
-                paint: {
-                  // Increase the heatmap weight based on temperature
-                  'heatmap-weight': [
-                    'interpolate',
-                    ['linear'],
-                    ['get', 'temperature'],
-                    0, 0,
-                    40, 1
-                  ],
-                  // Increase the heatmap color weight by zoom level
-                  'heatmap-intensity': [
-                    'interpolate',
-                    ['linear'],
-                    ['zoom'],
-                    0, 1,
-                    9, 3
-                  ],
-                  // Color ramp for heatmap. Domain is 0 (low) to 1 (high).
-                  'heatmap-color': [
-                    'interpolate',
-                    ['linear'],
-                    ['heatmap-density'],
-                    0, 'rgba(33,102,172,0)',
-                    0.2, 'rgb(103,169,207)',
-                    0.4, 'rgb(209,229,240)',
-                    0.6, 'rgb(253,219,199)',
-                    0.8, 'rgb(239,138,98)',
-                    1, 'rgb(178,24,43)'
-                  ],
-                  // Adjust the heatmap radius by zoom level
-                  'heatmap-radius': [
-                    'interpolate',
-                    ['linear'],
-                    ['zoom'],
-                    0, 2,
-                    9, 20
-                  ],
-                  // Transition from heatmap to circle layer by zoom level
-                  'heatmap-opacity': [
-                    'interpolate',
-                    ['linear'],
-                    ['zoom'],
-                    7, 1,
-                    9, 0
-                  ],
-                }
+          // Create points grid
+          const startingLatitude = -80;
+          const startingLongitude = -180;
+          const endingLatitude = 80;
+          const endingLongitude = 180;
+          const n = 10;
+
+          const points = [];
+          for (let i = 0; i < n; i++) {
+            for (let j = 0; j < n; j++) {
+              points.push({
+                lat: startingLatitude + i * (endingLatitude - startingLatitude) / n,
+                lng: startingLongitude + j * (endingLongitude - startingLongitude) / n,
+                val: 0
               });
             }
           }
+
+          console.log('Points:', points); // Debugging
+
+          // Fetch weather data
+          const weatherData = await fetchWeatherData(points);
+
+          console.log('Weather Data:', weatherData); // Debugging
+
+          // Add heatmap layer
+          const geojson = {
+            type: 'FeatureCollection',
+            features: weatherData.map(point => ({
+              type: 'Feature',
+              properties: { temperature: point.val },
+              geometry: {
+                type: 'Point',
+                coordinates: [point.lng, point.lat]
+              }
+            }))
+          };
+
+          console.log('GeoJSON Data:', geojson); // Debugging
+
+          mapRef.current?.addSource('heatmap-source', {
+            type: 'geojson',
+            data: geojson
+          });
+
+          mapRef.current?.addLayer({
+            id: 'heatmap-layer',
+            type: 'heatmap',
+            source: 'heatmap-source',
+            paint: {
+              'heatmap-weight': [
+                'interpolate',
+                ['linear'],
+                ['get', 'temperature'],
+                0, 0,
+                30, 1
+              ],
+              'heatmap-intensity': [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                0, 1,
+                15, 3
+              ],
+              'heatmap-color': [
+                'interpolate',
+                ['linear'],
+                ['heatmap-density'],
+                0, 'rgba(33,102,172,0)',
+                0.2, 'rgba(103,169,207,0.5)',
+                0.4, 'rgba(209,229,240,0.5)',
+                0.6, 'rgba(253,219,199,0.5)',
+                0.8, 'rgba(239,138,98,0.5)',
+                1, 'rgba(178,24,43,0.5)'
+              ],
+              'heatmap-radius': [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                0, 2,
+                15, 20
+              ],
+              'heatmap-opacity': [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                7, 0.6,
+                15, 0
+              ],
+            }
+          });
+
+          console.log('Heatmap layer added'); // Debugging
         });
 
         mapRef.current.addControl(new maplibregl.NavigationControl(), "bottom-right");
       } catch (error) {
-        setErrorMessage(`Failed to initialize the map: ${error}`);
+        setErrorMessage('Failed to initialize the map.');
+        console.error(error); // Debugging
       }
     };
 
     initializeMap();
 
     return () => {
+      if (drawControl) {
+        drawControl.deleteAll();
+      }
       if (mapRef.current) {
+        if (mapRef.current.getLayer('box-layer')) {
+          mapRef.current.removeLayer('box-layer');
+          mapRef.current.removeSource('box-source');
+        }
         if (mapRef.current.getLayer('heatmap-layer')) {
           mapRef.current.removeLayer('heatmap-layer');
           mapRef.current.removeSource('heatmap-source');
@@ -217,20 +305,53 @@ const AdminMapAnalytics: React.FC<AdminMapAnalytics> = ({ identityPoolId, mapNam
     }
   };
 
-  const handleToggleHeatmap = () => {
-    if (mapRef.current) {
-      if (isHeatmapVisible) {
-        mapRef.current.setLayoutProperty('heatmap-layer', 'visibility', 'none');
-      } else {
-        mapRef.current.setLayoutProperty('heatmap-layer', 'visibility', 'visible');
-      }
-      setIsHeatmapVisible(!isHeatmapVisible);
+  const reAddDrawControl = () => {
+    if (drawControl && mapRef.current) {
+      mapRef.current.addControl(drawControl as any);
+    }
+  };
+
+  const reAddBoxLayer = () => {
+    if (coordinates[0].length && mapRef.current) {
+      const geojson: Feature<Polygon> = {
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'Polygon',
+          coordinates
+        }
+      };
+
+      mapRef.current.addSource('box-source', {
+        type: 'geojson',
+        data: geojson
+      });
+
+      mapRef.current.addLayer({
+        id: 'box-layer',
+        type: 'fill',
+        source: 'box-source',
+        layout: {},
+        paint: {
+          'fill-color': 'green',
+          'fill-opacity': 0.4
+        }
+      });
     }
   };
 
   const handleSubmit = () => {
     setIsModalVisible(false);
     // Hide or remove the draw control and any drawn features before capturing the image
+    // Temporarily remove the 3D buildings layer
+    if (mapRef.current?.getLayer('3d-buildings')) {
+      mapRef.current.removeLayer('3d-buildings');
+      mapRef.current.removeSource('openmaptiles');
+    }
+
+    if (drawControl) {
+      mapRef.current?.removeControl(drawControl as any);
+    }
     if (mapRef.current?.getLayer('box-layer')) {
       mapRef.current?.removeLayer('box-layer');
       mapRef.current?.removeSource('box-source');
@@ -275,12 +396,6 @@ const AdminMapAnalytics: React.FC<AdminMapAnalytics> = ({ identityPoolId, mapNam
       console.log('blob:', blob);
       console.log('mime:', mimeString);
 
-      // Save the Blob locally
-      // const link = document.createElement('a');
-      // link.href = window.URL.createObjectURL(blob);
-      // link.download = 'cropped_map.png'; // Update the file name
-      // link.click();
-
       // Assuming `dataUrl` is your image encoded as a data URL
       fetch(dataUrl)
         .then(res => res.blob())
@@ -301,13 +416,57 @@ const AdminMapAnalytics: React.FC<AdminMapAnalytics> = ({ identityPoolId, mapNam
               console.error('Error:', error);
             });
         });
+
+      // Optionally re-add removed elements if needed
+      reAddDrawControl();
+      reAddBoxLayer();
+      // Re-add 3D buildings layer if it was previously visible
+      if (!mapRef.current?.getLayer('3d-buildings')) {
+        // Add 3D buildings layer back to the map
+        mapRef.current?.addSource('openmaptiles', {
+          url: `https://api.maptiler.com/tiles/v3/tiles.json?key=UGho1CzUl0HDsQMTTKJ0`,
+          type: 'vector',
+        });
+        mapRef.current?.addLayer({
+          'id': '3d-buildings',
+          'source': 'openmaptiles',
+          'source-layer': 'building',
+          'type': 'fill-extrusion',
+          'minzoom': 15,
+          'paint': {
+            'fill-extrusion-color': [
+              'interpolate',
+              ['linear'],
+              ['get', 'render_height'], 0, 'lightgray', 200, 'royalblue', 400, 'lightblue'
+            ],
+            'fill-extrusion-height': [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              15,
+              0,
+              16,
+              ['get', 'render_height']
+            ],
+            'fill-extrusion-base': ['case',
+              ['>=', ['get', 'zoom'], 16],
+              ['get', 'render_min_height'], 0
+            ]
+          }
+        });
+      }
     });
   };
 
   const handleReset = () => {
-    if (mapRef.current?.getLayer('box-layer')) {
-      mapRef.current?.removeLayer('box-layer');
-      mapRef.current?.removeSource('box-source');
+    if (drawControl) {
+      drawControl.deleteAll();
+    }
+    if (mapRef.current) {
+      if (mapRef.current.getLayer('box-layer')) {
+        mapRef.current.removeLayer('box-layer');
+        mapRef.current.removeSource('box-source');
+      }
     }
     setFeatureCoordinates(null);
     setIsModalVisible(false);
@@ -315,10 +474,6 @@ const AdminMapAnalytics: React.FC<AdminMapAnalytics> = ({ identityPoolId, mapNam
 
   return (
     <>
-      <button onClick={handleToggleHeatmap} style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 1050 }}>
-        {isHeatmapVisible ? 'Hide' : 'Show'} Heatmap
-      </button>
-
       {isModalVisible && featureCoordinates && (
         <div className="modal show" role="dialog" style={{ display: 'block', position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 1050 }}>
           <div className="modal-dialog" role="document" style={{ width: '300px' }}> {/* Smaller width */}
@@ -358,6 +513,7 @@ const AdminMapAnalytics: React.FC<AdminMapAnalytics> = ({ identityPoolId, mapNam
       )}
 
       <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
+        {/* <SolarPanelCalculator /> */}
         <div id="map" style={{ width: '100%', height: '100%' }}>
           {errorMessage && (
             <div style={{ color: 'red', position: 'absolute', top: '10px', left: '10px' }}>{errorMessage}</div>
