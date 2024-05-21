@@ -104,7 +104,7 @@ def WelcomeIntent(intent_request):
     elif category == 'Process':
         text = "The process involves homeowners signing up, submitting EWA bills and house coordinates, and receiving estimates for solar panels. MEWA supervisors review and approve applications on the platform."
     elif category == 'More':
-        text = "For more information or to dive deeper into how SolarMap is transforming Bahrain's approach to solar energy, please visit the MEWA website or contact our Renewable Energy Department."
+        text = "For more information or to dive deeper into how SolarMap is transforming Bahrain's approach to solar energy, please visit the MEWA website or contact our Renewable Energy Department or reach out to mewa.solarmap@gmail.com for additional inquiries."
     elif category == 'Data & Privacy':
         text = "SolarMap ensures strict adherence to data privacy standards, securely processing and storing all user data and energy consumption details with robust protection measures."
 

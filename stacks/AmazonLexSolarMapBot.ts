@@ -94,31 +94,6 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
         ],
         fulfillmentCodeHook: {
             enabled: true,
-                // PostFulfillmentStatusSpecification: { // Last updates here
-                //     successResponse: {
-                //         messageGroups: [
-                //             {
-                //                 message: {
-                //                     plainTextMessage: {
-                //                         value: 'Okay, your request has been successfuly processed.'
-                //                     },
-                //                 },
-                //             },
-                //         ],
-                //     },
-                //     failureResponse: {
-                //         messageGroups: [
-                //             {
-                //                 message: {
-                //                     plainTextMessage: {
-                //                         value: 'Okay, please choose another category.'
-                //                     },
-                //                 },
-                //             },
-                //         ],
-                //     }
-
-                // },
         },
         intentConfirmationSetting: {
             promptSpecification: {
@@ -303,7 +278,7 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
                     {
                         message: {
                             plainTextMessage: {
-                                value: 'Thank you for providing the necessary information, should I proceed with the calculation?',
+                                value: 'Thank you for providing the information. Just to confirm, you are requesting a solar panel installation estimate for a {PropertySizeSlot} property located in {LocationSlot}. Your average electricity consumption is {ElectricityConsumptionSlot}, and your roof orientation is {RoofOrientationSlot}. The roof type is {RoofTypeSlot}, and it receives {ShadingSlot} shading. Your budget for the installation is {BudgetSlot}, and you would like the installation to be completed {InstallationTimelineSlot}. Is all this information correct?',
                             },
                         },
                     },
