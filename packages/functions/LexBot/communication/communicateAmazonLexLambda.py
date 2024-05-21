@@ -1,12 +1,12 @@
-import boto3
 import json
+import boto3
 
 client = boto3.client('lexv2-runtime', region_name='us-east-1')
 
 def lambda_handler(event, context):
-
-    # Extract user's input text from the event
-    user_input_text = event.get('text', 'Hello')  # Default to 'Hello' if no text found
+    # Parse the body from the event
+    body = json.loads(event['body'])
+    user_input_text = body['text']  # Extract the text field from JSON body
 
     botId = "6XI9MHNGUC"
     botAliasId = "38NFYTMVBR"
