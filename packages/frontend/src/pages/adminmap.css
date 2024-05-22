@@ -1,0 +1,83 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  #map {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+  }
+  
+  #time-info {
+    position: absolute;
+    width: 60vw;
+    bottom: 10px;
+    z-index: 1;
+    text-shadow: 0px 0px 5px black;
+    color: white;
+    font-size: 20px;
+    font-weight: 500;
+    text-align: center;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.5); /* Added background to improve visibility */
+    border-radius: 8px; /* Added border-radius for aesthetics */
+  }
+  
+  #time-slider {
+    width: 100%;
+    height: fit-content;
+    z-index: 1;
+    filter: drop-shadow(0 0 7px #000a);
+    margin-top: 10px;
+  }
+  
+  #pointer-data {
+    z-index: 1;
+    position: absolute;
+    font-size: 20px; /* Adjusted font size */
+    font-weight: 700; /* Adjusted font weight */
+    top: 27px;
+    left: 10px;
+    color: #fff;
+    text-shadow: 0px 0px 10px #0007;
+    background: rgba(0, 0, 0, 0.5); /* Added background to improve visibility */
+    padding: 5px; /* Added padding for aesthetics */
+    border-radius: 5px; /* Added border-radius for aesthetics */
+  }
+  
+  #variable-name {
+    z-index: 1;
+    position: absolute;
+    font-size: 20px;
+    font-weight: 500;
+    top: 5px;
+    left: 10px;
+    color: #fff;
+    text-shadow: 0px 0px 10px #0007;
+    background: rgba(0, 0, 0, 0.5); /* Added background to improve visibility */
+    padding: 5px; /* Added padding for aesthetics */
+    border-radius: 5px; /* Added border-radius for aesthetics */
+  }
+  
+  .button {
+    cursor: pointer;
+    width: auto;
+    padding: 8px;
+    border-radius: 3px;
+    margin: 10px 0 0 0;
+    font-size: 12px;
+    text-align: center;
+    color: #fff;
+    background: #3174ff;
+    font-family: sans-serif;
+    font-weight: bold;
+  }
+  
