@@ -44,7 +44,7 @@ const AdminMapAnalytics: React.FC<AdminMapAnalyticsProps> = ({ identityPoolId, m
           center: [50.5860, 26.15],
           zoom: 10,
           maxBounds: bound,
-          style: maptilersdk.MapStyle.BACKDROP,
+          style: maptilersdk.MapStyle.STREETS,
           ...authHelper.getMapAuthenticationOptions(),
         });
   

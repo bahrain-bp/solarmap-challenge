@@ -151,7 +151,7 @@ function App() {
             <Route path="/Privacy" element={<Privacy />} />
             <Route path="/Inquiry" element={<Inquiry />} />
           </Routes>
-
+        
         </div>
         {/* Footer */}
         <Footer />
