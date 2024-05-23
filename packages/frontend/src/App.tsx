@@ -24,7 +24,7 @@ import DeleteContractor from './pages/deleteContractor';
 import Reports from './pages/Reports';
 import CalculationReccomendation from './components/CalculationRec';
 import CalcUsageStats from './components/CalculatorUsageStats';
-import AdminMapAnalytics from './pages/AdminMapAnalytics';
+import AdminMapAnalytics from './pages/AdminMapAnalytics/AdminMapAnalytics';
 
 import { Authenticator } from './modules/Authenticator';
 import { getCurrentUser, signOut } from 'aws-amplify/auth';
