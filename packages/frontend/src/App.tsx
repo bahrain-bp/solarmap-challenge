@@ -38,17 +38,15 @@ function App() {
   const identityPoolId = import.meta.env.VITE_IDENTITY_POOL_ID; // Cognito Identity Pool ID
   const mapName = import.meta.env.VITE_MAP_NAME; // Amazon Location Service Map Name
 
-
-
   Hub.listen('auth', ({ payload }) => {
     switch (payload.event) {
       case 'signedIn':
-        console.log('user have been signedIn successfully.');
+        console.log('User has been signed in successfully.');
         setIsLoggedIn(true);
-        setShowLogin(true);
+        setShowLogin(false);
         break;
       case 'signedOut':
-        console.log('user have been signedOut successfully.');
+        console.log('User has been signed out successfully.');
         setIsLoggedIn(false);
         setShowLogin(false);
         break;
@@ -63,13 +61,11 @@ function App() {
       const user = await getCurrentUser();
       if (Object.keys(user).length !== 0) {
         setIsLoggedIn(true);
-        setShowLogin(true);
-        console.log("yes");
+        setShowLogin(false);
       }
     } catch (err) {
       setIsLoggedIn(false);
       setShowLogin(false);
-      console.log("no");
     }
   }
 
@@ -105,10 +101,10 @@ function App() {
     },
   });
 
-  const authRouts = (
+  const authRoutes = (
     <Routes>
       <Route path="/QuickSightDashboard" element={<QuickSightDashboard />} />
-      <Route path="/DocumentsDashboard" element={<DocumentsDashboard/>}/>
+      <Route path="/DocumentsDashboard" element={<DocumentsDashboard />} />
       <Route path="/calcUsageStats" element={<CalcUsageStats />} />
       <Route path="/deleteEduResource" element={<DeleteEducationalResources />} />
       <Route path="/addEduResource" element={<AddEducationalResource />} />
@@ -119,40 +115,36 @@ function App() {
       <Route path="/Reports" element={<Reports />} />
       <Route path="/CalculationRec" element={<CalculationReccomendation />} />
       <Route path="/AdminMap" element={<AdminMap />} />
-      <Route path="/AdminMapAnalytics" element={<AdminMapAnalytics identityPoolId={identityPoolId} mapName={mapName} />} />
-
+      <Route path="/AdminMapAnalytics" element={<AdminMapAnalytics />} />
       <Route path="/" element={<Home />} />
       <Route path="/About" element={<About />} />
       <Route path="/Provider" element={<Providers isLoggedIn={isLoggedIn} />} />
       <Route path="/CarbonEmissionsCalculator" element={<CarbonFootprintCalculator />} />
       <Route path="/DocumentUpload" element={<DocumentUpload />} />
-      {/* <Route path="/Map" element={<Map />} /> */}
       <Route path="/EducationalResources" element={<EducationalResources isLoggedIn={isLoggedIn} />} />
       <Route path="/MapV2" element={<MapV2 identityPoolId={identityPoolId} mapName={mapName} />} />
       <Route path="/Terms" element={<Terms />} />
       <Route path="/Privacy" element={<Privacy />} />
       <Route path="/Inquiry" element={<Inquiry />} />
-        <Route path="*" element={<About />} />
+      <Route path="*" element={<About />} />
     </Routes>
-);
+  );
 
-const normRoutes = (
+  const normRoutes = (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/About" element={<About />} />
       <Route path="/Provider" element={<Providers isLoggedIn={isLoggedIn} />} />
       <Route path="/CarbonEmissionsCalculator" element={<CarbonFootprintCalculator />} />
       <Route path="/DocumentUpload" element={<DocumentUpload />} />
-      {/* <Route path="/Map" element={<Map />} /> */}
       <Route path="/EducationalResources" element={<EducationalResources isLoggedIn={isLoggedIn} />} />
       <Route path="/MapV2" element={<MapV2 identityPoolId={identityPoolId} mapName={mapName} />} />
       <Route path="/Terms" element={<Terms />} />
       <Route path="/Privacy" element={<Privacy />} />
       <Route path="/Inquiry" element={<Inquiry />} />
-
-        <Route path="*" element={<About />} />
+      <Route path="*" element={<About />} />
     </Routes>
-);
+  );
 
   return (
     <ThemeProvider theme={theme}>
@@ -161,30 +153,15 @@ const normRoutes = (
         <Box display="flex" flexDirection="column" minHeight="100vh">
           <NavBar isLoggedIn={isLoggedIn} onLogInButton={handleLoginButton} />
           {showLogin && (
-             <Box top={0} left={0} width="100%" height="100%" zIndex={9999} display="flex" justifyContent="center" alignItems="center" bgcolor="rgba(0, 0, 0, 0.4)">
-            <Authenticator onCloseClick={closeLoginDialog}>
-              <main>
-                <div>
-                  {
-                    authRouts
-                  }
-                </div>
-              </main>
-            </Authenticator>
+            <Box position="fixed" top={0} left={0} width="100%" height="100%" zIndex={9999} display="flex" justifyContent="center" alignItems="center" bgcolor="rgba(0, 0, 0, 0.4)">
+              <Authenticator onCloseClick={closeLoginDialog} />
             </Box>
           )}
           <Box component="main" flexGrow={1}>
-          {
-          !isLoggedIn &&
-            <div>
-                {
-                    normRoutes
-                }
-            </div>
-        }
+            {isLoggedIn ? authRoutes : normRoutes}
           </Box>
           <Footer />
-          <Chatbot /> 
+          <Chatbot />
         </Box>
       </BrowserRouter>
     </ThemeProvider>

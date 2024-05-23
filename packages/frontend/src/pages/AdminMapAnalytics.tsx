@@ -4,19 +4,21 @@ import * as maptilersdk from '@maptiler/sdk';
 import * as maptilerweather from '@maptiler/weather';
 import './adminmap.css';
 import '@maptiler/sdk/dist/maptiler-sdk.css';
-import {Box} from "@mui/material";
+import {Box, Typography} from "@mui/material";
+import Button from "@mui/material/Button";
 
 const AdminMapAnalytics = () =>
 {
-  const mapContainer = useRef<HTMLElement | string>('');
-  const map = useRef<maplibregl.Map>(null);
 
-  const timeInfoContainer = useRef(null);
-  const timeTextDiv = useRef(null);
-  const timeSlider = useRef(null);
-  const playPauseButton = useRef(null);
-  const pointerDataDiv = useRef(null);
-  let pointerLngLat: maplibregl.LngLat = null;
+  const mapContainer = useRef<HTMLElement | string>('');
+
+  const timeInfoContainer = useRef<HTMLDivElement | null>(null);
+  const timeTextDiv = useRef<HTMLDivElement | null>(null);
+  const timeSlider = useRef<HTMLInputElement | null>(null);
+  const playPauseButton = useRef<HTMLButtonElement | null>(null);
+  const pointerDataDiv = useRef<HTMLDivElement | null>(null);
+
+  const pointerLngLat = useRef<maplibregl.LngLat | null>(null);
 
   const location = { lng: 50.5860, lat: 26.15 };
   const [zoom] = useState(14);
@@ -36,14 +38,14 @@ const AdminMapAnalytics = () =>
     fastColor: [0, 0, 0, 100],
   });
 
-  function playbackSpeed(value: number)
+  function playbackSpeed(value: string)
   {
-    layer.setAnimationTime(value / 1000)
-    layerBg.setAnimationTime(value / 1000)
+    layer.setAnimationTime(parseInt(value) / 1000)
+    layerBg.setAnimationTime(parseInt(value) / 1000)
   }
 
   useEffect(() => {
-    if (map.current) return; // stops map from intializing more than once
+    if (mapContainer.current === '') return; // stops map from intializing more than once
 
     const mapItems = new maptilersdk.Map({
       container: mapContainer.current,
@@ -58,26 +60,24 @@ const AdminMapAnalytics = () =>
       mapItems.addLayer(layerBg, "Water");
     });
 
-    map.current =  mapItems;
-
     layer.on("sourceReady", () => {
-      const startDate = layer.getAnimationStartDate();
-      const endDate = layer.getAnimationEndDate();
-      const currentDate = layer.getAnimationTimeDate();
+      const startDate = layer.getAnimationStartDate().getTime();
+      const endDate = layer.getAnimationEndDate().getTime();
+      const currentDate = layer.getAnimationTimeDate().getTime();
       refreshTime()
 
       if (timeSlider.current)
       {
-        timeSlider.current.min = +startDate;
-        timeSlider.current.max = +endDate;
-        timeSlider.current.value = +currentDate;
+        timeSlider.current.min = `${startDate}`;
+        timeSlider.current.max = `${endDate}`;
+        timeSlider.current.value = `${currentDate}`;
       }
     })
 
     // Called when the animation is progressing
     layer.on("tick", () => {
       refreshTime();
-      updatePointerValue(pointerLngLat);
+      updatePointerValue(pointerLngLat.current);
     })
 
     // Called when the time is manually set
@@ -96,10 +96,10 @@ const AdminMapAnalytics = () =>
   function refreshTime() {
     const d = layer.getAnimationTimeDate();
 
-    if (timeTextDiv.current)
+    if (timeTextDiv.current && timeSlider.current)
     {
       timeTextDiv.current.innerText = d.toString();
-      timeSlider.current.value = +d;
+      timeSlider.current.value = `${d.getTime()}`;
     }
   }
 
@@ -127,35 +127,79 @@ const AdminMapAnalytics = () =>
     isPlaying = !isPlaying;
   }
 
-  function updatePointerValue(lngLat) {
+  function updatePointerValue(lngLat: maplibregl.LngLat | null) {
     if (!lngLat) return;
-    pointerLngLat = lngLat;
+    pointerLngLat.current = lngLat;
     const valueWind = layer.pickAt(lngLat.lng, lngLat.lat);
     const valueTemp = layerBg.pickAt(lngLat.lng, lngLat.lat);
     if (!valueWind) {
-      pointerDataDiv.current.innerText = "";
+      if (pointerDataDiv.current)
+      {
+        pointerDataDiv.current.innerText = "";
+      }
       return;
     }
-    pointerDataDiv.current.innerText = `${valueTemp.value.toFixed(1)}Â°C \n ${valueWind.speedKilometersPerHour.toFixed(1)} km/h`
+
+    if (pointerDataDiv.current && valueTemp)
+    {
+      pointerDataDiv.current.innerText = `${valueTemp.value.toFixed(1)}Â°C \n ${valueWind.speedKilometersPerHour.toFixed(1)} km/h`
+    }
   }
 
   function clearText()
   {
-    pointerDataDiv.current.innerText = "";
+    if (pointerDataDiv.current)
+    {
+      pointerDataDiv.current.innerText = "";
+    }
   }
 
   return (
-      <Box>
-        <div id="time-info" ref={timeInfoContainer} onMouseEnter={clearText}>
-          <span id="time-text" ref={timeTextDiv}></span>
-          <button id="play-pause-bt" className="button" ref={playPauseButton} onClick={playPause}>Play 3600x</button>
-          <input type="range" id="time-slider" min="0" max="11" step="1" ref={timeSlider} onChange={(event) => {playbackSpeed(event.target.value)}}/>
-        </div>
+      <Box sx={{height: "90vh", width: "100%", position: 'relative'}}>
+        {/* Top Left Overlay Division */}
+        <Box
+            sx={{
+              position: 'absolute',
+              top: 10,
+              left: 10,
+              zIndex: 1,
+              padding: '16px',
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              color: 'white',
+              borderRadius: '8px',
+              '& > *': {
+                marginBottom: '8px',
+              },
+            }}
+        >
+          <Typography variant="h6">Temperature + Wind</Typography>
+          <Typography ref={pointerDataDiv} variant="body1">Overlay Content</Typography>
+        </Box>
 
-        <div id="variable-name">Temperature + Wind</div>
-        <div id="pointer-data" ref={pointerDataDiv}></div>
+        <Box ref={mapContainer} sx={{ height: "80%", width: "100%" }}/>
 
-        <Box ref={mapContainer} sx={{ height: "100vh", width: "100vw" }}/>
+        <Box ref={timeInfoContainer} onMouseEnter={clearText}
+             sx={{
+               display: 'flex',
+               flexDirection: 'column',
+               justifyContent: 'center',
+               mt: 4,
+               padding: '20px',
+               background: 'rgba(0, 0, 0, 0.5)', /* Added background to improve visibility */
+               borderRadius: '8px',
+               textShadow: '0px 0px 5px black',
+               color: 'white',
+             }}>
+          <Box sx={{display: 'flex', justifyContent: 'center'}}>
+            <span id="time-text" ref={timeTextDiv} style={{display: "flex", alignItems: 'center'}}></span>
+            <Button sx={{ml: 1}} id="play-pause-bt" variant={"contained"} className="button" ref={playPauseButton}
+                    onClick={playPause}>Play 3600x</Button>
+          </Box>
+
+          <input type="range" id="time-slider" min="0" max="11" step="1" ref={timeSlider} onChange={(event) => {
+            playbackSpeed(event.target.value)
+          }}/>
+        </Box>
       </Box>
   );
 };

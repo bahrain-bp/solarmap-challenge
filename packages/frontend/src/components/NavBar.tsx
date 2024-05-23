@@ -124,6 +124,7 @@ const icons: { [key: string]: JSX.Element } = {
   'Business Dashboard': <DashboardIcon />,
   'Documents Dashboard': <FolderIcon />,
   'Admin Map': <MapIcon />,
+  'Temp Map': <MapIcon />,
   'Calculator Usage Stats': <StatsIcon />,
 };
 
@@ -192,6 +193,7 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
     '/QuickSightDashboard',
     '/DocumentsDashboard',
     '/AdminMap',
+    '/AdminMapAnalytics',
     '/calcUsageStats',
   ].some(isActive);
 
@@ -368,6 +370,19 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
               </ListItem>
               <ListItem disablePadding>
                 <DrawerLink
+                  href="/AdminMapAnalytics"
+                  sx={{ width: '100%', pl: 4 }}
+                  active={isActive('/AdminMapAnalytics')}
+                >
+                  {icons['Temp Map']}
+                  <ListItemText
+                    primary="Admin Map Analytics"
+                    sx={{ marginLeft: theme.spacing(1) }}
+                  />
+                </DrawerLink>
+              </ListItem>
+              <ListItem disablePadding>
+                <DrawerLink
                   href="/calcUsageStats"
                   sx={{ width: '100%', pl: 4 }}
                   active={isActive('/calcUsageStats')}
@@ -527,6 +542,14 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
                       className={isActive('/AdminMap') ? 'active' : ''}
                     >
                       Admin Map
+                    </MenuItem>
+                    <MenuItem
+                      onClick={handleClose}
+                      component={Link}
+                      href="/AdminMapAnalytics"
+                      className={isActive('/AdminMapAnalytics') ? 'active' : ''}
+                    >
+                      Temp Map
                     </MenuItem>
                     <MenuItem
                       onClick={handleClose}
