@@ -40,7 +40,6 @@ function App() {
   const mapName = import.meta.env.VITE_MAP_NAME; // Amazon Location Service Map Name
 
 
-
   Hub.listen('auth', ({ payload }) => {
     switch (payload.event) {
       case 'signedIn':
@@ -109,6 +108,59 @@ function App() {
     setShowLogin(false);
   }
 
+  const authRouts = (
+      <Routes>
+
+        {/* Admin Routes */}
+
+        <Route path="/QuickSightDashboard" element={<QuickSightDashboard />} />
+        <Route path="/DocumentsDashboard" element={<DocumentsDashboard/>}/>
+        <Route path="/calcUsageStats" element={<CalcUsageStats />} />
+        <Route path="/deleteEduResource" element={<DeleteEducationalResources />} />
+        <Route path="/addEduResource" element={<AddEducationalResource />} />
+        <Route path="/addConsultants" element={<AddConsultants />} />
+        <Route path="/addContractor" element={<AddContractor />} />
+        <Route path="/deleteConsultant" element={<DeleteConsulantant />} />
+        <Route path="/deleteContractor" element={<DeleteContractor />} />
+        <Route path="/Reports" element={<Reports />} />
+        <Route path="/CalculationRec" element={<CalculationReccomendation />} />
+        <Route path="/AdminMap" element={<AdminMap />} />
+        <Route path="/AdminMapAnalytics" element={<AdminMapAnalytics />} />
+
+        {/* Customer Routes */}
+
+        <Route path="/" element={<Home />} />
+        <Route path="/About" element={<About />} />
+        <Route path="/Provider" element={<Providers isLoggedIn={isLoggedIn} />} />
+        <Route path="/CarbonEmissionsCalculator" element={<CarbonFootprintCalculator />} />
+        <Route path="/DocumentUpload" element={<DocumentUpload />} />
+        {/* <Route path="/Map" element={<Map />} /> */}
+        <Route path="/EducationalResources" element={<EducationalResources isLoggedIn={isLoggedIn} />} />
+        <Route path="/MapV2" element={<MapV2 identityPoolId={identityPoolId} mapName={mapName} />} />
+        <Route path="/Terms" element={<Terms />} />
+        <Route path="/Privacy" element={<Privacy />} />
+        <Route path="/Inquiry" element={<Inquiry />} />
+          <Route path="*" element={<About />} />
+      </Routes>
+  );
+
+  const normRoutes = (
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/About" element={<About />} />
+        <Route path="/Provider" element={<Providers isLoggedIn={isLoggedIn} />} />
+        <Route path="/CarbonEmissionsCalculator" element={<CarbonFootprintCalculator />} />
+        <Route path="/DocumentUpload" element={<DocumentUpload />} />
+        {/* <Route path="/Map" element={<Map />} /> */}
+        <Route path="/EducationalResources" element={<EducationalResources isLoggedIn={isLoggedIn} />} />
+        <Route path="/MapV2" element={<MapV2 identityPoolId={identityPoolId} mapName={mapName} />} />
+        <Route path="/Terms" element={<Terms />} />
+        <Route path="/Privacy" element={<Privacy />} />
+        <Route path="/Inquiry" element={<Inquiry />} />
+
+          <Route path="*" element={<About />} />
+      </Routes>
+  );
 
   return (
     <BrowserRouter>
@@ -117,44 +169,27 @@ function App() {
         <Navbar isLoggedIn={isLoggedIn} onLogInButton={handleLoginButton}/>
         { showLogin &&
             <Authenticator onCloseClick={closeLoginDialog} >
-                  <main>
-                    <Routes>
-                    <Route path="/QuickSightDashboard" element={<QuickSightDashboard />} />
-                    <Route path="/DocumentsDashboard" element={<DocumentsDashboard/>}/>
-                    <Route path="/calcUsageStats" element={<CalcUsageStats />} />
-                    <Route path="/deleteEduResource" element={<DeleteEducationalResources />} />
-                    <Route path="/addEduResource" element={<AddEducationalResource />} />
-                    <Route path="/addConsultants" element={<AddConsultants />} />
-                    <Route path="/addContractor" element={<AddContractor />} />
-                    <Route path="/deleteConsultant" element={<DeleteConsulantant />} />
-                    <Route path="/deleteContractor" element={<DeleteContractor />} />
-                    <Route path="/Reports" element={<Reports />} />
-                    <Route path="/CalculationRec" element={<CalculationReccomendation />} />
-                    <Route path="/AdminMap" element={<AdminMap />} />
-                    <Route path="/AdminMapAnalytics" element={<AdminMapAnalytics identityPoolId={identityPoolId} mapName={mapName} />} />
-                    </Routes>
-                  </main>
+              <main>
+                <div className="content">
+                  {
+                    authRouts
+                  }
+                </div>
+              </main>
             </Authenticator>
         }
 
-        <div className="content">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/About" element={<About />} />
-            <Route path="/Provider" element={<Providers isLoggedIn={isLoggedIn} />} />
-            <Route path="/CarbonEmissionsCalculator" element={<CarbonFootprintCalculator />} />
-            <Route path="/DocumentUpload" element={<DocumentUpload />} />
-            {/* <Route path="/Map" element={<Map />} /> */}
-            <Route path="/EducationalResources" element={<EducationalResources isLoggedIn={isLoggedIn} />} />
-            <Route path="/MapV2" element={<MapV2 identityPoolId={identityPoolId} mapName={mapName} />} />
-            <Route path="/Terms" element={<Terms />} />
-            <Route path="/Privacy" element={<Privacy />} />
-            <Route path="/Inquiry" element={<Inquiry />} />
-          </Routes>
-        
-        </div>
-        {/* Footer */}
-        <Footer />
+        {
+          !isLoggedIn &&
+            <div className="content">
+                {
+                    normRoutes
+                }
+            </div>
+        }
+
+          {/* Footer */}
+          <Footer/>
       </div>
     </BrowserRouter>
   )
