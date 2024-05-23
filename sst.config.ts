@@ -8,6 +8,8 @@ import { DocumentProcessingStack } from "./stacks/DocumentProcessingStack";
 import { MapStack } from "./stacks/MapStack";
 import { AuthStack } from "./stacks/AuthStack";
 import { ImgDetection } from "./stacks/ImgDetection";
+// import { AmazonLexSolarMapBot } from "./stacks/AmazonLexSolarMapBot";
+// import { AmazonLexSolarMapFulfillment } from "./stacks/AmazonLexSolarMapFulfillment";
 
 export default {
   config(_input) {
@@ -21,6 +23,8 @@ export default {
     if (app.stage !== "prod") {
       app.setDefaultRemovalPolicy("destroy");
     }
+
+    // const stackBaseName = `SolarMapBot-${app.stage}`;  // Dynamic stack name including the stage
     
     if (app.stage == 'devops-coca') {
       app.stack(ImageBuilderForCodeCatalyst)
@@ -33,8 +37,12 @@ export default {
       .stack(AuthStack)
       .stack(DocumentProcessingStack) // Initialize "DocumentProcessingStack" stack before "ApiStack" stack (Dependency)
       .stack(ImgDetection)
+      // .stack(AmazonLexSolarMapFulfillment)
+      // .stack(AmazonLexSolarMapBot, {
+      //   stackName: stackBaseName
+      // })
       .stack(ApiStack)
-      .stack(MapStack)
+      .stack(MapStack)  
       .stack(FrontendStack)
     }
   }

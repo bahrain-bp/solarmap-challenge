@@ -15,14 +15,14 @@ interface EducationalResource {
 }
 
 interface EducationalResourcesProps {
-  isLoggedIn: boolean;  // Added prop to determine if the user is logged in
+  isLoggedIn: boolean;
 }
 
-const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn }) => {  // Destructure isLoggedIn from props
+const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn }) => {
+  const navigate = useNavigate();
   const [resources, setResources] = useState<EducationalResource[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchResources = async () => {
@@ -56,6 +56,7 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
           </div>
         </div>
       </div>
+
       {isLoggedIn && (
         <div className="card text-center my-4">
           <div className="card-header">
