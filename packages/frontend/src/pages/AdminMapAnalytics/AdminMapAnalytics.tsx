@@ -6,8 +6,6 @@ import './adminmap.css';
 import '@maptiler/sdk/dist/maptiler-sdk.css';
 import { Box, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
-import { PopupBase, PopupManager } from "./popupmanager";
-import { makePopup, updatePopupDiv } from "./popupmaker";
 
 const AdminMapAnalytics = () => {
 
@@ -40,9 +38,6 @@ const AdminMapAnalytics = () => {
 
   maptilersdk.config.apiKey = 'kezi9tzOQF1AmUYRwkVd';
 
-  // const appContainer = document.getElementById("app");
-  // if (!appContainer) return;
-
   // Temperature Layer
   const layerBg = new maptilerweather.TemperatureLayer({
     opacity: 0.8,
@@ -60,13 +55,6 @@ const AdminMapAnalytics = () => {
     color: [0, 0, 0, 30],
     fastColor: [0, 0, 0, 100],
   });
-
-  // Radar will be using the cloud color ramp and used as a cloud overlay
-  const radarLayer = new maptilerweather.RadarLayer({colorramp: maptilerweather.ColorRamp.builtin.NULL});
-
-// The precispitation layer is created but actually not displayed.
-  // It will only be used for picking precipitation metrics at the locations of the popups 
-  const precipitationLayer = new maptilerweather.PrecipitationLayer({colorramp: maptilerweather.ColorRamp.builtin.NULL});
 
   function playbackSpeed(value: string) {
     layer.setAnimationTime(parseInt(value) / 1000)
@@ -86,10 +74,8 @@ const AdminMapAnalytics = () => {
 
     mapItems.on('load', function () {
       mapItems.setPaintProperty("Water", 'fill-color', "rgba(0, 0, 0, 0.6)");
-      mapItems.addLayer(layer as any, 'Place labels');  // Casting to 'any' to bypass type checking
+      mapItems.addLayer(layer as any,);  // Casting to 'any' to bypass type checking
       mapItems.addLayer(layerBg as any, "Water");  // Casting to 'any' to bypass type checking
-      mapItems.addLayer(radarLayer as any);
-      mapItems.addLayer(precipitationLayer as any);
       mapItems.addControl(new ColorRampLegendControl({ colorRamp: customColoramp }), 'bottom-left');
     });
 
@@ -134,45 +120,6 @@ const AdminMapAnalytics = () => {
       }
     }
 
-    const popupManager = new PopupManager(mapItems, {
-      layers: ["City labels", "Place labels", "Town labels", "Village labels"],
-      classes: ["city", "village", "town"],
-      popupSize: [140, 70],
-      popupAnchor: "top",
-    });
-
-    // Creating the div that will contain all the popups
-  // const popupContainer = document.createElement("div");
-  // appContainer.appendChild(popupContainer);
-
-    // const popupLogicContainer: { [key: number]: HTMLDivElement } = {};
-
-    //   // This function will be used as the callback for some map events
-    // const updatePopups = () => {
-    //   const popupStatus = popupManager.update();
-
-    //   if (!popupStatus) return;
-
-    //   // Remove the div that corresponds to removed popups
-    //   Object.values(popupStatus.removed).forEach((pb: PopupBase) => {
-    //     const popupDiv = popupLogicContainer[pb.id];
-    //     delete popupLogicContainer[pb.id];
-    //     popupContainer.removeChild(popupDiv);
-    //   });
-
-      // Update the div that corresponds to updated popups
-    //   Object.values(popupStatus.updated).forEach((pb: PopupBase) => {
-    //     const popupDiv = popupLogicContainer[pb.id];
-    //     updatePopupDiv(pb, popupDiv);
-    //   });
-
-    //   Object.values(popupStatus.new).forEach((pb: PopupBase) => {
-    //     const popupDiv = makePopup(pb, layer, layerBg, radarLayer, precipitationLayer, new Date());
-    //     popupLogicContainer[pb.id] = popupDiv;
-    //     popupContainer.appendChild(popupDiv);
-    //   });
-    // };
-
     layer.on("sourceReady", () => {
       const startDate = layer.getAnimationStartDate().getTime();
       const endDate = layer.getAnimationEndDate().getTime();
@@ -198,16 +145,6 @@ const AdminMapAnalytics = () => {
     mapItems.on('mousemove', (e) => {
       updatePointerValue(e.lngLat);
     });
-
-    // mapItems.on("move", updatePopups);
-
-    // mapItems.on("moveend", () => {
-    //   mapItems.once("idle", updatePopups);
-    // });
-
-    // mapItems.once("idle", () => {
-    //   updatePopups();
-    // });
 
   }, [location.lng, location.lat, zoom]);
 
@@ -288,11 +225,15 @@ const AdminMapAnalytics = () => {
         <Typography ref={pointerDataDiv} variant="body1">Overlay Content</Typography>
       </Box>
 
-      <Box ref={mapContainer} sx={{ height: "80%", width: "100%" }} />
+      <Box ref={mapContainer} sx={{ height: "100%", width: "100%" }} />
 
       <Box ref={timeInfoContainer} onMouseEnter={clearText}
         sx={{
           display: 'flex',
+          position: 'absolute',
+          zIndex: 1,
+          bottom: 10,
+          right: 10,
           flexDirection: 'column',
           justifyContent: 'center',
           mt: 4,
