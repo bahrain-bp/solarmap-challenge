@@ -23,9 +23,28 @@ const AdminMapAnalytics = () =>
   const location = { lng: 50.5860, lat: 26.15 };
   const [zoom] = useState(14);
 
+  const customColoramp = new maptilerweather.ColorRamp({
+    stops: [
+      { value: 12, color: [255, 255, 191, 255] },
+      { value: 20, color: [254, 224, 144, 255] },
+      { value: 25, color: [253, 174, 97, 255] },
+      { value: 30, color: [244, 109, 67, 255] },
+      { value: 40, color: [215,48,39, 255] },
+      { value: 55, color: [165, 0, 38, 255] },
+    ],
+  });
+
+  let bound = new maplibregl.LngLatBounds(
+    new maplibregl.LngLat(50.3, 25.5357),
+    new maplibregl.LngLat(50.8120, 26.3870)
+  );
+
   maptilersdk.config.apiKey = 'kezi9tzOQF1AmUYRwkVd';
 
-  const layerBg = new maptilerweather.TemperatureLayer({opacity: 0.8});
+  const layerBg = new maptilerweather.TemperatureLayer({
+    opacity: 0.8,
+    colorramp: customColoramp,
+  });
 
   const layer = new maptilerweather.WindLayer({
     id: "Wind Particles",
@@ -52,13 +71,69 @@ const AdminMapAnalytics = () =>
       style: maptilersdk.MapStyle.STREETS,
       center: [location.lng, location.lat],
       zoom: zoom,
+      maxBounds: bound,
     });
 
     mapItems.on('load', function (){
       mapItems.setPaintProperty("Water", 'fill-color', "rgba(0, 0, 0, 0.6)");
       mapItems.addLayer(layer);
       mapItems.addLayer(layerBg, "Water");
+      mapItems.addControl(new ColorRampLegendControl({ colorRamp: customColorRamp }), 'bottom-left');
     });
+
+    class ColorRampLegendControl {
+      private _options: { colorRamp: any };
+      private _container: HTMLDivElement;
+      private _map?: maplibregl.Map;
+    
+      constructor(options: { colorRamp: any }) {
+        this._options = { ...options };
+        this._container = document.createElement("div");
+        this._container.classList.add("maplibregl-ctrl");
+        this._container.classList.add("maplibregl-ctrl-color-ramp");
+      }
+    
+      onAdd(map: maplibregl.Map): HTMLDivElement {
+        this._map = map;
+        const colorRamp = this._options.colorRamp;
+        const canvas = colorRamp.getCanvasStrip();
+        canvas.style.height = "30px";
+        canvas.style.width = "200px";
+        canvas.style.border = "1px dashed #00000059";
+    
+        const bounds = colorRamp.getBounds();
+    
+        const desc = document.createElement("div");
+        desc.classList.add("color-ramp-label");
+        desc.innerHTML = `(min: ${bounds.min}, max: ${bounds.max})`;
+    
+        this._container.appendChild(desc);
+        this._container.appendChild(canvas);
+        return this._container;
+      }
+    
+      onRemove(): void {
+        if (!this._map || !this._container) {
+          return;
+        }
+        this._container.parentNode?.removeChild(this._container);
+        this._map = undefined;
+      }
+    }
+    
+    // Define your customColorRamp object according to your specific implementation
+    const customColorRamp = {
+      getCanvasStrip: () => {
+        const canvas = document.createElement('canvas');
+        // Your canvas drawing logic here
+        return canvas;
+      },
+      getBounds: () => ({
+        min: 12,
+        max: 55
+      })
+    };
+    
 
     layer.on("sourceReady", () => {
       const startDate = layer.getAnimationStartDate().getTime();
@@ -142,7 +217,7 @@ const AdminMapAnalytics = () =>
 
     if (pointerDataDiv.current && valueTemp)
     {
-      pointerDataDiv.current.innerText = `${valueTemp.value.toFixed(1)}Â°C \n ${valueWind.speedKilometersPerHour.toFixed(1)} km/h`
+      pointerDataDiv.current.innerText = `${valueTemp.value.toFixed(1)}°C \n ${valueWind.speedKilometersPerHour.toFixed(1)} km/h`
     }
   }
 

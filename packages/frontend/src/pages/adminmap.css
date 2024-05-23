@@ -51,3 +51,22 @@
     text-shadow: 0px 0px 10px
     #0007;
   }
+
+  .maplibregl-ctrl-color-ramp {
+    color: 
+#333359;
+    position: relative;
+    padding: 6px 8px;
+    font-family: 'Quicksand Regular';
+    background: 
+white;
+    box-shadow: 0 0 15px rgb(0 0 0 / 20%);
+    border-radius: 5px;
+    bottom: 0;
+    right: 0;
+    margin: 10px;
+  }
+
+  .color-ramp-label {
+    font-size: 16px;
+  }
