@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import maplibregl from 'maplibre-gl';
 import * as maptilersdk from '@maptiler/sdk';
 import * as maptilerweather from '@maptiler/weather';
@@ -10,10 +10,6 @@ import { Chart, registerables } from 'chart.js';
 import { fetchWeatherApi } from 'openmeteo';
 
 Chart.register(...registerables);
-
-function handleMapClick(_ev: maptilersdk.MapMouseEvent & Object): void {
-  throw new Error('Function not implemented.');
-}
 
 type WeatherData = {
   hourly: {
@@ -45,15 +41,16 @@ const AdminMapAnalytics = () => {
   const playPauseButton = useRef<HTMLButtonElement | null>(null);
   const pointerDataDiv = useRef<HTMLDivElement | null>(null);
   const weatherDataDiv = useRef<HTMLDivElement | null>(null);
+  const chartBoxRef = useRef<HTMLDivElement | null>(null);
 
   const pointerLngLat = useRef<maplibregl.LngLat | null>(null);
 
   const location = { lng: 50.5860, lat: 26.15 };
-  const [zoom] = useState(10);
-  const [selectedBuildingId, setSelectedBuildingId] = useState<string | null>(null);
-  const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
-  const [showChart, setShowChart] = useState(true);
-  const [marker, setMarker] = useState<maplibregl.Marker | null>(null);
+  const zoom = 10;
+  const selectedBuildingId = useRef<string | null>(null);
+  const weatherData = useRef<WeatherData | null>(null);
+  const showChart = useRef(true);
+  const marker = useRef<maplibregl.Marker | null>(null);
 
   const customColoramp = new maptilerweather.ColorRamp({
     stops: [
@@ -111,7 +108,7 @@ const AdminMapAnalytics = () => {
       const hourly = response.hourly()!;
       const daily = response.daily()!;
 
-      const weatherData = {
+      const weatherDataProcessed = {
         hourly: {
           time: range(Number(hourly.time()), Number(hourly.timeEnd()), hourly.interval()).map(
             (t) => new Date((t + utcOffsetSeconds) * 1000)
@@ -132,15 +129,17 @@ const AdminMapAnalytics = () => {
           uvIndexMax: Array.from(daily.variables(0)!.valuesArray()!),
         },
       };
-      console.log('Processed weather data:', weatherData);
-      setWeatherData(weatherData);
+      console.log('Processed weather data:', weatherDataProcessed);
+      weatherData.current = weatherDataProcessed;
+      updateWeatherDisplay();
+      updateChart();
     } catch (error) {
       console.error('Error fetching weather data:', error);
     }
   }
 
   useEffect(() => {
-    if (mapContainer.current === '' || mapInstance.current) return; // stops map from initializing more than once
+    if (mapContainer.current === '' || mapInstance.current) return;
 
     const mapItems = new maptilersdk.Map({
       container: mapContainer.current,
@@ -173,7 +172,7 @@ const AdminMapAnalytics = () => {
         'paint': {
           'fill-extrusion-color': [
             'case',
-            ['==', ['concat', ['get', 'render_height'], '-', ['get', 'render_min_height']], selectedBuildingId || ''], // Handle null case
+            ['==', ['concat', ['get', 'render_height'], '-', ['get', 'render_min_height']], selectedBuildingId.current || ''], // Handle null case
             'yellow', // Color for selected building
             ['interpolate', ['linear'], ['get', 'render_height'], 0, 'lightgray', 200, 'royalblue', 400, 'lightblue']
           ],
@@ -199,7 +198,8 @@ const AdminMapAnalytics = () => {
           const feature = e.features[0];
           const buildingId = `${feature.properties.render_height}-${feature.properties.render_min_height}`;
           console.log('Building clicked:', feature.properties); // Log entire properties object
-          setSelectedBuildingId(buildingId);
+          selectedBuildingId.current = buildingId;
+          updateSelectedBuilding();
         }
       });
 
@@ -213,21 +213,7 @@ const AdminMapAnalytics = () => {
       });
 
       // Attach map click listener
-      mapItems.on('click', (e) => {
-        console.log('Map clicked at:', e.lngLat); // Debugging statement
-        fetchWeatherData(e.lngLat.lat, e.lngLat.lng);
-
-        // Remove the previous marker if it exists
-        if (marker) {
-          marker.remove();
-        }
-
-        // Add a new marker at the clicked location
-        const newMarker = new maplibregl.Marker()
-          .setLngLat(e.lngLat)
-          .addTo(mapItems);
-        setMarker(newMarker);
-      });
+      mapItems.on('click', handleMapClick);
     });
 
     class ColorRampLegendControl {
@@ -285,7 +271,6 @@ const AdminMapAnalytics = () => {
 
     layer.on("tick", () => {
       refreshTime();
-      updatePointerValue(pointerLngLat.current);
     });
 
     layer.on("animationTimeSet", () => {
@@ -300,25 +285,25 @@ const AdminMapAnalytics = () => {
       mapItems.off('click', handleMapClick);
     };
 
-  }, [location.lng, location.lat, zoom, marker]);
+  }, [location.lng, location.lat, zoom]);
 
   useEffect(() => {
     if (!mapInstance.current) return;
 
     const mapItems = mapInstance.current;
-    console.log('Selected Building ID:', selectedBuildingId); // Debug statement
+    console.log('Selected Building ID:', selectedBuildingId.current); // Debug statement
 
     // Update the fill-extrusion-color when selectedBuildingId changes
     if (mapItems.getLayer('3d-buildings')) {
       mapItems.setPaintProperty('3d-buildings', 'fill-extrusion-color', [
         'case',
-        ['==', ['concat', ['get', 'render_height'], '-', ['get', 'render_min_height']], selectedBuildingId || ''], // Handle null case
+        ['==', ['concat', ['get', 'render_height'], '-', ['get', 'render_min_height']], selectedBuildingId.current || ''], // Handle null case
         'yellow', // Color for selected building
         ['interpolate', ['linear'], ['get', 'render_height'], 0, 'lightgray', 200, 'royalblue', 400, 'lightblue']
       ]);
     }
 
-  }, [selectedBuildingId]);
+  }, [selectedBuildingId.current]);
 
   function refreshTime() {
     const d = layer.getAnimationTimeDate();
@@ -367,13 +352,6 @@ const AdminMapAnalytics = () => {
     if (pointerDataDiv.current && valueTemp) {
       pointerDataDiv.current.innerText = `${valueTemp.value.toFixed(1)}°C \n ${valueWind.speedKilometersPerHour.toFixed(1)} km/h`;
     }
-    if (weatherData && weatherData.hourly) {
-      console.log('Weather data for pointer:', weatherData.hourly);
-      const weatherInfo = weatherData.hourly.shortwaveRadiation ? weatherData.hourly.shortwaveRadiation[0] : 0;
-      if (weatherDataDiv.current) {
-        weatherDataDiv.current.innerText = `Radiation: ${weatherInfo} W/m²`;
-      }
-    }
   }
 
   function clearText() {
@@ -386,7 +364,7 @@ const AdminMapAnalytics = () => {
   }
 
   const getWeatherChartData = () => {
-    if (!weatherData) return { labels: [], datasets: [] };
+    if (!weatherData.current) return { labels: [], datasets: [] };
 
     const now = new Date();
     const labels = range(now.getTime(), now.getTime() + 7 * 24 * 60 * 60 * 1000, 24 * 60 * 60 * 1000).map(
@@ -398,7 +376,7 @@ const AdminMapAnalytics = () => {
       datasets: [
         {
           label: 'Shortwave Radiation',
-          data: weatherData.hourly.shortwaveRadiation ?? [],
+          data: weatherData.current.hourly.shortwaveRadiation ?? [],
           borderColor: 'rgba(255, 99, 132, 1)',
           backgroundColor: 'rgba(255, 99, 132, 0.2)',
           fill: true,
@@ -406,7 +384,7 @@ const AdminMapAnalytics = () => {
         },
         {
           label: 'Diffuse Radiation',
-          data: weatherData.hourly.diffuseRadiation ?? [],
+          data: weatherData.current.hourly.diffuseRadiation ?? [],
           borderColor: 'rgba(54, 162, 235, 1)',
           backgroundColor: 'rgba(54, 162, 235, 0.2)',
           fill: true,
@@ -414,7 +392,7 @@ const AdminMapAnalytics = () => {
         },
         {
           label: 'Direct Normal Irradiance',
-          data: weatherData.hourly.directNormalIrradiance ?? [],
+          data: weatherData.current.hourly.directNormalIrradiance ?? [],
           borderColor: 'rgba(75, 192, 192, 1)',
           backgroundColor: 'rgba(75, 192, 192, 0.2)',
           fill: true,
@@ -422,7 +400,7 @@ const AdminMapAnalytics = () => {
         },
         {
           label: 'Global Tilted Irradiance',
-          data: weatherData.hourly.globalTiltedIrradiance ?? [],
+          data: weatherData.current.hourly.globalTiltedIrradiance ?? [],
           borderColor: 'rgba(153, 102, 255, 1)',
           backgroundColor: 'rgba(153, 102, 255, 0.2)',
           fill: true,
@@ -430,7 +408,7 @@ const AdminMapAnalytics = () => {
         },
         {
           label: 'Shortwave Radiation Instant',
-          data: weatherData.hourly.shortwaveRadiationInstant ?? [],
+          data: weatherData.current.hourly.shortwaveRadiationInstant ?? [],
           borderColor: 'rgba(255, 159, 64, 1)',
           backgroundColor: 'rgba(255, 159, 64, 0.2)',
           fill: true,
@@ -438,7 +416,7 @@ const AdminMapAnalytics = () => {
         },
         {
           label: 'Diffuse Radiation Instant',
-          data: weatherData.hourly.diffuseRadiationInstant ?? [],
+          data: weatherData.current.hourly.diffuseRadiationInstant ?? [],
           borderColor: 'rgba(54, 162, 235, 1)',
           backgroundColor: 'rgba(54, 162, 235, 0.2)',
           fill: true,
@@ -446,7 +424,7 @@ const AdminMapAnalytics = () => {
         },
         {
           label: 'Direct Normal Irradiance Instant',
-          data: weatherData.hourly.directNormalIrradianceInstant ?? [],
+          data: weatherData.current.hourly.directNormalIrradianceInstant ?? [],
           borderColor: 'rgba(255, 99, 132, 1)',
           backgroundColor: 'rgba(255, 99, 132, 0.2)',
           fill: true,
@@ -454,7 +432,7 @@ const AdminMapAnalytics = () => {
         },
         {
           label: 'Global Tilted Irradiance Instant',
-          data: weatherData.hourly.globalTiltedIrradianceInstant ?? [],
+          data: weatherData.current.hourly.globalTiltedIrradianceInstant ?? [],
           borderColor: 'rgba(75, 192, 192, 1)',
           backgroundColor: 'rgba(75, 192, 192, 0.2)',
           fill: true,
@@ -462,7 +440,7 @@ const AdminMapAnalytics = () => {
         },
         {
           label: 'UV Index Max',
-          data: weatherData.daily.uvIndexMax ?? [],
+          data: weatherData.current.daily.uvIndexMax ?? [],
           borderColor: 'rgba(255, 206, 86, 1)',
           backgroundColor: 'rgba(255, 206, 86, 0.2)',
           fill: true,
@@ -525,6 +503,75 @@ const AdminMapAnalytics = () => {
     },
   };
 
+  const updateWeatherDisplay = () => {
+    if (pointerDataDiv.current && weatherData.current) {
+      const weatherInfo = weatherData.current.hourly.shortwaveRadiation ? weatherData.current.hourly.shortwaveRadiation[0] : 0;
+      pointerDataDiv.current.textContent = `Current Temperature: ${weatherInfo}°C`;
+    }
+  };
+
+  const updateChart = () => {
+    if (chartBoxRef.current) {
+      const chartData = getWeatherChartData();
+      if (chartBoxRef.current) {
+        chartBoxRef.current.innerHTML = '';
+        const chartCanvas = document.createElement('canvas');
+        chartBoxRef.current.appendChild(chartCanvas);
+        new Chart(chartCanvas.getContext('2d')!, {
+          type: 'line',
+          data: chartData,
+          options: chartOptions,
+        });
+      }
+    }
+  };
+
+  const toggleChartDisplay = () => {
+    showChart.current = !showChart.current;
+    const chartBox = chartBoxRef.current;
+    if (chartBox) {
+      chartBox.style.height = showChart.current ? '60%' : '0';
+      chartBox.style.padding = showChart.current ? '16px' : '0';
+    }
+    if (showChart.current) {
+      updateChart();
+    }
+  };
+
+  function updateSelectedBuilding() {
+    if (!mapInstance.current) return;
+
+    const mapItems = mapInstance.current;
+    console.log('Selected Building ID:', selectedBuildingId.current); // Debug statement
+
+    // Update the fill-extrusion-color when selectedBuildingId changes
+    if (mapItems.getLayer('3d-buildings')) {
+      mapItems.setPaintProperty('3d-buildings', 'fill-extrusion-color', [
+        'case',
+        ['==', ['concat', ['get', 'render_height'], '-', ['get', 'render_min_height']], selectedBuildingId.current || ''], // Handle null case
+        'yellow', // Color for selected building
+        ['interpolate', ['linear'], ['get', 'render_height'], 0, 'lightgray', 200, 'royalblue', 400, 'lightblue']
+      ]);
+    }
+  }
+
+  function handleMapClick(e: maptilersdk.MapMouseEvent & Object): void {
+    fetchWeatherData(e.lngLat.lat, e.lngLat.lng);
+
+    // Remove the previous marker if it exists
+    if (marker.current) {
+      marker.current.remove();
+    }
+
+    // Add a new marker at the clicked location
+    marker.current = new maplibregl.Marker()
+      .setLngLat(e.lngLat)
+      .addTo(mapInstance.current!);
+
+    // Update pointer value with the clicked location
+    updatePointerValue(e.lngLat);
+  }
+
   return (
     <Box sx={{ height: "90vh", width: "100%", position: 'relative' }}>
       {/* Top Left Overlay Division */}
@@ -578,6 +625,7 @@ const AdminMapAnalytics = () => {
 
       {/* Weather Data Chart Box */}
       <Box
+        ref={chartBoxRef}
         sx={{
           position: 'absolute',
           top: '50%',
@@ -585,10 +633,10 @@ const AdminMapAnalytics = () => {
           zIndex: 1,
           transform: 'translateY(-50%)',
           width: '50%',
-          height: showChart ? '60%' : '0',
+          height: showChart.current ? '60%' : '0',
           backgroundColor: 'rgba(0, 0, 0, 0.5)',
           borderRadius: '8px',
-          padding: showChart ? '16px' : '0',
+          padding: showChart.current ? '16px' : '0',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
@@ -596,7 +644,7 @@ const AdminMapAnalytics = () => {
           transition: 'height 0.3s, padding 0.3s',
         }}
       >
-        {showChart && weatherData ? (
+        {showChart.current && weatherData.current ? (
           <Line data={getWeatherChartData()} options={chartOptions} />
         ) : (
           <Typography variant="body1">No weather data available</Typography>
@@ -611,14 +659,12 @@ const AdminMapAnalytics = () => {
           transform: 'translateY(-50%)',
         }}
         variant="contained"
-        onClick={() => setShowChart(!showChart)}
+        onClick={toggleChartDisplay}
       >
-        {showChart ? 'Hide Chart' : 'Show Chart'}
+        {showChart.current ? 'Hide Chart' : 'Show Chart'}
       </Button>
     </Box>
   );
 };
 
 export default AdminMapAnalytics;
-
-
