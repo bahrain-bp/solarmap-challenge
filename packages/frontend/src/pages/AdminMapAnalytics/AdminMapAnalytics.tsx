@@ -19,7 +19,7 @@ const AdminMapAnalytics = () => {
   const pointerLngLat = useRef<maplibregl.LngLat | null>(null);
 
   const location = { lng: 50.5860, lat: 26.15 };
-  const [zoom] = useState(14);
+  const [zoom] = useState(10);
 
   const customColoramp = new maptilerweather.ColorRamp({
     stops: [
@@ -76,7 +76,7 @@ const AdminMapAnalytics = () => {
       mapItems.setPaintProperty("Water", 'fill-color', "rgba(0, 0, 0, 0.6)");
       mapItems.addLayer(layer as any,);  // Casting to 'any' to bypass type checking
       mapItems.addLayer(layerBg as any, "Water");  // Casting to 'any' to bypass type checking
-      mapItems.addControl(new ColorRampLegendControl({ colorRamp: customColoramp }), 'bottom-left');
+      mapItems.addControl(new ColorRampLegendControl({ colorRamp: customColoramp }), 'top-left');
     });
 
 
@@ -209,7 +209,7 @@ const AdminMapAnalytics = () => {
       <Box
         sx={{
           position: 'absolute',
-          top: 10,
+          top: 90,
           left: 10,
           zIndex: 1,
           padding: '16px',

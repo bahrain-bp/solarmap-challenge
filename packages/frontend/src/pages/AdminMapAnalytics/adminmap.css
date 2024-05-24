@@ -18,7 +18,6 @@
   }
   
   #time-slider {
-    width: 100%;
     height: fit-content;
     left: 0;
     right: 0;
@@ -26,6 +25,12 @@
     filter: drop-shadow(0 0 7px
     #000a);
     margin-top: 10px;
+  }
+
+  @media (max-width: 600px) {
+    #time-slider {
+      width: 100px;
+    }
   }
   
   #pointer-data {
