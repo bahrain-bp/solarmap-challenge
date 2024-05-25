@@ -42,6 +42,7 @@ const AdminMapAnalytics = () => {
   const pointerDataDiv = useRef<HTMLDivElement | null>(null);
   const weatherDataDiv = useRef<HTMLDivElement | null>(null);
   const chartBoxRef = useRef<HTMLDivElement | null>(null);
+  const solarPotentialDiv = useRef<HTMLDivElement | null>(null);
 
   const pointerLngLat = useRef<maplibregl.LngLat | null>(null);
 
@@ -133,6 +134,7 @@ const AdminMapAnalytics = () => {
       weatherData.current = weatherDataProcessed;
       updateWeatherDisplay();
       updateChart();
+      updateSolarPotential(); // Update solar potential based on fetched data
     } catch (error) {
       console.error('Error fetching weather data:', error);
     }
@@ -361,12 +363,15 @@ const AdminMapAnalytics = () => {
     if (weatherDataDiv.current) {
       weatherDataDiv.current.innerText = "";
     }
+    if (solarPotentialDiv.current) {
+      solarPotentialDiv.current.innerText = "";
+    }
   }
 
   const getWeatherChartData = () => {
     if (!weatherData.current) return { labels: [], datasets: [] };
 
-    const now = new Date();
+    const now = new Date();  
     const labels = range(now.getTime(), now.getTime() + 7 * 24 * 60 * 60 * 1000, 24 * 60 * 60 * 1000).map(
       (t: number) => new Date(t).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
     );
@@ -376,7 +381,7 @@ const AdminMapAnalytics = () => {
       datasets: [
         {
           label: 'Shortwave Radiation',
-          data: weatherData.current.hourly.shortwaveRadiation ?? [],
+          data: weatherData.current.hourly.shortwaveRadiation.slice(2) ?? [], // Skip first 2 days
           borderColor: 'rgba(255, 99, 132, 1)',
           backgroundColor: 'rgba(255, 99, 132, 0.2)',
           fill: true,
@@ -384,7 +389,7 @@ const AdminMapAnalytics = () => {
         },
         {
           label: 'Diffuse Radiation',
-          data: weatherData.current.hourly.diffuseRadiation ?? [],
+          data: weatherData.current.hourly.diffuseRadiation.slice(2) ?? [],
           borderColor: 'rgba(54, 162, 235, 1)',
           backgroundColor: 'rgba(54, 162, 235, 0.2)',
           fill: true,
@@ -392,7 +397,7 @@ const AdminMapAnalytics = () => {
         },
         {
           label: 'Direct Normal Irradiance',
-          data: weatherData.current.hourly.directNormalIrradiance ?? [],
+          data: weatherData.current.hourly.directNormalIrradiance.slice(2) ?? [],
           borderColor: 'rgba(75, 192, 192, 1)',
           backgroundColor: 'rgba(75, 192, 192, 0.2)',
           fill: true,
@@ -400,7 +405,7 @@ const AdminMapAnalytics = () => {
         },
         {
           label: 'Global Tilted Irradiance',
-          data: weatherData.current.hourly.globalTiltedIrradiance ?? [],
+          data: weatherData.current.hourly.globalTiltedIrradiance.slice(2) ?? [],
           borderColor: 'rgba(153, 102, 255, 1)',
           backgroundColor: 'rgba(153, 102, 255, 0.2)',
           fill: true,
@@ -408,7 +413,7 @@ const AdminMapAnalytics = () => {
         },
         {
           label: 'Shortwave Radiation Instant',
-          data: weatherData.current.hourly.shortwaveRadiationInstant ?? [],
+          data: weatherData.current.hourly.shortwaveRadiationInstant.slice(2) ?? [],
           borderColor: 'rgba(255, 159, 64, 1)',
           backgroundColor: 'rgba(255, 159, 64, 0.2)',
           fill: true,
@@ -416,7 +421,7 @@ const AdminMapAnalytics = () => {
         },
         {
           label: 'Diffuse Radiation Instant',
-          data: weatherData.current.hourly.diffuseRadiationInstant ?? [],
+          data: weatherData.current.hourly.diffuseRadiationInstant.slice(2) ?? [],
           borderColor: 'rgba(54, 162, 235, 1)',
           backgroundColor: 'rgba(54, 162, 235, 0.2)',
           fill: true,
@@ -424,7 +429,7 @@ const AdminMapAnalytics = () => {
         },
         {
           label: 'Direct Normal Irradiance Instant',
-          data: weatherData.current.hourly.directNormalIrradianceInstant ?? [],
+          data: weatherData.current.hourly.directNormalIrradianceInstant.slice(2) ?? [],
           borderColor: 'rgba(255, 99, 132, 1)',
           backgroundColor: 'rgba(255, 99, 132, 0.2)',
           fill: true,
@@ -432,7 +437,7 @@ const AdminMapAnalytics = () => {
         },
         {
           label: 'Global Tilted Irradiance Instant',
-          data: weatherData.current.hourly.globalTiltedIrradianceInstant ?? [],
+          data: weatherData.current.hourly.globalTiltedIrradianceInstant.slice(2) ?? [],
           borderColor: 'rgba(75, 192, 192, 1)',
           backgroundColor: 'rgba(75, 192, 192, 0.2)',
           fill: true,
@@ -440,7 +445,7 @@ const AdminMapAnalytics = () => {
         },
         {
           label: 'UV Index Max',
-          data: weatherData.current.daily.uvIndexMax ?? [],
+          data: weatherData.current.daily.uvIndexMax.slice(2) ?? [],
           borderColor: 'rgba(255, 206, 86, 1)',
           backgroundColor: 'rgba(255, 206, 86, 0.2)',
           fill: true,
@@ -583,6 +588,22 @@ const AdminMapAnalytics = () => {
     return el;
   }
 
+  function updateSolarPotential() {
+    if (!weatherData.current || !solarPotentialDiv.current) return;
+
+    const uvIndexMax = Math.max(...weatherData.current.daily.uvIndexMax);
+    const shortwaveRadiation = Math.max(...weatherData.current.hourly.shortwaveRadiation);
+
+    let potential = "Poor";
+    if (shortwaveRadiation > 500 && uvIndexMax > 8) {
+      potential = "Good";
+    } else if (shortwaveRadiation > 300 && uvIndexMax > 5) {
+      potential = "Fair";
+    }
+
+    solarPotentialDiv.current.textContent = `Solar Potential: ${potential}`;
+  }
+
   return (
     <Box sx={{ height: "90vh", width: "100%", position: 'relative' }}>
       {/* Top Left Overlay Division */}
@@ -603,6 +624,7 @@ const AdminMapAnalytics = () => {
       >
         <Typography variant="h6">Temperature + Wind</Typography>
         <Typography ref={pointerDataDiv} variant="body1">Overlay Content</Typography>
+        <Typography ref={solarPotentialDiv} variant="body1">Solar Potential: N/A</Typography>
       </Box>
 
       <Box ref={mapContainer} sx={{ height: "100%", width: "100%" }} />
