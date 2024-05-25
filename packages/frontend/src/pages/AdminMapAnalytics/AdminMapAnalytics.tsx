@@ -368,7 +368,7 @@ const AdminMapAnalytics = () => {
 
     const now = new Date();
     const labels = range(now.getTime(), now.getTime() + 7 * 24 * 60 * 60 * 1000, 24 * 60 * 60 * 1000).map(
-      (t: number) => new Date(t).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', hour12: true })
+      (t: number) => new Date(t).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
     );
 
     return {
@@ -530,8 +530,7 @@ const AdminMapAnalytics = () => {
     showChart.current = !showChart.current;
     const chartBox = chartBoxRef.current;
     if (chartBox) {
-      chartBox.style.height = showChart.current ? '60%' : '0';
-      chartBox.style.padding = showChart.current ? '16px' : '0';
+      chartBox.style.display = showChart.current ? 'flex' : 'none';
     }
     if (showChart.current) {
       updateChart();
@@ -563,13 +562,25 @@ const AdminMapAnalytics = () => {
       marker.current.remove();
     }
 
-    // Add a new marker at the clicked location
-    marker.current = new maplibregl.Marker()
+    // Add a new marker with the solar panel icon at the clicked location
+    marker.current = new maplibregl.Marker({
+      element: createCustomMarkerElement(),
+    })
       .setLngLat(e.lngLat)
       .addTo(mapInstance.current!);
 
     // Update pointer value with the clicked location
     updatePointerValue(e.lngLat);
+  }
+
+  function createCustomMarkerElement() {
+    const el = document.createElement('div');
+    el.className = 'solar-panel-marker';
+    el.style.backgroundImage = 'url(https://cdn-icons-png.flaticon.com/512/3463/3463440.png)';
+    el.style.width = '32px';
+    el.style.height = '32px';
+    el.style.backgroundSize = 'contain';
+    return el;
   }
 
   return (
@@ -636,8 +647,7 @@ const AdminMapAnalytics = () => {
           height: showChart.current ? '60%' : '0',
           backgroundColor: 'rgba(0, 0, 0, 0.5)',
           borderRadius: '8px',
-          padding: showChart.current ? '16px' : '0',
-          display: 'flex',
+          display: showChart.current ? 'flex' : 'none',
           justifyContent: 'center',
           alignItems: 'center',
           color: 'white',
@@ -653,8 +663,8 @@ const AdminMapAnalytics = () => {
       <Button
         sx={{
           position: 'absolute',
-          top: '60%',
-          right: 'calc(25% + 20px)',
+          bottom: '10%',
+          right: '10%',
           zIndex: 1,
           transform: 'translateY(-50%)',
         }}
