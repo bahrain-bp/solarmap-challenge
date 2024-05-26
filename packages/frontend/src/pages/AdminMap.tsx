@@ -4,10 +4,9 @@ import L from 'leaflet';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Modal, Button } from 'react-bootstrap';
 import exportString from "../api_url";
-import "leaflet/dist/images/marker-icon.png";
-import "leaflet/dist/images/marker-shadow.png";
-import "leaflet/dist/images/marker-icon-2x.png";
-
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
 
 const apiurl: string = exportString();
@@ -32,6 +31,23 @@ const AdminMap = () => {
     editMode: boolean;
   }[]>([]);
   const [mapClickable, setMapClickable] = useState<boolean>(false);
+  const handleTableRowClick = (point: any) => {
+    if (map) {
+      map.setView([point.latitude, point.longitude], 15);
+    }
+  };
+  const customIcon = new L.Icon({
+    iconRetinaUrl: markerIcon2x,
+    iconUrl: markerIcon,
+    shadowUrl: markerShadow,
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    tooltipAnchor: [16, -28],
+    shadowSize: [41, 41],
+  });
+  
+  
 
   useEffect(() => {
     const leafletMap = L.map('map').setView([26.0667, 50.5577], 10);
@@ -66,7 +82,7 @@ const AdminMap = () => {
   useEffect(() => {
     if (map && additionalPoints.length > 0) {
       additionalPoints.forEach(point => {
-        L.marker([point.latitude, point.longitude])
+        L.marker([point.latitude, point.longitude], { icon: customIcon })
           .addTo(map)
           .bindPopup(`
             <b>Name:</b> ${point.owner_name}<br/>
@@ -77,16 +93,18 @@ const AdminMap = () => {
       });
     }
   }, [map, additionalPoints]);
+  
 
   useEffect(() => {
     if (map && clickCoordinates) {
-      L.marker([clickCoordinates.lat, clickCoordinates.lng])
+      L.marker([clickCoordinates.lat, clickCoordinates.lng], { icon: customIcon })
         .addTo(map)
         .openPopup();
       setShowForm(true);
       setMapClickable(false);
     }
   }, [clickCoordinates, map]);
+  
 
   useEffect(() => {
     if (map && mapClickable) {
@@ -243,6 +261,13 @@ const AdminMap = () => {
     setMapClickable(false);
   };
 
+  // Insights calculation
+  const totalPanels = additionalPoints.reduce((sum, point) => sum + point.number_of_panel, 0);
+  const averagePanels = additionalPoints.length > 0 ? (totalPanels / additionalPoints.length).toFixed(2) : 0;
+  const totalInstallations = additionalPoints.length;
+  const earliestInstallation = additionalPoints.length > 0 ? new Date(Math.min(...additionalPoints.map(point => new Date(point.installation_date).getTime()))).toLocaleDateString() : 'N/A';
+  const latestInstallation = additionalPoints.length > 0 ? new Date(Math.max(...additionalPoints.map(point => new Date(point.installation_date).getTime()))).toLocaleDateString() : 'N/A';
+
   return (
     <div className="container mt-3">
       <div className="row">
@@ -304,7 +329,7 @@ const AdminMap = () => {
       </Modal>
       <div className="row mt-3">
         <div className="col">
-          <h2>Additional Points</h2>
+          <h2>All Installations</h2>
           <table className="table">
             <thead>
               <tr>
@@ -319,7 +344,7 @@ const AdminMap = () => {
             </thead>
             <tbody>
               {additionalPoints.map((point, index) => (
-                <tr key={index}>
+                <tr key={index} onClick={() => handleTableRowClick(point)}>
                   <td>
                     {point.editMode ? (
                       <input
@@ -404,8 +429,40 @@ const AdminMap = () => {
           </table>
         </div>
       </div>
+      {/* Insights Table */}
+      <div className="row mt-3">
+        <div className="col">
+          <h2>Insights</h2>
+          <table className="table">
+            <tbody>
+              <tr>
+                <td>Total Panels</td>
+                <td>{totalPanels}</td>
+              </tr>
+              <tr>
+                <td>Average Panels per Installation</td>
+                <td>{averagePanels}</td>
+              </tr>
+              <tr>
+                <td>Total Installations</td>
+                <td>{totalInstallations}</td>
+              </tr>
+              <tr>
+                <td>Earliest Installation Date</td>
+                <td>{earliestInstallation}</td>
+              </tr>
+              <tr>
+                <td>Latest Installation Date</td>
+                <td>{latestInstallation}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 };
 
 export default AdminMap;
+
+
