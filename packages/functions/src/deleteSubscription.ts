@@ -19,6 +19,21 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     }
 
     try {
+        // Check if the phone number exists
+        const result = await SQL.DB
+            .selectFrom('subscription')
+            .selectAll()
+            .where('phone', '=', phone)
+            .execute();
+
+        if (result.length === 0) {
+            return {
+                statusCode: 404,
+                body: JSON.stringify({ message: 'Phone number does not exist' }),
+            };
+        }
+
+        // Delete the phone number if it exists
         await SQL.DB
             .deleteFrom('subscription')
             .where('phone', '=', phone)
