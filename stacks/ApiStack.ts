@@ -153,6 +153,7 @@ export function ApiStack(context: StackContext) {
                     })],
                 }
             },
+            // Cognito functions for User Management
             "GET /users": {
                 function: {
                   handler: "packages/functions/src/fetchAdmin.handler",
@@ -163,6 +164,62 @@ export function ApiStack(context: StackContext) {
                   permissions: [
                     new PolicyStatement({
                       actions: ["cognito-idp:ListUsers"],
+                      resources: [`arn:aws:cognito-idp:${stack.region}:*:userpool/${userPoolId}`],
+                    }),
+                  ],
+                },
+              },
+              "POST /users": {
+                function: {
+                  handler: "packages/functions/src/postAdmin.handler",
+                  environment: {
+                    USER_POOL_ID: userPoolId,
+                  },
+                  permissions: [
+                    new PolicyStatement({
+                      actions: ["cognito-idp:AdminCreateUser"],
+                      resources: [`arn:aws:cognito-idp:${stack.region}:*:userpool/${userPoolId}`],
+                    }),
+                  ],
+                },
+              },
+              "PUT /users": {
+                function: {
+                  handler: "packages/functions/src/updateAdmin.handler",
+                  environment: {
+                    USER_POOL_ID: userPoolId,
+                  },
+                  permissions: [
+                    new PolicyStatement({
+                      actions: ["cognito-idp:AdminUpdateUserAttributes"],
+                      resources: [`arn:aws:cognito-idp:${stack.region}:*:userpool/${userPoolId}`],
+                    }),
+                  ],
+                },
+              },
+              "DELETE /users": {
+                function: {
+                  handler: "packages/functions/src/deleteAdmin.handler",
+                  environment: {
+                    USER_POOL_ID: userPoolId,
+                  },
+                  permissions: [
+                    new PolicyStatement({
+                      actions: ["cognito-idp:AdminDeleteUser"],
+                      resources: [`arn:aws:cognito-idp:${stack.region}:*:userpool/${userPoolId}`],
+                    }),
+                  ],
+                },
+              },
+              "GET /getuser": {
+                function: {
+                  handler: "packages/functions/src/getUserDetails.handler",
+                  environment: {
+                    USER_POOL_ID: userPoolId,
+                  },
+                  permissions: [
+                    new PolicyStatement({
+                      actions: ["cognito-idp:GetUser"],
                       resources: [`arn:aws:cognito-idp:${stack.region}:*:userpool/${userPoolId}`],
                     }),
                   ],

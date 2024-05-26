@@ -1,10 +1,9 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
-import { CognitoIdentityProviderClient, AdminCreateUserCommand } from '@aws-sdk/client-cognito-identity-provider';
+import { CognitoIdentityProviderClient, AdminCreateUserCommand, AdminUpdateUserAttributesCommand } from '@aws-sdk/client-cognito-identity-provider';
 
-const client = new CognitoIdentityProviderClient({ region: process.env.AWS_REGION });
+const client = new CognitoIdentityProviderClient({});
 
 interface CreateUserEvent {
-  username: string;
   email: string;
   temporaryPassword: string;
   firstName: string;
@@ -24,32 +23,43 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   try {
     const body: CreateUserEvent = JSON.parse(event.body || '{}');
 
-    const { username, email, temporaryPassword, firstName, lastName } = body;
+    const { email, temporaryPassword, firstName, lastName } = body;
 
-    const command = new AdminCreateUserCommand({
+    // Create user and send welcome email
+    const createUserCommand = new AdminCreateUserCommand({
       UserPoolId: userPoolId,
-      Username: username,
+      Username: email,  // Username should be the email
       TemporaryPassword: temporaryPassword,
       UserAttributes: [
         { Name: 'email', Value: email },
         { Name: 'given_name', Value: firstName },
         { Name: 'family_name', Value: lastName },
-        { Name: 'email_verified', Value: 'true' }
+        { Name: 'email_verified', Value: 'false' }, // Ensure email verification is required
       ],
-      MessageAction: 'SUPPRESS', // Suppress the sending of the welcome email
     });
 
-    const response = await client.send(command);
+    await client.send(createUserCommand);
+
+    // Optionally, trigger the email verification if not already triggered
+    const verifyUserCommand = new AdminUpdateUserAttributesCommand({
+      UserPoolId: userPoolId,
+      Username: email,
+      UserAttributes: [
+        { Name: 'email_verified', Value: 'false' },
+      ],
+    });
+
+    await client.send(verifyUserCommand);
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: 'User created successfully', response }),
+      body: JSON.stringify({ message: 'User created successfully, verification email sent' }),
     };
   } catch (error) {
     console.error(error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ message: 'Failed to create user', error}),
+      body: JSON.stringify({ message: 'Failed to create user', error }),
     };
   }
 };

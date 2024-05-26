@@ -1,39 +1,42 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
-import { SQL } from "./dbConfig";
+import { CognitoIdentityProviderClient, AdminDeleteUserCommand } from '@aws-sdk/client-cognito-identity-provider';
+
+const client = new CognitoIdentityProviderClient({});
+
+interface DeleteUserEvent {
+  email: string;
+}
 
 export const handler: APIGatewayProxyHandler = async (event) => {
-    const adminId = event.pathParameters ? event.pathParameters.adminId : null;
-    
-    if (!adminId) {
-        return {
-            statusCode: 400,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: "AdminID is required" }),
-        };
-    }
+  const userPoolId = process.env.USER_POOL_ID;
 
-    try {
-        const result = await SQL.DB
-        .deleteFrom("admin")
-        .where("admin.admin_id", "=", adminId)
-        .execute();
+  if (!userPoolId) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ message: 'User Pool ID is not configured' }),
+    };
+  }
 
-        console.log('Delete operation successful', result);
+  try {
+    const body: DeleteUserEvent = JSON.parse(event.body || '{}');
+    const { email } = body;
 
-        return {
-            statusCode: 200,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: "Admin deleted successfully" }),
-        };
-    } catch (error) {
-        console.error('Error during database operation:', error);
-        
-        const errorMessage = (error instanceof Error) ? error.message : 'Unknown error';
-        
-        return {
-            statusCode: 500,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: 'Failed to delete admin', error: errorMessage }),
-        };
-    }
+    const command = new AdminDeleteUserCommand({
+      UserPoolId: userPoolId,
+      Username: email,
+    });
+
+    await client.send(command);
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ message: 'User deleted successfully' }),
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ message: 'Failed to delete user', error}),
+    };
+  }
 };
