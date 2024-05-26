@@ -29,7 +29,7 @@ interface EducationalResource {
   resource_url: string;
   resource_img: string | null;
   created_at: string; // added created_at attribute
-  edited_at: string | null; // added edited_at attribute
+  editted_at: string | null; // added editted_at attribute
 }
 
 interface EducationalResourcesProps {
@@ -298,14 +298,18 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
                       <Box sx={{ flexGrow: 1, mt: 2 }}>
                         <Typography variant="h6" fontWeight="bold" sx={{ color: 'white' }}>{resource.title}</Typography>
                         <Typography variant="body2" sx={{ mb: 2, color: 'white' }}>{resource.body}</Typography>
-                        <Typography variant="caption" color="textSecondary" sx={{ color: 'white' }}>
-                          Created at: {formatDate(resource.created_at)}
-                        </Typography>
-                        {resource.edited_at && (
-                          <Typography variant="caption" color="textSecondary" sx={{ color: 'white' }}>
-                            Edited at: {formatDate(resource.edited_at)}
-                          </Typography>
-                        )}
+                        <Box sx={{ color: 'white' }}>
+  <Typography variant="caption" display="block" gutterBottom>
+    Created at: {formatDate(resource.created_at)}
+  </Typography>
+  {resource.editted_at && (
+    <Typography variant="caption" display="block">
+      Edited at: {formatDate(resource.editted_at)}
+    </Typography>
+  )}
+</Box>
+
+
                       </Box>
                       <Stack direction="row" spacing={2} mt={2}>
                         {resource.resource_url && (
@@ -330,10 +334,13 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
                             </Button>
                             <Button
                               variant="contained"
-                              color="primary"
+                              sx={{ 
+                                fontSize: '0.75rem',
+                                backgroundColor: '#FF8C00', // Darker orange
+                                '&:hover': { backgroundColor: '#FF7F00' } // Even darker orange on hover
+                              }}
                               startIcon={<Iconify icon="eva:edit-outline" />}
                               onClick={() => handleOpenEditModal(resource)}
-                              sx={{ fontSize: '0.75rem' }}
                             >
                               Edit Resource
                             </Button>
