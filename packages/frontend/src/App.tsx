@@ -34,6 +34,7 @@ import Chatbot from './components/AmazonLexSolarMapChatbot';
 import Inquiry from './pages/Inquiry';
 import AdminMap from './pages/AdminMap';
 import ErrorView from './pages/Error/ErrorView';
+import UserManagement from './pages/UserManagement';
 
 function App() {
   const identityPoolId = import.meta.env.VITE_IDENTITY_POOL_ID; // Cognito Identity Pool ID
@@ -129,6 +130,7 @@ function App() {
       <Route path="/Terms" element={<Terms />} />
       <Route path="/Privacy" element={<Privacy />} />
       <Route path="/Inquiry" element={<Inquiry />} />
+      <Route path="/UserManagement" element={<UserManagement />} />
       <Route path="*" element={<ErrorView />} />
     </Routes>
   );

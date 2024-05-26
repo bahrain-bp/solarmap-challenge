@@ -8,6 +8,7 @@ import { PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { ImgDetection } from "./ImgDetection";
 // import { AmazonLexSolarMapFulfillment } from "./AmazonLexSolarMapFulfillment";
 import { EmailAPIStack } from "./EmailAPIStack";
+import { AuthStack } from "./AuthStack";
 
 // Define the ApiStack function
 export function ApiStack(context: StackContext) {
@@ -28,7 +29,9 @@ export function ApiStack(context: StackContext) {
 
     // Call the EmailAPIStack function to get the email API
     const { api: emailApi } = EmailAPIStack({ app, stack });
-
+    
+    // Call the AuthStack function to get the Auth API
+    const {userPoolId, userPoolClientId} = use(AuthStack);
 
     // Retrieve the DB stack
     const { db } = use(DBStack);
@@ -150,6 +153,21 @@ export function ApiStack(context: StackContext) {
                     })],
                 }
             },
+            "GET /users": {
+                function: {
+                  handler: "packages/functions/src/fetchAdmin.handler",
+                  environment: {
+                    USER_POOL_ID: userPoolId,
+                    USER_POOL_CLIENT_ID: userPoolClientId,
+                  },
+                  permissions: [
+                    new PolicyStatement({
+                      actions: ["cognito-idp:ListUsers"],
+                      resources: [`arn:aws:cognito-idp:${stack.region}:*:userpool/${userPoolId}`],
+                    }),
+                  ],
+                },
+              },
             "GET /BusinessQSearchBar": {
                 function: {
                     handler: "packages/functions/src/AnonymousEmbedQSearchBarFunction.handler",

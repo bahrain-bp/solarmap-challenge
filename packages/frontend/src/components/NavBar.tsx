@@ -515,6 +515,14 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
                     <MenuItem
                       onClick={handleClose}
                       component={Link}
+                      href="/UserManagement"
+                      className={isActive('/UserManagements') ? 'active' : ''}
+                    >
+                      User Management
+                    </MenuItem>
+                    <MenuItem
+                      onClick={handleClose}
+                      component={Link}
                       href="/Reports"
                       className={isActive('/Reports') ? 'active' : ''}
                     >
