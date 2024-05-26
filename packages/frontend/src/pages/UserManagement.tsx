@@ -1,4 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import UserTableToolbar from '../usertable/table-toolbar';
+import UserTableRow from '../usertable/table-row';
+import TableNoData from '../usertable/table-no-data';
+import TableMainHead from '../usertable/table-head';
+import TableEmptyRows from '../usertable/table-empty-rows';
+import { emptyRows, getComparator } from '../usertable/utils';
+import { applyFilter } from '../usertable/filterUtil';
+import Scrollbar from '../components/scrollbar';
+import { Table, TableBody, TableContainer } from '@mui/material';
 
 interface User {
   Username: string;
@@ -132,6 +141,49 @@ const UserManagement: React.FC = () => {
     return <div>{error}</div>;
   }
 
+   // table vars
+   const [page, setPage] = useState(0);
+
+   const [order, setOrder] = useState('asc');
+ 
+   const [orderBy, setOrderBy] = useState('name');
+ 
+   const [filterName, setFilterName] = useState('');
+ 
+   const [rowsPerPage, setRowsPerPage] = useState(10);
+ 
+   // table functions
+   const handleSort = (event, id) => {
+     const isAsc = orderBy === id && order === 'asc';
+     if (id !== '') {
+       setOrder(isAsc ? 'desc' : 'asc');
+       setOrderBy(id);
+     }
+   };
+ 
+   const handleChangePage = (event, newPage) => {
+     setPage(newPage);
+   };
+ 
+   const handleChangeRowsPerPage = (event) => {
+     setPage(0);
+     setRowsPerPage(parseInt(event.target.value, 10));
+   };
+ 
+   const handleFilterByName = (event) => {
+     setPage(0);
+     setFilterName(event.target.value);
+   };
+ 
+   const dataFiltered = applyFilter({
+     inputData: users,
+     comparator: getComparator(order, orderBy),
+     filterName
+   });
+ 
+   const notFound = !dataFiltered.length && !!filterName;
+ 
+
   return (
     <div className="container">
       <h1>User Management</h1>
@@ -214,6 +266,59 @@ const UserManagement: React.FC = () => {
             ))}
           </tbody>
         </table>
+         <UserTableToolbar
+              filterName={filterName}
+              onFilterName={handleFilterByName}
+            />
+
+            <Scrollbar>
+              <TableContainer sx={{ overflow: 'unset' }}>
+                <Table sx={{ minWidth: 800 }}>
+                  <TableMainHead
+                    order={order}
+                    orderBy={orderBy}
+                    rowCount={users.length}
+                    onRequestSort={handleSort}
+                    headLabel={[
+                      { id: 'zift1', label: '' },
+                      { id: 'catDesc', label: 'Name' },
+                      { id: 'zift2', label: '' }
+                    ]}
+                  />
+                  <TableBody>
+                    {dataFiltered
+                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      .map((row) => (
+                        <UserTableRow
+                          key={row.Username}
+                          email={row.Attributes.find((attr) => attr.Name === 'email')?.Value || 'N/A'}
+                          firstName={row.Attributes.find((attr) => attr.Name === 'given_name')?.Value || 'N/A'}
+                          lastName={row.Attributes.find((attr) => attr.Name === 'family_name')?.Value || 'N/A'}
+                          onClickEdit={() => handleEditClick(row)}
+                          onClickDelete={() => handleDeleteClick(row.Attributes.find((attr) => attr.Name === 'email')?.Value || '')}
+                        />
+                      ))}
+
+                    <TableEmptyRows
+                      height={77}
+                      emptyRows={emptyRows(page, rowsPerPage, users.length)}
+                    />
+
+                    {notFound && <TableNoData query={filterName} />}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Scrollbar>
+
+            <TablePagination
+              page={page}
+              component="div"
+              count={categories.length}
+              rowsPerPage={rowsPerPage}
+              onPageChange={handleChangePage}
+              rowsPerPageOptions={[5, 10, 25, 50, 100]}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
       </div>
     </div>
   );

@@ -127,6 +127,7 @@ const icons: { [key: string]: JSX.Element } = {
   'Admin Map': <MapIcon />,
   'Heat Map': <ThermostatIcon />,
   'Calculator Usage Stats': <StatsIcon />,
+  'User': <PeopleIcon/>
 };
 
 const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
@@ -190,6 +191,7 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
   ].some(isActive);
 
   const isAdminDropdownActive = [
+    '/UserManagement',
     '/Reports',
     '/QuickSightDashboard',
     '/DocumentsDashboard',
@@ -317,6 +319,19 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
           </ListItem>
           <Collapse in={adminMenuOpen} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
+            <ListItem disablePadding>
+                <DrawerLink
+                  href="/UserManagement"
+                  sx={{ width: '100%', pl: 4 }}
+                  active={isActive('/UserManagement')}
+                >
+                  {icons.User}
+                  <ListItemText
+                    primary="User Management"
+                    sx={{ marginLeft: theme.spacing(1) }}
+                  />
+                </DrawerLink>
+              </ListItem>
               <ListItem disablePadding>
                 <DrawerLink
                   href="/Reports"
