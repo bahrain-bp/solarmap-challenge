@@ -66,6 +66,7 @@ export function ApiStack(context: StackContext) {
           
             // Lambda function to send SNS SMS messages to subscribed users
             "POST /subscribe": "packages/functions/src/postSubscription.handler",
+            "DELETE /unsubscribe": "packages/functions/src/deleteSubscription.handler",
             "POST /inquirycustomer": "packages/functions/src/postCustomerInquiry.handler",
             "GET /inquirycustomer": "packages/functions/src/fetchCustomerInquiry.handler",
             "POST /solarpanel": "packages/functions/src/postSolarPanels.handler",

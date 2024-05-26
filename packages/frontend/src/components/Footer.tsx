@@ -5,7 +5,8 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXTwitter } from '@fortawesome/free-brands-svg-icons';
-import SubscribeForm from './SubscribeForm'; // Update the import path as needed
+import SubscribeForm from '../forms/SubscribeForm'; // Update the import path as needed
+import UnsubscribeForm from '../forms/UnsubscribeForm';
 import TextField from './TextField';
 
 const LANGUAGES = [
@@ -64,10 +65,13 @@ function Copyright() {
 }
 
 export default function AppFooter() {
-  const [open, setOpen] = useState(false);
+  const [subscribeOpen, setSubscribeOpen] = useState(false);
+  const [unsubscribeOpen, setUnsubscribeOpen] = useState(false);
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleSubscribeOpen = () => setSubscribeOpen(true);
+  const handleSubscribeClose = () => setSubscribeOpen(false);
+  const handleUnsubscribeOpen = () => setUnsubscribeOpen(true);
+  const handleUnsubscribeClose = () => setUnsubscribeOpen(false);
 
   return (
     <Box component="footer" sx={{ display: 'flex', bgcolor: 'black', color: 'white' }}>
@@ -197,14 +201,17 @@ export default function AppFooter() {
             <Typography variant="h6" gutterBottom sx={{ color: 'white', mt: 4 }}>
               Subscribe to our Newsletter
             </Typography>
-            <Button variant="contained" color="primary" onClick={handleOpen}>
+            <Button variant="contained" color="primary" onClick={handleSubscribeOpen}>
               Subscribe
+            </Button>
+            <Button variant="contained" color="secondary" onClick={handleUnsubscribeOpen} sx={{ ml: 2 }}>
+              Unsubscribe
             </Button>
           </Grid>
         </Grid>
       </Container>
-
-      <SubscribeForm open={open} onClose={handleClose} />
+      <SubscribeForm open={subscribeOpen} onClose={handleSubscribeClose} />
+      <UnsubscribeForm open={unsubscribeOpen} onClose={handleUnsubscribeClose} />
     </Box>
   );
 }

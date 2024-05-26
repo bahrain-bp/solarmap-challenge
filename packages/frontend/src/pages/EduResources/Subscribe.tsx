@@ -4,7 +4,7 @@ import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import Typography from '../../components/Typography';
 import Button from '../../components/Button';
-import SubscribeForm from '../../components/SubscribeForm'; // Update the import path as needed
+import SubscribeForm from '../../forms/SubscribeForm'; // Update the import path as needed
 import pattern from '../../assets/pattern.png';
 import solar from '../../assets/solargetty.png';
 import royal from '../../assets/Royal.jpg';
