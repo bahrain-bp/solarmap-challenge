@@ -15,6 +15,7 @@ import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import AddEducationalResource from './addEduResource';
+import EditEducationalResource from './updateEduResource';
 import EduRes from '../../assets/Educationalresources.jpg';
 import Subscribe from './Subscribe'; // Update the import path as needed
 
@@ -61,9 +62,17 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
   const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
   const [snackbarMessage, setSnackbarMessage] = useState<string>('');
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
+  const [editResource, setEditResource] = useState<EducationalResource | null>(null);
 
   const handleOpenModal = () => setModalOpen(true);
   const handleCloseModal = () => setModalOpen(false);
+
+  const handleOpenEditModal = (resource: EducationalResource) => {
+    setEditResource(resource);
+    setEditModalOpen(true);
+  };
+  const handleCloseEditModal = () => setEditModalOpen(false);
 
   useEffect(() => {
     const fetchResources = async () => {
@@ -309,15 +318,26 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
                           </Button>
                         )}
                         {isLoggedIn && (
-                          <Button
-                            variant="contained"
-                            color="secondary"
-                            startIcon={<Iconify icon="eva:trash-2-outline" />}
-                            onClick={() => handleDeleteResource(resource.resource_id)}
-                            sx={{ fontSize: '0.75rem' }}
-                          >
-                            Delete Resource
-                          </Button>
+                          <>
+                            <Button
+                              variant="contained"
+                              color="secondary"
+                              startIcon={<Iconify icon="eva:trash-2-outline" />}
+                              onClick={() => handleDeleteResource(resource.resource_id)}
+                              sx={{ fontSize: '0.75rem' }}
+                            >
+                              Delete Resource
+                            </Button>
+                            <Button
+                              variant="contained"
+                              color="primary"
+                              startIcon={<Iconify icon="eva:edit-outline" />}
+                              onClick={() => handleOpenEditModal(resource)}
+                              sx={{ fontSize: '0.75rem' }}
+                            >
+                              Edit Resource
+                            </Button>
+                          </>
                         )}
                       </Stack>
                     </Box>
@@ -347,6 +367,11 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
         <Modal open={modalOpen} onClose={handleCloseModal}>
           <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4, borderRadius: 1 }}>
             <AddEducationalResource onClose={handleCloseModal} />
+          </Box>
+        </Modal>
+        <Modal open={editModalOpen} onClose={handleCloseEditModal}>
+          <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4, borderRadius: 1 }}>
+            {editResource && <EditEducationalResource resource={editResource} onClose={handleCloseEditModal} />}
           </Box>
         </Modal>
       </Container>
