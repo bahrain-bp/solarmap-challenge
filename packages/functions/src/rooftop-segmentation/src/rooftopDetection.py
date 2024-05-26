@@ -3,6 +3,11 @@ import json
 import base64
 import inference
 
+import cv2
+import supervision as sv
+from PIL import Image
+import io
+
 # Create an S3 client
 s3 = boto3.client('s3')
 
@@ -29,7 +34,31 @@ def lambda_handler(event, context):
         response = model.infer(image=image_base64)
 
         print(response)
- 
+
+        detections = sv.Detections.from_inference(response)
+
+        # bounding_box_annotator = sv.BoundingBoxAnnotator()
+        # label_annotator = sv.LabelAnnotator()
+
+        # annotated_image = bounding_box_annotator.annotate(scene=image_base64, detections=detections)
+        # annotated_image = label_annotator.annotate(scene=annotated_image, detections=detections)
+        
+        # https://supervision.roboflow.com/annotators/#supervision.annotators.core.MaskAnnotator
+
+        label_annotator = sv.LabelAnnotator(text_position=sv.Position.CENTER)
+        annotated_frame = label_annotator.annotate(scene=image_base64, detections=detections)
+
+        mask_annotator = sv.MaskAnnotator()
+        annotated_frame = mask_annotator.annotate(scene=image_base64, detections=detections)
+
+         # Convert annotated frame back to binary image format
+        annotated_image = Image.open(io.BytesIO(base64.b64decode(annotated_frame)))
+        annotated_image_binary = io.BytesIO()
+        annotated_image.save(annotated_image_binary, format='JPEG')
+        annotated_image_binary.seek(0)
+
+        s3.upload_fileobj(annotated_image_binary, bucket_name, "annotated_frames/" + object_key.split("/")[-1])
+        
 
     #     # Check if the response contains predictions
     #     if response_data and 'predictions' in response_data:
