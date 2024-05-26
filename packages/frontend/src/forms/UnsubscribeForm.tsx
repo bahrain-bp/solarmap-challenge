@@ -82,8 +82,11 @@ const UnsubscribeForm: React.FC<UnsubscribeFormProps> = ({ open, onClose }) => {
             disabled: loading,
           }}
         />
-        <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }} disabled={loading}>
+        <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2,  mb: 2}} disabled={loading}>
           {loading ? <CircularProgress size={24} /> : 'Unsubscribe'}
+        </Button>
+        <Button variant="outlined" color="secondary" onClick={onClose} fullWidth>
+          Cancel
         </Button>
         {message && (
           <Alert severity="error" sx={{ mt: 2 }}>

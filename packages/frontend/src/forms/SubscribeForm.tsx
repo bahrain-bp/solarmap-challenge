@@ -42,7 +42,6 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({ open, onClose }) => {
   const handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
-    postMessage(null);
     setError(null);
 
     try {
@@ -57,13 +56,13 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({ open, onClose }) => {
       const result = await response.json();
 
       if (response.ok) {
-        postMessage(result.message);
         setFormSubmitted(true);
+        setError(result.message); // Assuming the server sends back a 'message' field on success
       } else {
-        setError(result.message); // Assuming the server sends back a 'message' field on errors
+        setError(result.error || 'Failed to subscribe. Please try again later.'); // Assuming error message is in 'error' field
       }
     } catch (error) {
-      setError('Failed to add resource and send SMS');
+      setError('Network error, please try again later.');
     } finally {
       setLoading(false);
     }
@@ -82,29 +81,21 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({ open, onClose }) => {
           width: 400,
           backgroundColor: '#303434',
           boxShadow: 24,
-          p: 0,
+          p: 4,
           borderRadius: 2,
           border: 'none',
         }}
       >
         {formSubmitted ? (
-          <Box
-            sx={{
-              textAlign: 'center',
-              backgroundColor: '#303434',
-              p: 4,
-              borderRadius: 2,
-              color: 'white',
-            }}
-          >
-            <Typography variant="h5" component="h2" sx={{ color: 'white' }}>
+          <Box sx={{ textAlign: 'center', p: 4 }}>
+            <Typography variant="h5" sx={{ color: 'white' }}>
               Thank you for subscribing!
             </Typography>
-            <img src={solargif} alt="Thank you" style={{ marginTop: '16px', width: '100%', height: 'auto' }} />
+            <img src={solargif} alt="Thank you" style={{ marginTop: '20px', width: '100%', height: 'auto' }} />
           </Box>
         ) : (
           <>
-            <Typography id="subscribe-modal-title" variant="h6" component="h2" sx={{ color: 'white' }}>
+            <Typography id="subscribe-modal-title" variant="h6" sx={{ color: 'white', mb: 3 }}>
               Subscribe to the Newsletter
             </Typography>
             <TextField
@@ -116,7 +107,7 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({ open, onClose }) => {
               fullWidth
               required
               disabled={loading}
-              sx={{ mt: 2, backgroundColor: 'white' }}
+              sx={{ backgroundColor: 'white', mb: 2 }}
             />
             <TextField
               id="last_name"
@@ -127,7 +118,7 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({ open, onClose }) => {
               fullWidth
               required
               disabled={loading}
-              sx={{ mt: 2, backgroundColor: 'white' }}
+              sx={{ backgroundColor: 'white', mb: 2 }}
             />
             <TextField
               id="email"
@@ -138,14 +129,14 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({ open, onClose }) => {
               fullWidth
               required
               disabled={loading}
-              sx={{ mt: 2, backgroundColor: 'white' }}
+              sx={{ backgroundColor: 'white', mb: 2 }}
             />
             <PhoneInput
               country={'bh'}
               value={formData.phone}
               onChange={handlePhoneChange}
               inputStyle={{ width: '100%', backgroundColor: 'white' }}
-              containerStyle={{ width: '100%', marginTop: '16px' }}
+              containerStyle={{ width: '100%', marginBottom: '20px' }}
               inputProps={{
                 name: 'phone',
                 required: true,
@@ -153,7 +144,7 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({ open, onClose }) => {
                 disabled: loading,
               }}
             />
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
               <Button type="submit" variant="contained" color="primary" disabled={loading}>
                 {loading ? <CircularProgress size={24} /> : 'Submit'}
               </Button>
