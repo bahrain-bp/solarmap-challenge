@@ -192,31 +192,26 @@ const UserManagement: React.FC = () => {
               <th>Email</th>
               <th>First Name</th>
               <th>Last Name</th>
-              <th>Status</th>
               <th>Actions</th> {/* Add Actions column header */}
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => {
-              const emailVerified = user.Attributes.find((attr) => attr.Name === 'email_verified')?.Value === 'true';
-              return (
-                <tr key={user.Username}>
-                  <td>{user.Username}</td>
-                  <td>{user.Attributes.find((attr) => attr.Name === 'email')?.Value || 'N/A'}</td>
-                  <td>{user.Attributes.find((attr) => attr.Name === 'given_name')?.Value || 'N/A'}</td>
-                  <td>{user.Attributes.find((attr) => attr.Name === 'family_name')?.Value || 'N/A'}</td>
-                  <td>{emailVerified ? 'Verified' : 'Not Verified'}</td>
-                  <td>
-                    <button className="btn btn-warning btn-sm" onClick={() => handleEditClick(user)}>
-                      Edit
-                    </button>
-                    <button className="btn btn-danger btn-sm ml-2" onClick={() => handleDeleteClick(user.Attributes.find((attr) => attr.Name === 'email')?.Value || '')}>
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
+            {users.map((user) => (
+              <tr key={user.Username}>
+                <td>{user.Username}</td>
+                <td>{user.Attributes.find((attr) => attr.Name === 'email')?.Value || 'N/A'}</td>
+                <td>{user.Attributes.find((attr) => attr.Name === 'given_name')?.Value || 'N/A'}</td>
+                <td>{user.Attributes.find((attr) => attr.Name === 'family_name')?.Value || 'N/A'}</td>
+                <td>
+                  <button className="btn btn-warning btn-sm" onClick={() => handleEditClick(user)}>
+                    Edit
+                  </button>
+                  <button className="btn btn-danger btn-sm ml-2" onClick={() => handleDeleteClick(user.Attributes.find((attr) => attr.Name === 'email')?.Value || '')}>
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
