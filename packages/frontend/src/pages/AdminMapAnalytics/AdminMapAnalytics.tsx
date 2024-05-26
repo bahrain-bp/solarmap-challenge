@@ -363,9 +363,6 @@ const AdminMapAnalytics = () => {
     if (weatherDataDiv.current) {
       weatherDataDiv.current.innerText = "";
     }
-    if (solarPotentialDiv.current) {
-      solarPotentialDiv.current.innerText = "";
-    }
   }
 
   const getWeatherChartData = () => {

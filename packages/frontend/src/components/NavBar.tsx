@@ -30,6 +30,7 @@ import ReportIcon from '@mui/icons-material/Assessment';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import FolderIcon from '@mui/icons-material/Folder';
 import MapIcon from '@mui/icons-material/Map';
+import ThermostatIcon from '@mui/icons-material/Thermostat';
 import StatsIcon from '@mui/icons-material/BarChart';
 import { LinkProps } from '@mui/material/Link';
 
@@ -124,7 +125,7 @@ const icons: { [key: string]: JSX.Element } = {
   'Business Dashboard': <DashboardIcon />,
   'Documents Dashboard': <FolderIcon />,
   'Admin Map': <MapIcon />,
-  'Temp Map': <MapIcon />,
+  'Heat Map': <ThermostatIcon />,
   'Calculator Usage Stats': <StatsIcon />,
 };
 
@@ -374,9 +375,9 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
                   sx={{ width: '100%', pl: 4 }}
                   active={isActive('/AdminMapAnalytics')}
                 >
-                  {icons['Temp Map']}
+                  {icons['Heat Map']}
                   <ListItemText
-                    primary="Admin Map Analytics"
+                    primary="Heat Map"
                     sx={{ marginLeft: theme.spacing(1) }}
                   />
                 </DrawerLink>
@@ -549,7 +550,7 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
                       href="/AdminMapAnalytics"
                       className={isActive('/AdminMapAnalytics') ? 'active' : ''}
                     >
-                      Temp Map
+                      Heat Map
                     </MenuItem>
                     <MenuItem
                       onClick={handleClose}
