@@ -20,9 +20,9 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({ open, onClose }) => {
     email: '',
     phone: '',
   });
-  const [message, setMessage] = useState<string | null>(null);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = event.target;
@@ -42,6 +42,8 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({ open, onClose }) => {
   const handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
+    postMessage(null);
+    setError(null);
 
     try {
       const response = await fetch(`${API_BASE_URL}/subscribe`, {
@@ -55,13 +57,13 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({ open, onClose }) => {
       const result = await response.json();
 
       if (response.ok) {
-        setMessage(result.message);
+        postMessage(result.message);
         setFormSubmitted(true);
       } else {
-        setMessage(result.error);
+        setError(result.message); // Assuming the server sends back a 'message' field on errors
       }
     } catch (error) {
-      setMessage('Failed to add resource and send SMS');
+      setError('Failed to add resource and send SMS');
     } finally {
       setLoading(false);
     }
@@ -159,9 +161,9 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({ open, onClose }) => {
                 Cancel
               </Button>
             </Box>
-            {message && (
-              <Alert severity="info" sx={{ mt: 2 }}>
-                {message}
+            {error && (
+              <Alert severity="error" sx={{ mt: 2 }}>
+                {error}
               </Alert>
             )}
           </>
