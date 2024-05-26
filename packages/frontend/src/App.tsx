@@ -24,6 +24,7 @@ import DeleteContractor from './pages/deleteContractor';
 import Reports from './pages/Reports';
 import CalculationReccomendation from './components/CalculationRec';
 import CalcUsageStats from './components/CalculatorUsageStats';
+import AdminMapAnalytics from './pages/AdminMapAnalytics/AdminMapAnalytics';
 
 import { Authenticator } from './modules/Authenticator';
 import { getCurrentUser, signOut } from 'aws-amplify/auth';
@@ -40,12 +41,12 @@ function App() {
   Hub.listen('auth', ({ payload }) => {
     switch (payload.event) {
       case 'signedIn':
-        console.log('user have been signedIn successfully.');
+        console.log('User has been signed in successfully.');
         setIsLoggedIn(true);
-        setShowLogin(true);
+        setShowLogin(false);
         break;
       case 'signedOut':
-        console.log('user have been signedOut successfully.');
+        console.log('User has been signed out successfully.');
         setIsLoggedIn(false);
         setShowLogin(false);
         break;
@@ -60,13 +61,11 @@ function App() {
       const user = await getCurrentUser();
       if (Object.keys(user).length !== 0) {
         setIsLoggedIn(true);
-        setShowLogin(true);
-        console.log("yes");
+        setShowLogin(false);
       }
     } catch (err) {
       setIsLoggedIn(false);
       setShowLogin(false);
-      console.log("no");
     }
   }
 
@@ -102,6 +101,51 @@ function App() {
     },
   });
 
+  const authRoutes = (
+    <Routes>
+      <Route path="/QuickSightDashboard" element={<QuickSightDashboard />} />
+      <Route path="/DocumentsDashboard" element={<DocumentsDashboard />} />
+      <Route path="/calcUsageStats" element={<CalcUsageStats />} />
+      <Route path="/deleteEduResource" element={<DeleteEducationalResources />} />
+      <Route path="/addEduResource" element={<AddEducationalResource />} />
+      <Route path="/addConsultants" element={<AddConsultants />} />
+      <Route path="/addContractor" element={<AddContractor />} />
+      <Route path="/deleteConsultant" element={<DeleteConsulantant />} />
+      <Route path="/deleteContractor" element={<DeleteContractor />} />
+      <Route path="/Reports" element={<Reports />} />
+      <Route path="/CalculationRec" element={<CalculationReccomendation />} />
+      <Route path="/AdminMap" element={<AdminMap />} />
+      <Route path="/AdminMapAnalytics" element={<AdminMapAnalytics />} />
+      <Route path="/" element={<Home />} />
+      <Route path="/About" element={<About />} />
+      <Route path="/Provider" element={<Providers isLoggedIn={isLoggedIn} />} />
+      <Route path="/CarbonEmissionsCalculator" element={<CarbonFootprintCalculator />} />
+      <Route path="/DocumentUpload" element={<DocumentUpload />} />
+      <Route path="/EducationalResources" element={<EducationalResources isLoggedIn={isLoggedIn} />} />
+      <Route path="/MapV2" element={<MapV2 identityPoolId={identityPoolId} mapName={mapName} />} />
+      <Route path="/Terms" element={<Terms />} />
+      <Route path="/Privacy" element={<Privacy />} />
+      <Route path="/Inquiry" element={<Inquiry />} />
+      <Route path="*" element={<About />} />
+    </Routes>
+  );
+
+  const normRoutes = (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/About" element={<About />} />
+      <Route path="/Provider" element={<Providers isLoggedIn={isLoggedIn} />} />
+      <Route path="/CarbonEmissionsCalculator" element={<CarbonFootprintCalculator />} />
+      <Route path="/DocumentUpload" element={<DocumentUpload />} />
+      <Route path="/EducationalResources" element={<EducationalResources isLoggedIn={isLoggedIn} />} />
+      <Route path="/MapV2" element={<MapV2 identityPoolId={identityPoolId} mapName={mapName} />} />
+      <Route path="/Terms" element={<Terms />} />
+      <Route path="/Privacy" element={<Privacy />} />
+      <Route path="/Inquiry" element={<Inquiry />} />
+      <Route path="*" element={<About />} />
+    </Routes>
+  );
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -109,47 +153,15 @@ function App() {
         <Box display="flex" flexDirection="column" minHeight="100vh">
           <NavBar isLoggedIn={isLoggedIn} onLogInButton={handleLoginButton} />
           {showLogin && (
-             <Box top={0} left={0} width="100%" height="100%" zIndex={9999} display="flex" justifyContent="center" alignItems="center" bgcolor="rgba(0, 0, 0, 0.4)">
-            <Authenticator onCloseClick={closeLoginDialog}>
-              <main>
-                <Routes>
-                  <Route path="/QuickSightDashboard" element={<QuickSightDashboard />} />
-                  <Route path="/DocumentsDashboard" element={<DocumentsDashboard />} />
-                  <Route path="/calcUsageStats" element={<CalcUsageStats />} />
-                  <Route path="/deleteEduResource" element={<DeleteEducationalResources />} />
-                  <Route path="/addEduResource" element={<AddEducationalResource onClose={function (): void {
-                      throw new Error('Function not implemented.');
-                    } } />} />
-                  <Route path="/addConsultants" element={<AddConsultants />} />
-                  <Route path="/addContractor" element={<AddContractor />} />
-                  <Route path="/deleteConsultant" element={<DeleteConsulantant />} />
-                  <Route path="/deleteContractor" element={<DeleteContractor />} />
-                  <Route path="/Reports" element={<Reports />} />
-                </Routes>
-              </main>
-            </Authenticator>
+            <Box position="fixed" top={0} left={0} width="100%" height="100%" zIndex={9999} display="flex" justifyContent="center" alignItems="center" bgcolor="rgba(0, 0, 0, 0.4)">
+              <Authenticator onCloseClick={closeLoginDialog} />
             </Box>
           )}
           <Box component="main" flexGrow={1}>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/About" element={<About />} />
-              <Route path="/Provider" element={<Providers isLoggedIn={isLoggedIn} />} />
-              <Route path="/CarbonEmissionsCalculator" element={<CarbonFootprintCalculator />} />
-
-              {/* <Route path="/Map" element={<Map />} /> */}
-              <Route path="/DocumentUpload" element={<DocumentUpload />} />
-              <Route path="/MapV2" element={<MapV2 identityPoolId={identityPoolId} mapName={mapName} />} />
-              <Route path="/Terms" element={<Terms />} />
-              <Route path="/Privacy" element={<Privacy />} />
-              <Route path="/Inquiry" element={<Inquiry />} />
-              <Route path="/CalculationRec" element={<CalculationReccomendation />} />
-              <Route path="/AdminMap" element={<AdminMap />} />
-              <Route path="/EducationalResources" element={<EducationalResources isLoggedIn={isLoggedIn} />} />
-            </Routes>
+            {isLoggedIn ? authRoutes : normRoutes}
           </Box>
           <Footer />
-          <Chatbot /> 
+          <Chatbot />
         </Box>
       </BrowserRouter>
     </ThemeProvider>
