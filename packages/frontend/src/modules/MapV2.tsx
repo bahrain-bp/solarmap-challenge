@@ -4,7 +4,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Feature, Polygon } from 'geojson';
 import maplibregl from 'maplibre-gl';
 import React, { useEffect, useRef, useState } from 'react';
-import SolarPanelCalculator from "./SolarPanelCalculator";
 
 // npm install --save @maptiler/geocoding-control
 import './geoCoding.css'
@@ -457,7 +456,6 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
       )}
 
       <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
-        {/* <SolarPanelCalculator /> */}
         <div className="geocoding">
           <GeocodingControl apiKey={import.meta.env.VITE_TILER_API_KEY} country={"BH"} mapController={mapController} />
         </div>
