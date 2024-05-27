@@ -386,14 +386,33 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
             slotConstraint: 'Required',
             promptSpecification: {
                 messageGroups: [
-                    {
-                        message: {
-                            plainTextMessage: {
-                                value: 'What type of roof do you have? Is it flat, sloped, metal, tile, asphalt, or something else?',
-                            },
+                    { 
+                        message: { 
+                           imageResponseCard: { 
+                              buttons: [ 
+                                 { 
+                                    text: "flat",
+                                    value: "flat"
+                                 },
+                                 { 
+                                    text: "sloped",
+                                    value: "sloped"
+                                 },
+                                 { 
+                                    text: "tile",
+                                    value: "tile"
+                                 },
+                                 { 
+                                    text: "asphalt",
+                                    value: "asphalt"
+                                 },
+                              ],
+                              imageUrl: "https://husain-s3-for-artifacts.s3.amazonaws.com/2270785dde37f5988ec612a8a074d0e8",
+                              subtitle: "What type of roof do you have? Is it flat, sloped, metal, tile, or asphalt?",
+                              title: "Roof Type"
+                           },
                         },
-                    },
-                ],
+            }],
                 maxRetries: 2,
             },
         },
