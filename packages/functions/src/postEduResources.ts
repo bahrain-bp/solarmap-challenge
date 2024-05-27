@@ -4,15 +4,15 @@ import AWS from 'aws-sdk';
 import moment from 'moment-timezone';
 
 // Initialize the SNS service
-const sns = new AWS.SNS();
+// const sns = new AWS.SNS();
 
-const truncateText = (text: string, wordLimit: number) => {
-  const words = text.split(' ');
-  if (words.length > wordLimit) {
-    return words.slice(0, wordLimit).join(' ') + '...';
-  }
-  return text;
-};
+// const truncateText = (text: string, wordLimit: number) => {
+//   const words = text.split(' ');
+//   if (words.length > wordLimit) {
+//     return words.slice(0, wordLimit).join(' ') + '...';
+//   }
+//   return text;
+// };
 
 export const handler: APIGatewayProxyHandler = async (event) => {
   console.log('Received event:', JSON.stringify(event, null, 2));
@@ -37,14 +37,6 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   }
 
   try {
-    let imageBlob = null;
-
-    // Only process the image if it's provided
-    if (resource_img) {
-      // Convert base64 string to binary data
-      imageBlob = Buffer.from(resource_img, 'base64');
-    }
-
     // Get current date and time in Bahrain timezone
     const createdAt = moment().tz('Asia/Bahrain').format('YYYY-MM-DD HH:mm:ss');
 
@@ -55,41 +47,41 @@ export const handler: APIGatewayProxyHandler = async (event) => {
         title: title,
         body: body,
         resource_url: resource_url,
-        resource_img: imageBlob,  // Storing the BLOB directly in the database
+        resource_img: resource_img,  
         created_at: createdAt, // Storing the current date and time
         editted_at: null, // Initialize edited_at as null
       })
       .execute();
     console.log('Educational resource insert successful');
 
-    console.log('Fetching phone numbers and names from subscription table...');
-    const subscriptions = await SQL.DB
-      .selectFrom('subscription')
-      .select(['phone', 'first_name', 'last_name'])
-      .execute();
+    // console.log('Fetching phone numbers and names from subscription table...');
+    // const subscriptions = await SQL.DB
+    //   .selectFrom('subscription')
+    //   .select(['phone', 'first_name', 'last_name'])
+    //   .execute();
 
-    if (subscriptions.length === 0) {
-      console.log('No phone numbers found in subscription table');
-      return {
-        statusCode: 200,
-        body: JSON.stringify({ message: 'Resource added successfully, but no subscriptions found' }),
-      };
-    }
+    // if (subscriptions.length === 0) {
+    //   console.log('No phone numbers found in subscription table');
+    //   return {
+    //     statusCode: 200,
+    //     body: JSON.stringify({ message: 'Resource added successfully, but no subscriptions found' }),
+    //   };
+    // }
 
-    const truncatedBody = truncateText(body, 20); // Truncate body to 20 words
+    // const truncatedBody = truncateText(body, 20); // Truncate body to 20 words
 
-    console.log(`Sending SNS messages to ${subscriptions.length} subscribers...`);
-    const snsPromises = subscriptions.map(({ phone, first_name, last_name }) => {
-      const snsParams = {
-        Message: `Hi ${first_name} ${last_name}!\n\nA new educational resource titled "${title}" has been posted: ${truncatedBody}...\n\nFor more information, visit our website!`,
-        PhoneNumber: phone,
-      };
+    // console.log(`Sending SNS messages to ${subscriptions.length} subscribers...`);
+    // const snsPromises = subscriptions.map(({ phone, first_name, last_name }) => {
+    //   const snsParams = {
+    //     Message: `Hi ${first_name} ${last_name}!\n\nA new educational resource titled "${title}" has been posted: ${truncatedBody}...\n\nFor more information, visit our website!`,
+    //     PhoneNumber: phone,
+    //   };
 
-      return sns.publish(snsParams).promise();
-    });
+    //   return sns.publish(snsParams).promise();
+    // });
 
-    await Promise.all(snsPromises);
-    console.log('SNS messages sent successfully');
+    // await Promise.all(snsPromises);
+    // console.log('SNS messages sent successfully');
 
     return {
       statusCode: 201,
