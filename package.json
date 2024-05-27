@@ -35,6 +35,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.2.1",
+    "@maptiler/geocoding-control": "^1.2.4",
     "@maptiler/sdk": "^2.0.3",
     "@maptiler/weather": "^2.0.0",
     "@mui/material": "^5.15.17",

@@ -6,6 +6,14 @@ import maplibregl from 'maplibre-gl';
 import React, { useEffect, useRef, useState } from 'react';
 import SolarPanelCalculator from "./SolarPanelCalculator";
 
+// npm install --save @maptiler/geocoding-control
+import './geoCoding.css'
+import type { MapController } from "@maptiler/geocoding-control/types";
+import { GeocodingControl } from "@maptiler/geocoding-control/react";
+import { createMapLibreGlMapController } from "@maptiler/geocoding-control/maplibregl-controller";
+import "@maptiler/geocoding-control/style.css";
+import 'maplibre-gl/dist/maplibre-gl.css';
+
 // Define coordinates array here
 let coordinates = [
   [
@@ -30,6 +38,7 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
   const mapRef = useRef<maplibregl.Map | null>(null);
   const [boxSize, setBoxSize] = useState<number>(0.001);  // Initial size of the box in degrees
 
+  const [mapController, setMapController] = useState<MapController | undefined>()
 
   useEffect(() => {
     const initializeMap = async () => {
@@ -52,9 +61,16 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
         });
 
         mapRef.current.on('load', () => {
+
+          if (mapRef.current) { // Null check before using mapRef.current
+            const mapController = createMapLibreGlMapController(mapRef.current, maplibregl);
+            setMapController(mapController);
+          }
+
+
           // Insert the layer beneath any symbol layer.
           mapRef.current?.addSource('openmaptiles', {
-            url: `https://api.maptiler.com/tiles/v3/tiles.json?key=UGho1CzUl0HDsQMTTKJ0`,
+            url: `https://api.maptiler.com/tiles/v3/tiles.json?key=${import.meta.env.VITE_TILER_API_KEY}`,
             type: 'vector',
           });
 
@@ -342,40 +358,41 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
       // Optionally re-add removed elements if needed
       reAddDrawControl();
       reAddBoxLayer();
-      // Re-add 3D buildings layer if it was previously visible
-      if (!mapRef.current?.getLayer('3d-buildings')) {
-        // Add 3D buildings layer back to the map
-        mapRef.current?.addSource('openmaptiles', {
-          url: `https://api.maptiler.com/tiles/v3/tiles.json?key=UGho1CzUl0HDsQMTTKJ0`,
-          type: 'vector',
-        });
-        mapRef.current?.addLayer({
-          'id': '3d-buildings',
-          'source': 'openmaptiles',
-          'source-layer': 'building',
-          'type': 'fill-extrusion',
-          'minzoom': 15,
-          'paint': {
-            'fill-extrusion-color': [
-              'interpolate',
-              ['linear'],
-              ['get', 'render_height'], 0, 'lightgray', 200, 'royalblue', 400, 'lightblue'
-            ],
-            'fill-extrusion-height': [
-              'interpolate',
-              ['linear'],
-              ['zoom'],
-              15,
-              0,
-              16,
-              ['get', 'render_height']
-            ],
-            'fill-extrusion-base': ['case',
-              ['>=', ['get', 'zoom'], 16],
-              ['get', 'render_min_height'], 0
-            ]
-          }
-        });
+
+   // Re-add 3D buildings layer if it was previously visible
+   if (!mapRef.current?.getLayer('3d-buildings')) {
+    // Add 3D buildings layer back to the map
+    mapRef.current?.addSource('openmaptiles', {
+      url: `https://api.maptiler.com/tiles/v3/tiles.json?key=${import.meta.env.VITE_TILER_API_KEY}`,
+      type: 'vector',
+    });
+    mapRef.current?.addLayer({
+      'id': '3d-buildings',
+      'source': 'openmaptiles',
+      'source-layer': 'building',
+      'type': 'fill-extrusion',
+      'minzoom': 15,
+      'paint': {
+        'fill-extrusion-color': [
+          'interpolate',
+          ['linear'],
+          ['get', 'render_height'], 0, 'lightgray', 200, 'royalblue', 400, 'lightblue'
+        ],
+        'fill-extrusion-height': [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          15,
+          0,
+          16,
+          ['get', 'render_height']
+        ],
+        'fill-extrusion-base': ['case',
+          ['>=', ['get', 'zoom'], 16],
+          ['get', 'render_min_height'], 0
+        ]
+        }
+   });
       }
     });
   };
@@ -398,6 +415,7 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
 
   return (
     <>
+    <h2>Please navigate to your property and use the pin to start the calculation process.</h2>
       {isModalVisible && featureCoordinates && (
         <div className="modal show" role="dialog" style={{ display: 'block', position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 1050 }}>
           <div className="modal-dialog" role="document" style={{ width: '300px' }}> {/* Smaller width */}
@@ -439,7 +457,10 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
       )}
 
       <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
-        <SolarPanelCalculator />
+        {/* <SolarPanelCalculator /> */}
+        <div className="geocoding">
+          <GeocodingControl apiKey={import.meta.env.VITE_TILER_API_KEY} country={"BH"} mapController={mapController} />
+        </div>
         <div id="map" style={{ width: '100%', height: '100%' }}>
           {errorMessage && (
             <div style={{ color: 'red', position: 'absolute', top: '10px', left: '10px' }}>{errorMessage}</div>
@@ -452,4 +473,3 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
 };
 
 export default MapV2;
-
