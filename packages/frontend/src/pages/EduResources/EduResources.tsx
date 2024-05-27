@@ -64,6 +64,7 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
   const [editResource, setEditResource] = useState<EducationalResource | null>(null);
+  const [refreshTrigger, setRefreshTrigger] = useState<boolean>(false); // New state for refresh trigger
 
   const handleOpenModal = () => setModalOpen(true);
   const handleCloseModal = () => setModalOpen(false);
@@ -74,25 +75,25 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
   };
   const handleCloseEditModal = () => setEditModalOpen(false);
 
-  useEffect(() => {
-    const fetchResources = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/resources`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch resources');
-        }
-        const data: EducationalResource[] = await response.json();
-        setResources(data);
-        setFilteredResources(data);
-      } catch (err) {
-        setError((err as Error).message);
-      } finally {
-        setIsLoading(false);
+  const fetchResources = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/resources`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch resources');
       }
-    };
+      const data: EducationalResource[] = await response.json();
+      setResources(data);
+      setFilteredResources(data);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchResources();
-  }, []);
+  }, [refreshTrigger]); // Fetch resources on initial render and whenever refreshTrigger changes
 
   useEffect(() => {
     let filtered = resources.filter(resource =>
@@ -375,14 +376,14 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
 
       <Modal open={modalOpen} onClose={handleCloseModal}>
         <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', maxWidth: 800, bgcolor: 'background.paper', borderRadius: 2, boxShadow: 24, p: 4 }}>
-          <AddEducationalResource onClose={handleCloseModal} />
+          <AddEducationalResource onClose={() => { handleCloseModal(); setRefreshTrigger(!refreshTrigger); }} />
         </Box>
       </Modal>
 
       <Modal open={editModalOpen} onClose={handleCloseEditModal}>
         <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', maxWidth: 800, bgcolor: 'background.paper', borderRadius: 2, boxShadow: 24, p: 4 }}>
           {editResource && (
-            <EditEducationalResource resource={editResource} onClose={handleCloseEditModal} />
+            <EditEducationalResource resource={editResource} onClose={() => { handleCloseEditModal(); setRefreshTrigger(!refreshTrigger); }} />
           )}
         </Box>
       </Modal>
