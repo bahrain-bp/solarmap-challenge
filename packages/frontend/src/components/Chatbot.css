@@ -11,6 +11,7 @@ html, body {
     bottom: 0;
     right: 0;
     margin: 20px;
+    z-index: 1000; /* Ensure chatbot is on top */
 }
 
 #chat-circle {
@@ -22,7 +23,7 @@ html, body {
     text-align: center;
     line-height: 80px;
     cursor: pointer;
-    /* Removed the box-shadow for a cleaner look */
+    z-index: 1001; /* Ensure it stays above other elements */
 }
 
 .material-icons {
@@ -36,7 +37,7 @@ html, body {
     max-width: 85vw;
     max-height: 100vh;
     border-radius: 15px; /* Rounded edges */
-    /* Removed the box-shadow for a cleaner look */
+    z-index: 1001; /* Ensure chat box stays above other elements */
 }
 
 .chat-box-header {
@@ -48,6 +49,7 @@ html, body {
     text-align: center;
     line-height: auto;
     position: relative;
+    z-index: 1002; /* Ensure header stays above other elements */
 }
 
 .chat-box-toggle {
@@ -56,11 +58,13 @@ html, body {
     top: 0;
     cursor: pointer;
     font-size: 24px; /* Icon size */
+    z-index: 1003; /* Ensure toggle button stays above other elements */
 }
 
 .chat-box-body {
     overflow-y: auto;
     height: 300px; /* Adjust height based on your preference */
+    z-index: 1002; /* Ensure body stays above other elements */
 }
 
 .chat-logs {
