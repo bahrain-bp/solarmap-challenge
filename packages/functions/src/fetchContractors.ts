@@ -1,11 +1,12 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import { SQL } from "./dbConfig";
 
-
 export const handler: APIGatewayProxyHandler = async (event) => {
     try {
+        // Retrieve the level from the query string parameters
+        const level = event.queryStringParameters?.level;
 
-        const rows = await SQL.DB
+        let query = SQL.DB
             .selectFrom("contractor")
             .select([
                 'contractor.contractor_id',
@@ -14,11 +15,15 @@ export const handler: APIGatewayProxyHandler = async (event) => {
                 'contractor.license_num',
                 'contractor.fax',
                 'contractor.contact_info'
-            ])
-            .execute();
+            ]);
+
+        if (level) { // Add a where clause if the level parameter is present
+            query = query.where('contractor.level', '=', level);
+        }
+
+        const rows = await query.execute();
 
         console.log('Query successful');
-
         return {
             statusCode: 200,
             headers: { 'Content-Type': 'application/json' },

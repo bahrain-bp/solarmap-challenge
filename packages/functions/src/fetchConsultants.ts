@@ -3,7 +3,10 @@ import { SQL } from "./dbConfig";
 
 export const handler: APIGatewayProxyHandler = async (event) => {
     try {
-        const rows = await SQL.DB
+        // Retrieve the level from the query string parameters
+        const level = event.queryStringParameters?.level;
+
+        let query = SQL.DB
             .selectFrom("consultant")
             .select([
                 'consultant.consultant_id',
@@ -12,11 +15,15 @@ export const handler: APIGatewayProxyHandler = async (event) => {
                 'consultant.crep_num',
                 'consultant.fax',
                 'consultant.contact_info'
-            ])
-            .execute();
+            ]);
+
+        if (level) { // Add a where clause if the level parameter is present
+            query = query.where('consultant.level', '=', level);
+        }
+
+        const rows = await query.execute();
 
         console.log('Query successful');
-
         return {
             statusCode: 200,
             headers: { 'Content-Type': 'application/json' },

@@ -17,13 +17,20 @@ interface InquiryDetail {
   address: string; // Add address field
 }
 
+interface Feedback {
+  feedback_id: number;
+  feedback_content: string;
+}
+
 const Reports = () => {
   const [calculations, setCalculations] = useState<Calculation[]>([]);
   const [inquiryDetails, setInquiryDetails] = useState<InquiryDetail[]>([]);
+  const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   const [, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'calculations' | 'inquiries'>('calculations');
+  const [activeTab, setActiveTab] = useState<'calculations' | 'inquiries' | 'feedbacks'>('calculations');
   const [calculationSearch, setCalculationSearch] = useState('');
   const [inquirySearch, setInquirySearch] = useState('');
+  const [feedbackSearch, setFeedbackSearch] = useState('');
   const [selectedInquiry, setSelectedInquiry] = useState<InquiryDetail | null>(null);
   const [emailTo, setEmailTo] = useState('');
   const [emailSubject, setEmailSubject] = useState('');
@@ -57,7 +64,20 @@ const Reports = () => {
       }
     };
 
-    Promise.all([fetchCalculations(), fetchInquiries()]).then(() => {
+    const fetchFeedbacks = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/feedback`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch feedbacks');
+        }
+        const feedbackData = await response.json();
+        setFeedbacks(feedbackData);
+      } catch (error) {
+        console.error('Error fetching feedbacks:', error);
+      }
+    };
+
+    Promise.all([fetchCalculations(), fetchInquiries(), fetchFeedbacks()]).then(() => {
       setIsLoading(false);
     });
   }, []);
@@ -75,6 +95,14 @@ const Reports = () => {
       setInquirySearch(event.target.value);
     } catch (error) {
       console.error('Error handling inquiry search:', error);
+    }
+  };
+
+  const handleFeedbackSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      setFeedbackSearch(event.target.value);
+    } catch (error) {
+      console.error('Error handling feedback search:', error);
     }
   };
 
@@ -105,6 +133,15 @@ const Reports = () => {
       );
     } catch (error) {
       console.error('Error filtering inquiries:', error);
+      return false;
+    }
+  };
+
+  const filterFeedbacks = (feedback: Feedback) => {
+    try {
+      return feedback.feedback_content.toLowerCase().includes(feedbackSearch.toLowerCase());
+    } catch (error) {
+      console.error('Error filtering feedbacks:', error);
       return false;
     }
   };
@@ -164,7 +201,7 @@ const Reports = () => {
     <div className="container">
       <h1>Reports</h1>
       <h4>Click on an inquiry to send an email</h4>
-      <div className="row align-items-center" style={{ marginTop: '20px' }}>
+      <div className="row align-items-center" style={{ marginTop: '20px'}}>
         <div className="col-auto">
           <ul className="nav nav-tabs">
             <li className="nav-item">
@@ -183,6 +220,14 @@ const Reports = () => {
                 Inquiries
               </button>
             </li>
+            <li className="nav-item">
+              <button
+                className={`nav-link ${activeTab === 'feedbacks' ? 'active' : ''}`}
+                onClick={() => setActiveTab('feedbacks')} style={{color:"black"}}
+              >
+                Feedbacks
+              </button>
+            </li>
           </ul>
         </div>
         <div className="col-auto ml-auto">
@@ -193,8 +238,20 @@ const Reports = () => {
             type="text"
             className="form-control"
             placeholder="Search..."
-            value={activeTab === 'calculations' ? calculationSearch : inquirySearch}
-            onChange={activeTab === 'calculations' ? handleCalculationSearchChange : handleInquirySearchChange}
+            value={
+              activeTab === 'calculations'
+                ? calculationSearch
+                : activeTab === 'inquiries'
+                ? inquirySearch
+                : feedbackSearch
+            }
+            onChange={
+              activeTab === 'calculations'
+                ? handleCalculationSearchChange
+                : activeTab === 'inquiries'
+                ? handleInquirySearchChange
+                : handleFeedbackSearchChange
+            }
           />
         </div>
       </div>
@@ -297,9 +354,30 @@ const Reports = () => {
             </div>
           )}
         </div>
+        <div className={`tab-pane ${activeTab === 'feedbacks' ? 'show active' : ''}`}>
+          <div className="table-responsive" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+            <table className="table table-hover">
+              <thead className="thead-dark">
+                <tr>
+                  <th>Feedback ID</th>
+                  <th>Feedback Content</th>
+                </tr>
+              </thead>
+              <tbody>
+                {feedbacks.filter(filterFeedbacks).map((feedback, index) => (
+                  <tr key={index}>
+                    <td>{feedback.feedback_id}</td>
+                    <td>{feedback.feedback_content}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
 export default Reports;
+
