@@ -4,9 +4,8 @@ import TableRow from '@mui/material/TableRow';
 import TableHead from '@mui/material/TableHead';
 import TableCell from '@mui/material/TableCell';
 import TableSortLabel from '@mui/material/TableSortLabel';
-import { visuallyHidden } from './utils';
+import { visuallyHidden } from '../usertable/utils';
 
-// Define the type for headLabel
 interface HeadCell {
   id: string;
   label: string;
@@ -15,16 +14,15 @@ interface HeadCell {
   minWidth?: string | number;
 }
 
-// Define the props for the component
 interface TableMainHeadProps {
   order: 'asc' | 'desc';
   orderBy: string;
-  headLabel: HeadCell[];
   onRequestSort: (event: React.MouseEvent<unknown>, property: string) => void;
+  headLabel: HeadCell[];
 }
 
-const TableMainHead: React.FC<TableMainHeadProps> = ({ order, orderBy, headLabel, onRequestSort }) => {
-  const onSort = (property: string) => (event: React.MouseEvent<unknown>) => {
+const TableMainHead: React.FC<TableMainHeadProps> = ({ order, orderBy, onRequestSort, headLabel }) => {
+  const createSortHandler = (property: string) => (event: React.MouseEvent<unknown>) => {
     onRequestSort(event, property);
   };
 
@@ -42,11 +40,11 @@ const TableMainHead: React.FC<TableMainHeadProps> = ({ order, orderBy, headLabel
               hideSortIcon
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={onSort(headCell.id)}
+              onClick={createSortHandler(headCell.id)}
             >
               {headCell.label}
               {orderBy === headCell.id ? (
-                <Box sx={{ ...visuallyHidden }}>
+                <Box component="span" sx={visuallyHidden}>
                   {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                 </Box>
               ) : null}

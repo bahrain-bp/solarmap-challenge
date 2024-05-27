@@ -1,40 +1,39 @@
 interface ApplyFilterParams<T> {
-    inputData: T[];
-    comparator: (a: T, b: T) => number;
-    filterName: string;
+  inputData: T[];
+  comparator: (a: T, b: T) => number;
+  filterName: string;
+}
+
+interface User {
+  Username: string;
+  Attributes: {
+    Name: string;
+    Value: string;
+  }[];
+}
+
+export function applyFilter<T extends User>({
+  inputData,
+  comparator,
+  filterName,
+}: ApplyFilterParams<T>): T[] {
+  const stabilizedThis = inputData.map((el, index) => [el, index] as [T, number]);
+
+  stabilizedThis.sort((a, b) => {
+    const order = comparator(a[0], b[0]);
+    if (order !== 0) {
+      return order;
+    }
+    return a[1] - b[1];
+  });
+
+  inputData = stabilizedThis.map((el) => el[0]);
+
+  if (filterName) {
+    inputData = inputData.filter(
+      (user) => user.Attributes.find((attr) => attr.Name === 'email')?.Value.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+    );
   }
 
-  interface User {
-    Username: string;
-    Attributes: {
-      Name: string;
-      Value: string;
-    }[];
-  }
-  
-  export function applyFilter<T extends User>({
-    inputData,
-    comparator,
-    filterName,
-  }: ApplyFilterParams<T>): T[] {
-    const stabilizedThis = inputData.map((el, index) => [el, index] as [T, number]);
-  
-    stabilizedThis.sort((a, b) => {
-      const order = comparator(a[0], b[0]);
-      if (order !== 0) {
-        return order;
-      }
-      return a[1] - b[1];
-    });
-  
-    inputData = stabilizedThis.map((el) => el[0]);
-  
-    if (filterName) {
-      inputData = inputData.filter(
-        (user) => user.Username.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
-      );
-    }
-  
-    return inputData;
-  }
-  
+  return inputData;
+}

@@ -7,7 +7,7 @@ import TableEmptyRows from '../usertable/table-empty-rows';
 import { emptyRows, getComparator } from '../usertable/utils';
 import { applyFilter } from '../usertable/filterUtil';
 import Scrollbar from '../components/scrollbar';
-import { Table, TableBody, TableContainer } from '@mui/material';
+import { Table, TableBody, TableContainer, TablePagination, CircularProgress, Backdrop } from '@mui/material';
 
 interface User {
   Username: string;
@@ -30,6 +30,7 @@ const UserManagement: React.FC = () => {
   const [formError, setFormError] = useState<string | null>(null);
   const [formSuccess, setFormSuccess] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [operationLoading, setOperationLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -62,6 +63,7 @@ const UserManagement: React.FC = () => {
     e.preventDefault();
     setFormError(null);
     setFormSuccess(null);
+    setOperationLoading(true);
 
     try {
       const url = `${import.meta.env.VITE_API_URL}/users`;
@@ -94,6 +96,8 @@ const UserManagement: React.FC = () => {
     } catch (err) {
       console.error(err);
       setFormError(isEditing ? 'Failed to update user' : 'Failed to create user');
+    } finally {
+      setOperationLoading(false);
     }
   };
 
@@ -108,6 +112,7 @@ const UserManagement: React.FC = () => {
   };
 
   const handleDeleteClick = async (email: string) => {
+    setOperationLoading(true);
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/users`, {
         method: 'DELETE',
@@ -130,8 +135,48 @@ const UserManagement: React.FC = () => {
     } catch (err) {
       console.error(err);
       setFormError('Failed to delete user');
+    } finally {
+      setOperationLoading(false);
     }
   };
+
+  // table vars
+  const [page, setPage] = useState(0);
+  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
+  const [orderBy, setOrderBy] = useState<string>('name');
+  const [filterName, setFilterName] = useState('');
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  // table functions
+  const handleSort = (_event: React.MouseEvent<unknown>, id: string) => {
+    const isAsc = orderBy === id && order === 'asc';
+    if (id !== '') {
+      setOrder(isAsc ? 'desc' : 'asc');
+      setOrderBy(id);
+    }
+  };
+
+  const handleChangePage = (_event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPage(0);
+    setRowsPerPage(parseInt(event.target.value, 10));
+  };
+
+  const handleFilterByName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPage(0);
+    setFilterName(event.target.value);
+  };
+
+  const dataFiltered = applyFilter({
+    inputData: users,
+    comparator: getComparator(order, orderBy),
+    filterName
+  });
+
+  const notFound = !dataFiltered.length && !!filterName;
 
   if (loading) {
     return <div>Loading...</div>;
@@ -141,51 +186,11 @@ const UserManagement: React.FC = () => {
     return <div>{error}</div>;
   }
 
-   // table vars
-   const [page, setPage] = useState(0);
-
-   const [order, setOrder] = useState('asc');
- 
-   const [orderBy, setOrderBy] = useState('name');
- 
-   const [filterName, setFilterName] = useState('');
- 
-   const [rowsPerPage, setRowsPerPage] = useState(10);
- 
-   // table functions
-   const handleSort = (event, id) => {
-     const isAsc = orderBy === id && order === 'asc';
-     if (id !== '') {
-       setOrder(isAsc ? 'desc' : 'asc');
-       setOrderBy(id);
-     }
-   };
- 
-   const handleChangePage = (event, newPage) => {
-     setPage(newPage);
-   };
- 
-   const handleChangeRowsPerPage = (event) => {
-     setPage(0);
-     setRowsPerPage(parseInt(event.target.value, 10));
-   };
- 
-   const handleFilterByName = (event) => {
-     setPage(0);
-     setFilterName(event.target.value);
-   };
- 
-   const dataFiltered = applyFilter({
-     inputData: users,
-     comparator: getComparator(order, orderBy),
-     filterName
-   });
- 
-   const notFound = !dataFiltered.length && !!filterName;
- 
-
   return (
     <div className="container">
+      <Backdrop open={operationLoading} style={{ zIndex: 1301 }}>
+        <CircularProgress />
+      </Backdrop>
       <h1>User Management</h1>
       <button className="btn btn-primary mb-3" onClick={() => { setShowForm(!showForm); setIsEditing(false); }}>
         {showForm ? 'Hide Form' : 'Add User'}
@@ -237,88 +242,60 @@ const UserManagement: React.FC = () => {
         </form>
       )}
       <div className="table-responsive" style={{ maxHeight: '300px', overflowY: 'auto' }}>
-        <table className="table table-hover">
-          <thead className="thead-dark">
-            <tr>
-              <th>Username</th>
-              <th>Email</th>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Actions</th> {/* Add Actions column header */}
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user) => (
-              <tr key={user.Username}>
-                <td>{user.Username}</td>
-                <td>{user.Attributes.find((attr) => attr.Name === 'email')?.Value || 'N/A'}</td>
-                <td>{user.Attributes.find((attr) => attr.Name === 'given_name')?.Value || 'N/A'}</td>
-                <td>{user.Attributes.find((attr) => attr.Name === 'family_name')?.Value || 'N/A'}</td>
-                <td>
-                  <button className="btn btn-warning btn-sm" onClick={() => handleEditClick(user)}>
-                    Edit
-                  </button>
-                  <button className="btn btn-danger btn-sm ml-2" onClick={() => handleDeleteClick(user.Attributes.find((attr) => attr.Name === 'email')?.Value || '')}>
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-         <UserTableToolbar
-              filterName={filterName}
-              onFilterName={handleFilterByName}
-            />
+        <UserTableToolbar
+          filterName={filterName}
+          onFilterName={handleFilterByName}
+        />
 
-            <Scrollbar>
-              <TableContainer sx={{ overflow: 'unset' }}>
-                <Table sx={{ minWidth: 800 }}>
-                  <TableMainHead
-                    order={order}
-                    orderBy={orderBy}
-                    rowCount={users.length}
-                    onRequestSort={handleSort}
-                    headLabel={[
-                      { id: 'zift1', label: '' },
-                      { id: 'catDesc', label: 'Name' },
-                      { id: 'zift2', label: '' }
-                    ]}
-                  />
-                  <TableBody>
-                    {dataFiltered
-                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                      .map((row) => (
-                        <UserTableRow
-                          key={row.Username}
-                          email={row.Attributes.find((attr) => attr.Name === 'email')?.Value || 'N/A'}
-                          firstName={row.Attributes.find((attr) => attr.Name === 'given_name')?.Value || 'N/A'}
-                          lastName={row.Attributes.find((attr) => attr.Name === 'family_name')?.Value || 'N/A'}
-                          onClickEdit={() => handleEditClick(row)}
-                          onClickDelete={() => handleDeleteClick(row.Attributes.find((attr) => attr.Name === 'email')?.Value || '')}
-                        />
-                      ))}
-
-                    <TableEmptyRows
-                      height={77}
-                      emptyRows={emptyRows(page, rowsPerPage, users.length)}
+        <Scrollbar>
+          <TableContainer sx={{ overflow: 'unset' }}>
+            <Table sx={{ minWidth: 800 }}>
+              <TableMainHead
+                order={order}
+                orderBy={orderBy}
+                onRequestSort={handleSort}
+                headLabel={[
+                  { id: 'zift1', label: '' },
+                  { id: 'Username', label: 'Email' },
+                  { id: 'given_name', label: 'First Name' },
+                  { id: 'family_name', label: 'Last Name' },
+                  { id: 'zift2', label: '' }
+                ]}
+              />
+              <TableBody>
+                {dataFiltered
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row) => (
+                    <UserTableRow
+                      key={row.Username}
+                      email={row.Attributes.find((attr) => attr.Name === 'email')?.Value || 'N/A'}
+                      firstName={row.Attributes.find((attr) => attr.Name === 'given_name')?.Value || 'N/A'}
+                      lastName={row.Attributes.find((attr) => attr.Name === 'family_name')?.Value || 'N/A'}
+                      onClickEdit={() => handleEditClick(row)}
+                      onClickDelete={() => handleDeleteClick(row.Attributes.find((attr) => attr.Name === 'email')?.Value || '')}
                     />
+                  ))}
 
-                    {notFound && <TableNoData query={filterName} />}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Scrollbar>
+                <TableEmptyRows
+                  height={77}
+                  emptyRows={emptyRows(page, rowsPerPage, users.length)}
+                />
 
-            <TablePagination
-              page={page}
-              component="div"
-              count={categories.length}
-              rowsPerPage={rowsPerPage}
-              onPageChange={handleChangePage}
-              rowsPerPageOptions={[5, 10, 25, 50, 100]}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
+                {notFound && <TableNoData query={filterName} />}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Scrollbar>
+
+        <TablePagination
+          page={page}
+          component="div"
+          count={users.length}
+          rowsPerPage={rowsPerPage}
+          onPageChange={handleChangePage}
+          rowsPerPageOptions={[5, 10, 25, 50, 100]}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </div>
     </div>
   );

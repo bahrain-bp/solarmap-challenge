@@ -22,30 +22,32 @@ const UserTableRow: React.FC<UserTableRowProps> = ({ email, firstName, lastName,
       <TableCell>{email}</TableCell>
       <TableCell>{firstName}</TableCell>
       <TableCell>{lastName}</TableCell>
-      {/* <TableCell align="right">
-        <Tooltip title="View Courses">
+
+      <TableCell align="right">
+        <Tooltip title="Edit User">
           <Button
             variant="contained"
             sx={{ ml: 1 }}
             size="small"
             color="primary"
-            onClick={() => onViewCourses(catID)}
+            onClick={() => onClickEdit()}
           >
             <ListAltIcon fontSize="small" />
           </Button>
         </Tooltip>
-        <Tooltip title="Delete Category">
+
+        <Tooltip title="Delete User">
           <Button
             variant="contained"
             sx={{ ml: 1 }}
             size="small"
             color="error"
-            onClick={() => onClickDelete(catID)}
+            onClick={() => onClickDelete()}
           >
             <DeleteIcon fontSize="small" />
           </Button>
         </Tooltip>
-      </TableCell> */}
+      </TableCell>
     </TableRow>
   );
 };
