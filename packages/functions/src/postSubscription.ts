@@ -5,7 +5,7 @@ interface SubscriptionData {
   first_name: string;
   last_name: string;
   email: string;
-  phone: string; // Changed to string to handle various phone number formats
+  phone: string;
 }
 
 export const handler: APIGatewayProxyHandler = async (event) => {
@@ -30,7 +30,46 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     };
   }
 
+ // Validate phone number format (+973 followed by 8 digits)
+ if (!/^\+973\d{8}$/.test(phone)) {
+  console.error('Invalid phone number format');
+  return {
+    statusCode: 400,
+    body: JSON.stringify({ message: 'Phone number must be in the format +973 followed by 8 digits' }),
+  };
+}
+
   try {
+    // Check if the email already exists
+    const existingEmail = await SQL.DB
+      .selectFrom('subscription')
+      .select('*')
+      .where('email', '=', email)
+      .execute();
+
+    if (existingEmail.length > 0) {
+      console.error('Email already exists');
+      return {
+        statusCode: 409, // Conflict status code
+        body: JSON.stringify({ message: 'Email already exists' }),
+      };
+    }
+
+    // Check if the phone number already exists
+    const existingPhone = await SQL.DB
+      .selectFrom('subscription')
+      .select('*')
+      .where('phone', '=', phone)
+      .execute();
+
+    if (existingPhone.length > 0) {
+      console.error('Phone number already exists');
+      return {
+        statusCode: 409, // Conflict status code
+        body: JSON.stringify({ message: 'Phone number already exists' }),
+      };
+    }
+
     console.log('Inserting subscription data into database...');
     await SQL.DB
       .insertInto('subscription')
