@@ -114,8 +114,8 @@ function App() {
       <Route path="/addEduResource" element={<AddEducationalResource onClose={function (): void {
         throw new Error('Function not implemented.');
       } } />} />
-      <Route path="/addConsultants" element={<AddConsultants />} />
-      <Route path="/addContractor" element={<AddContractor />} />
+      {/* <Route path="/addConsultants" element={<AddConsultants />} />
+      <Route path="/addContractor" element={<AddContractor />} /> */}
       <Route path="/deleteConsultant" element={<DeleteConsulantant />} />
       <Route path="/deleteContractor" element={<DeleteContractor />} />
       <Route path="/Reports" element={<Reports />} />
