@@ -40,6 +40,8 @@ function App() {
   const identityPoolId = import.meta.env.VITE_IDENTITY_POOL_ID; // Cognito Identity Pool ID
   const mapName = import.meta.env.VITE_MAP_NAME; // Amazon Location Service Map Name
 
+
+
   Hub.listen('auth', ({ payload }) => {
     switch (payload.event) {
       case 'signedIn':

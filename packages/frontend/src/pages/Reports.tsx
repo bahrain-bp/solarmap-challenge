@@ -198,7 +198,7 @@ const Reports = () => {
 
 
   return (
-    <div className="container">
+    <div className="container" style={{ marginBottom: '20px' }}>
       <h1>Reports</h1>
       <h4>Click on an inquiry to send an email</h4>
       <div className="row align-items-center" style={{ marginTop: '20px'}}>
