@@ -3,5 +3,5 @@ requests
 awscli==1.32.60
 botocore==1.34.60
 supervision
-cv2
-pillow
+opencv-python
+Pillow
