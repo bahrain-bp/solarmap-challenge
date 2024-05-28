@@ -95,10 +95,8 @@ def WelcomeIntent(intent_request):
     # Initialize text variable based on category
     if category == 'About':
         text = "SolarMap is a revolutionary platform that utilizes AI and AWS Ground Station to map and manage solar panel installations across Bahrain, supporting efficient energy policies and sustainable development."
-    elif category == 'Contractors':
-        text = "Contractors can utilize SolarMap to access real-time data and analytics for the precise placement and management of solar installations, ensuring optimal performance and efficiency."
-    elif category == 'Consultants':
-        text = "Consultants benefit from SolarMap by getting detailed insights and analytics that aid in strategic planning and advising on solar energy projects."
+    elif category == 'Providers':
+        text = "Providers are categorized into Contractors & Consultants. Contractors can utilize SolarMap to access real-time data and analytics for the precise placement and management of solar installations, ensuring optimal performance and efficiency. Consultants benefit from SolarMap by getting detailed insights and analytics that aid in strategic planning and advising on solar energy projects."
     elif category == 'Calculation':
         text = "SolarMap calculates the optimal number of solar panels and cost estimates based on real-time satellite data, size of the property, and energy consumption details from EWA bills. You can start your calculation process in chat right away using the 'Calculate' or by using the Document or Map Calculator."
     elif category == 'Process':

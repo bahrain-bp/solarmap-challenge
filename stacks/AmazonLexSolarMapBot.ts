@@ -15,6 +15,7 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
     const amazonLexSolarMapFulfillment = use(AmazonLexSolarMapFulfillment);
     const fulfillmentFunction = amazonLexSolarMapFulfillment.fulfillmentFunction;
     
+    // https://buckets.grayhatwarfare.com/
 
     // Setup our custom resource from the AWS Serverless Application Repo.
     // Application link: https://serverlessrepo.aws.amazon.com/applications/us-east-1/777566285978/lex-v2-cfn-cr
@@ -65,8 +66,7 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
         },
         slotTypeValues: [
             { sampleValue: { value: 'About' } },
-            { sampleValue: { value: 'Contractors' } },
-            { sampleValue: { value: 'Consultants' } },
+            { sampleValue: { value: 'Providers' } },
             { sampleValue: { value: 'Calculation' } },
             { sampleValue: { value: 'Process' } },
             { sampleValue: { value: 'More' } },
@@ -130,14 +130,37 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
             slotConstraint: 'Required',
             promptSpecification: {
                 messageGroups: [
-                    {
-                        message: {
-                            plainTextMessage: {
-                                value: 'Welcome to Solar Map Bot. Which of the following categories from "About", "Contractors", "Consultants", "Calculation", "Process", "Data & Privacy", or "More", would you like to learn about?',
-                            },
+                    { 
+                        message: { 
+                           imageResponseCard: { 
+                              buttons: [ 
+                                 { 
+                                    text: "About",
+                                    value: "About"
+                                 },
+                                 { 
+                                    text: "Providers",
+                                    value: "Providers"
+                                 },
+                                 { 
+                                    text: "Calculation",
+                                    value: "Calculation"
+                                 },
+                                 { 
+                                    text: "Process",
+                                    value: "Process"
+                                 },
+                                 { 
+                                    text: "Data & Privacy",
+                                    value: "Data & Privacy"
+                                 },
+                              ],
+                              imageUrl: "https://ee-files.s3.amazonaws.com/files/110894/images/solar-panel-array-6_6092713d15247ca41d4ec08f9529c889-min_1440.jpg",
+                              subtitle: "Please pick a category to get started or say More for additional support",
+                              title: "Learn About Everything Solar Map"
+                           },
                         },
-                    },
-                ],
+            }],
                 maxRetries: 2,
             },
         },
@@ -306,14 +329,29 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
             slotConstraint: 'Required',
             promptSpecification: {
                 messageGroups: [
-                    {
-                        message: {
-                            plainTextMessage: {
-                                value: 'Please specify the size of your property. Is it small, medium, large, or would you prefer a custom estimate based on square meters?',
-                            },
+                    { 
+                        message: { 
+                           imageResponseCard: { 
+                              buttons: [ 
+                                 { 
+                                    text: "small",
+                                    value: "small"
+                                 },
+                                 { 
+                                    text: "medium",
+                                    value: "medium"
+                                 },
+                                 { 
+                                    text: "large",
+                                    value: "large"
+                                 },
+                              ],
+                              imageUrl: "https://devs.s3.amazonaws.com/biosphere-reserve-apartments-elviria/A4_La_Floresta_sur_Exterior_property_for_sale2_jun16.jpg",
+                              subtitle: "Please specify the size of your property or provide a custom estimate based on square meters",
+                              title: "Property Size"
+                           },
                         },
-                    },
-                ],
+            }],
                 maxRetries: 2,
             },
         },
@@ -326,14 +364,33 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
             slotConstraint: 'Required',
             promptSpecification: {
                 messageGroups: [
-                    {
-                        message: {
-                            plainTextMessage: {
-                                value: 'Could you tell me the location of your property? Is it in the city center, suburb, or rural area?',
-                            },
+                    { 
+                        message: { 
+                           imageResponseCard: { 
+                              buttons: [ 
+                                 { 
+                                    text: "city center",
+                                    value: "city center"
+                                 },
+                                 { 
+                                    text: "suburb",
+                                    value: "suburb"
+                                 },
+                                 { 
+                                    text: "large",
+                                    value: "large"
+                                 },
+                                 { 
+                                    text: "rural area",
+                                    value: "rural area"
+                                 },
+                              ],
+                              imageUrl: "https://tempdev.s3.amazonaws.com/assets/bower_components/Ionicons/png/512/ios7-location.png",
+                              subtitle: "Could you tell me the location of your property?",
+                              title: "Location"
+                           },
                         },
-                    },
-                ],
+            }],
                 maxRetries: 2,
             },
         },
@@ -346,14 +403,29 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
             slotConstraint: 'Required',
             promptSpecification: {
                 messageGroups: [
-                    {
-                        message: {
-                            plainTextMessage: {
-                                value: 'To provide an accurate estimate, could you please share your average electricity consumption? Would you say it is low, medium, or high, or do you have a specific value in kilowatt?',
-                            },
+                    { 
+                        message: { 
+                           imageResponseCard: { 
+                              buttons: [ 
+                                 { 
+                                    text: "low",
+                                    value: "low"
+                                 },
+                                 { 
+                                    text: "medium",
+                                    value: "medium"
+                                 },
+                                 { 
+                                    text: "high",
+                                    value: "high"
+                                 },
+                              ],
+                              imageUrl: "https://tempdev.s3.amazonaws.com/assets/bower_components/Ionicons/png/512/ios7-bolt.png",
+                              subtitle: "To provide an accurate estimate, please share your average electricity consumption or a provide specific value in kilowatt",
+                              title: "Electricity Consumption"
+                           },
                         },
-                    },
-                ],
+            }],
                 maxRetries: 2,
             },
         },
@@ -366,14 +438,33 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
             slotConstraint: 'Required',
             promptSpecification: {
                 messageGroups: [
-                    {
-                        message: {
-                            plainTextMessage: {
-                                value: 'What is the orientation of your roof? Does it face north, south, east, west, or multiple directions?',
-                            },
+                    { 
+                        message: { 
+                           imageResponseCard: { 
+                              buttons: [ 
+                                 { 
+                                    text: "south",
+                                    value: "south"
+                                 },
+                                 { 
+                                    text: "east",
+                                    value: "east"
+                                 },
+                                 { 
+                                    text: "west",
+                                    value: "west"
+                                 },
+                                 { 
+                                    text: "multiple directions",
+                                    value: "multiple directions"
+                                 },
+                              ],
+                              imageUrl: "https://devs.s3.amazonaws.com/new-villas-build-estepona/Roof-terrace-1.jpg",
+                              subtitle: "What is the orientation of your roof?",
+                              title: "Electricity Consumption"
+                           },
                         },
-                    },
-                ],
+            }],
                 maxRetries: 2,
             },
         },
@@ -426,14 +517,29 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
             slotConstraint: 'Required',
             promptSpecification: {
                 messageGroups: [
-                    {
-                        message: {
-                            plainTextMessage: {
-                                value: 'Does your roof receive much shading? Would you say it is low, medium, or high?',
-                            },
+                    { 
+                        message: { 
+                           imageResponseCard: { 
+                              buttons: [ 
+                                 { 
+                                    text: "low",
+                                    value: "low"
+                                 },
+                                 { 
+                                    text: "medium",
+                                    value: "medium"
+                                 },
+                                 { 
+                                    text: "high",
+                                    value: "high"
+                                 },
+                              ],
+                              imageUrl: "https://1ae.s3.amazonaws.com/Scotland%20Images/Sunlight%20on%20Scottish%20Farmhouse.JPG",
+                              subtitle: "How much shading does your roof receive much shading?",
+                              title: "Roof Shading"
+                           },
                         },
-                    },
-                ],
+            }],
                 maxRetries: 2,
             },
         },
@@ -447,14 +553,29 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
             slotConstraint: 'Required',
             promptSpecification: {
                 messageGroups: [
-                    {
-                        message: {
-                            plainTextMessage: {
-                                value: 'What is your budget for the solar panel installation? Are you looking for a low-cost, medium-cost, or high-cost installation?',
-                            },
+                    { 
+                        message: { 
+                           imageResponseCard: { 
+                              buttons: [ 
+                                 { 
+                                    text: "low-cost",
+                                    value: "low-cost"
+                                 },
+                                 { 
+                                    text: "medium-cost",
+                                    value: "medium-cost"
+                                 },
+                                 { 
+                                    text: "high-cost",
+                                    value: "high-cost"
+                                 },
+                              ],
+                              imageUrl: "https://softmediadevelopment.s3.amazonaws.com/assets/css/helper/img/payment/cash-border.png",
+                              subtitle: "What is your budget for the solar panel installation?",
+                              title: "Installation Budget"
+                           },
                         },
-                    },
-                ],
+            }],
                 maxRetries: 2,
             },
         },
@@ -465,16 +586,31 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
         slotTypeName: 'InstallationTimelineSlot',
         valueElicitationSetting: {
             slotConstraint: 'Required',
-            promptSpecification: {
+            promptSpecification: { 
                 messageGroups: [
-                    {
-                        message: {
-                            plainTextMessage: {
-                                value: 'When do you need the installation to be completed? Are you looking for an ASAP installation, within 3 months, within 6 months, or are you flexible with the timeline?',
-                            },
+                    { 
+                        message: { 
+                           imageResponseCard: { 
+                              buttons: [ 
+                                 { 
+                                    text: "ASAP",
+                                    value: "ASAP"
+                                 },
+                                 { 
+                                    text: "within 3 months",
+                                    value: "within 3 months"
+                                 },
+                                 { 
+                                    text: "within 6 months",
+                                    value: "within 6 months"
+                                 },   
+                              ],
+                              imageUrl: "https://tempdev.s3.amazonaws.com/assets/bower_components/Ionicons/png/512/ios7-time-outline.png",
+                              subtitle: "When do you need the installation to be completed or is the timing flexible?",
+                              title: "Installation Time"
+                           },
                         },
-                    },
-                ],
+            }],
                 maxRetries: 2,
             },
         },
