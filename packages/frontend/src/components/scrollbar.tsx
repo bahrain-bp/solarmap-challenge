@@ -24,10 +24,7 @@ const Scrollbar = forwardRef<HTMLDivElement, ScrollbarProps>(({ children, sx, ..
   return (
     <StyledRootScrollbar>
       <StyledScrollbar
-        scrollableNodeProps={{
-          ref,
-        }}
-        clickOnTrack={false}
+        ref={ref}
         sx={sx}
         {...other}
       >

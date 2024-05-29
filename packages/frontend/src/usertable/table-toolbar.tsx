@@ -24,7 +24,7 @@ const UserTableToolbar: React.FC<UserTableToolbarProps> = ({ filterName, onFilte
         value={filterName}
         sx={{ mt: 3 }}
         onChange={onFilterName}
-        label="Search Category..."
+        label="Search"
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">

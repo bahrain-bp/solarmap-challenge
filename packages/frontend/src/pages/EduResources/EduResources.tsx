@@ -280,7 +280,7 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
                     rel="noopener noreferrer"
                     style={{
                       textDecoration: 'none',
-                      color: 'inherit',
+                      color: 'white',
                     }}
                   >
                     <img
@@ -294,21 +294,21 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
                     />
                   </a>
                   <Box sx={{ p: 2 }}>
-                    <Typography variant="h6" gutterBottom>
+                    <Typography variant="h6" gutterBottom sx={{ color: 'white' }}>
                       {resource.title}
                     </Typography>
-                    <Typography variant="body2" sx={{ mb: 2 }}>
+                    <Typography variant="body2" sx={{ mb: 2, color: 'white' }}>
                       {resource.body.length > 100
                         ? `${resource.body.substring(0, 100)}...`
                         : resource.body}
                     </Typography>
                   </Box>
                   <Box sx={{ px: 2, pb: 2 }}>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" color="white">
                       Created at: {formatDate(resource.created_at)}
                     </Typography>
                     {resource.editted_at && (
-                      <Typography variant="body2" color="text.secondary">
+                      <Typography variant="body2" color="white">
                         Edited at: {formatDate(resource.editted_at)}
                       </Typography>
                     )}
