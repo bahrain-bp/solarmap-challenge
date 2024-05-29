@@ -111,7 +111,7 @@ const Providers: React.FC<ProvidersProps> = ({ isLoggedIn }) => {
   const [modalType, setModalType] = useState<string>(''); // 'consultant' or 'contractor'
   const [refreshTrigger, setRefreshTrigger] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
-  const [rowsPerPage, setRowsPerPage] = useState<number>(6);
+  const [rowsPerPage, ] = useState<number>(6);
   const [error, setError] = useState<string | null>(null);
 
   const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
