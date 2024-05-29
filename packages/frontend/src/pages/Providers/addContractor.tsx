@@ -1,10 +1,14 @@
 import { useState } from 'react';
-import exportString from "../api_url";
+import exportString from "../../api_url";
 
 const apiurl: string = exportString();
 const API_BASE_URL = apiurl;
 
-const AddContractor = () => {
+interface AddContractorProps {
+    onClose: () => void;
+  }
+
+const AddContractor: React.FC<AddContractorProps> = ({ onClose }) => {
     const [name, setName] = useState('');
     const [level, setLevel] = useState('');
     const [licenseNum, setLicenseNum] = useState('');
@@ -42,12 +46,15 @@ const AddContractor = () => {
             if (!response.ok) throw new Error('Failed to add contractor');
 
             setMessage('Contractor added successfully');
-        } catch (error: any) {
-            setMessage(error.message || 'Failed to add contractor');
-        } finally {
-            setIsLoading(false);
-        }
-    };
+      setTimeout(() => {
+        onClose(); // Close the modal on successful submit
+      }, 1500); // Wait for 1.5 seconds before closing the modal
+    } catch (error: any) {
+      setMessage(error.message || 'Failed to add contractor');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
     return (
         <div className="container mt-3">

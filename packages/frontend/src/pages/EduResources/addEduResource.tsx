@@ -13,7 +13,7 @@ const AddEducationalResource: React.FC<AddEducationalResourceProps> = ({ onClose
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [resourceUrl, setResourceUrl] = useState('');
-  const [image, setImage] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -22,7 +22,7 @@ const AddEducationalResource: React.FC<AddEducationalResourceProps> = ({ onClose
     const newErrors: { [key: string]: string } = {};
     if (!title) newErrors.title = 'Title is required';
     if (!body) newErrors.body = 'Body is required';
-    if (!resourceUrl) newErrors.resourceUrl = 'Resource URL is required';
+    if (!imageUrl) newErrors.imageUrl = 'Image URL is required';
     return newErrors;
   };
 
@@ -36,16 +36,11 @@ const AddEducationalResource: React.FC<AddEducationalResourceProps> = ({ onClose
 
     setIsLoading(true);
 
-    let resourceImgBase64 = null;
-    if (image) {
-      resourceImgBase64 = await convertToBase64(image);
-    }
-
     const resourceData = JSON.stringify({
       title,
       body,
       resource_url: resourceUrl,
-      resource_img: resourceImgBase64
+      resource_img: imageUrl
     });
 
     try {
@@ -68,21 +63,6 @@ const AddEducationalResource: React.FC<AddEducationalResourceProps> = ({ onClose
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      setImage(event.target.files[0]);
-    }
-  };
-
-  const convertToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = error => reject(error);
-    });
   };
 
   return (
@@ -124,24 +104,16 @@ const AddEducationalResource: React.FC<AddEducationalResourceProps> = ({ onClose
         error={!!errors.resourceUrl}
         helperText={errors.resourceUrl}
       />
-      <Button
-        variant="contained"
-        component="label"
+      <TextField
+        label="Image URL"
+        variant="outlined"
+        fullWidth
+        value={imageUrl}
+        onChange={e => setImageUrl(e.target.value)}
         sx={{ mb: 2 }}
-      >
-        Upload Image
-        <input
-          type="file"
-          hidden
-          accept="image/*"
-          onChange={handleImageChange}
-        />
-      </Button>
-      {image && (
-        <Typography variant="body2" sx={{ mb: 2 }}>
-          {image.name}
-        </Typography>
-      )}
+        error={!!errors.imageUrl}
+        helperText={errors.imageUrl}
+      />
       <Box sx={{ position: 'relative' }}>
         <Button type="submit" variant="contained" color="primary" disabled={isLoading} fullWidth sx={{ mb: 2 }}>
           Add Resource

@@ -3,7 +3,7 @@ import { SQL } from "./dbConfig";
 import AWS from 'aws-sdk';
 import moment from 'moment-timezone';
 
-// Initialize the SNS service
+//Initialize the SNS service
 const sns = new AWS.SNS();
 
 const truncateText = (text: string, wordLimit: number) => {
@@ -37,14 +37,6 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   }
 
   try {
-    let imageBlob = null;
-
-    // Only process the image if it's provided
-    if (resource_img) {
-      // Convert base64 string to binary data
-      imageBlob = Buffer.from(resource_img, 'base64');
-    }
-
     // Get current date and time in Bahrain timezone
     const createdAt = moment().tz('Asia/Bahrain').format('YYYY-MM-DD HH:mm:ss');
 
@@ -55,7 +47,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
         title: title,
         body: body,
         resource_url: resource_url,
-        resource_img: imageBlob,  // Storing the BLOB directly in the database
+        resource_img: resource_img,  
         created_at: createdAt, // Storing the current date and time
         editted_at: null, // Initialize edited_at as null
       })

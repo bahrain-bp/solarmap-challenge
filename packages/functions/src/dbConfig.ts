@@ -9,13 +9,13 @@ export const DB = new Kysely<Database>({
   dialect: new DataApiDialect({
     mode: "mysql",
     driver: {
-      // Added Main Main Database
+      // Added Existing Existing Database
       // @ts-ignore
-      secretArn: RDS.MainDatabase.secretArn,
+      secretArn: RDS.ExistingDatabase.secretArn,
       // @ts-ignore
-      resourceArn: RDS.MainDatabase.clusterArn,
+      resourceArn: RDS.ExistingDatabase.clusterArn,
       // @ts-ignore
-      database: RDS.MainDatabase.defaultDatabaseName,
+      database: RDS.ExistingDatabase.defaultDatabaseName,
       client: new RDSData({}),
     },
   }),
