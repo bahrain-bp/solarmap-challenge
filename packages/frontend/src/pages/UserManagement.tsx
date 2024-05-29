@@ -22,7 +22,6 @@ interface User {
 const UserManagement: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState<boolean>(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -32,7 +31,6 @@ const UserManagement: React.FC = () => {
   const [formError, setFormError] = useState<string | null>(null);
   const [formSuccess, setFormSuccess] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [operationLoading, setOperationLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -45,7 +43,7 @@ const UserManagement: React.FC = () => {
         setUsers(data);
       } catch (err) {
         console.error(err);
-        setError('Failed to fetch users');
+        setFormError('Failed to fetch users');
       } finally {
         setLoading(false);
       }
@@ -65,7 +63,6 @@ const UserManagement: React.FC = () => {
     e.preventDefault();
     setFormError(null);
     setFormSuccess(null);
-    setOperationLoading(true);
 
     try {
       const url = `${import.meta.env.VITE_API_URL}/users`;
@@ -98,8 +95,6 @@ const UserManagement: React.FC = () => {
     } catch (err) {
       console.error(err);
       setFormError(isEditing ? 'Failed to update user' : 'Failed to create user');
-    } finally {
-      setOperationLoading(false);
     }
   };
 
@@ -114,7 +109,6 @@ const UserManagement: React.FC = () => {
   };
 
   const handleDeleteClick = async (email: string) => {
-    setOperationLoading(true);
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/users`, {
         method: 'DELETE',
@@ -137,8 +131,6 @@ const UserManagement: React.FC = () => {
     } catch (err) {
       console.error(err);
       setFormError('Failed to delete user');
-    } finally {
-      setOperationLoading(false);
     }
   };
 
@@ -212,7 +204,7 @@ const UserManagement: React.FC = () => {
           </Typography>
         </Box>
       </Box>
-      <Box sx={{ background: `url(${pattern})`, backgroundSize: 'cover', backgroundPosition: 'center', py: 8, marginTop: '-4px' }}>
+      <Box sx={{ background: `url(${pattern})`, backgroundSize: 'cover', backgroundPosition: 'center', py: 8, marginTop: '-4px', flex: 1 }}>
         <div className="container">
           <button className="btn btn-primary mb-3" onClick={() => { setShowForm(!showForm); setIsEditing(false); }}>
             {showForm ? 'Hide Form' : 'Add User'}
