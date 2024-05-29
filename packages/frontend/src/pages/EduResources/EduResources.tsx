@@ -64,6 +64,7 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
   const [editResource, setEditResource] = useState<EducationalResource | null>(null);
+  const [refreshTrigger, setRefreshTrigger] = useState<boolean>(false); // New state for refresh trigger
 
   const handleOpenModal = () => setModalOpen(true);
   const handleCloseModal = () => setModalOpen(false);
@@ -74,25 +75,25 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
   };
   const handleCloseEditModal = () => setEditModalOpen(false);
 
-  useEffect(() => {
-    const fetchResources = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/resources`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch resources');
-        }
-        const data: EducationalResource[] = await response.json();
-        setResources(data);
-        setFilteredResources(data);
-      } catch (err) {
-        setError((err as Error).message);
-      } finally {
-        setIsLoading(false);
+  const fetchResources = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/resources`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch resources');
       }
-    };
+      const data: EducationalResource[] = await response.json();
+      setResources(data);
+      setFilteredResources(data);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchResources();
-  }, []);
+  }, [refreshTrigger]); // Fetch resources on initial render and whenever refreshTrigger changes
 
   useEffect(() => {
     let filtered = resources.filter(resource =>
@@ -253,135 +254,139 @@ const EducationalResources: React.FC<EducationalResourcesProps> = ({ isLoggedIn 
           </Stack>
         </Stack>
 
-        {isLoading && (
-          <div className="text-center">
-            <div className="spinner-border text-primary" role="status">
-              <span className="sr-only">Loading...</span>
-            </div>
-          </div>
-        )}
-        {error && (
-          <div className="alert alert-danger" role="alert">
-            Error: {error}
-          </div>
-        )}
-        {!isLoading && !error && (
-          <>
-            <Grid container spacing={3}>
-              {paginatedResources.length > 0 ? (
-                paginatedResources.map((resource) => (
-                  <Grid key={resource.resource_id} item xs={12} sm={6} md={4}>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        height: '100%',
-                        backgroundColor: cardBackgroundColor,
-                        padding: 2,
-                        borderRadius: 1,
-                        color: 'white' // Set the text color to white
+        {isLoading ? (
+          <Typography>Loading...</Typography>
+        ) : error ? (
+          <Typography variant="body1" color="error">{error}</Typography>
+        ) : filteredResources.length === 0 ? (
+          <Typography variant="body1">No resources found.</Typography>
+        ) : (
+          <Grid container spacing={4}>
+            {paginatedResources.map((resource) => (
+              <Grid item xs={12} sm={6} md={4} key={resource.resource_id}>
+                <Box
+                  sx={{
+                    borderRadius: 2,
+                    boxShadow: 3,
+                    overflow: 'hidden',
+                    backgroundColor: cardBackgroundColor,
+                    position: 'relative',
+                    height: '100%',
+                  }}
+                >
+                  <a
+                    href={resource.resource_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      textDecoration: 'none',
+                      color: 'inherit',
+                    }}
+                  >
+                    <img
+                      src={resource.resource_img || fallback}
+                      alt={resource.title}
+                      style={{
+                        width: '100%',
+                        height: '200px',
+                        objectFit: 'cover',
                       }}
-                    >
-                      {resource.resource_img ? (
-                        <img
-                          src={`data:image/jpeg;base64,${resource.resource_img}`}
-                          alt={resource.title}
-                          style={{ height: '150px', objectFit: 'cover', borderRadius: '0' }}
-                        />
-                      ) : (
-                        <img
-                          src={fallback}
-                          alt={resource.title}
-                          style={{ height: '150px', objectFit: 'cover', borderRadius: '0' }}
-                        />
-                      )}
-                      <Box sx={{ flexGrow: 1, mt: 2 }}>
-                        <Typography variant="h6" fontWeight="bold" sx={{ color: 'white' }}>{resource.title}</Typography>
-                        <Typography variant="body2" sx={{ mb: 2, color: 'white' }}>{resource.body}</Typography>
-                        <Box sx={{ color: 'white' }}>
-  <Typography variant="caption" display="block" gutterBottom>
-    Created at: {formatDate(resource.created_at)}
-  </Typography>
-  {resource.editted_at && (
-    <Typography variant="caption" display="block">
-      Edited at: {formatDate(resource.editted_at)}
-    </Typography>
-  )}
-</Box>
-
-
-                      </Box>
-                      <Stack direction="row" spacing={2} mt={2}>
-                        {resource.resource_url && (
+                    />
+                  </a>
+                  <Box sx={{ p: 2 }}>
+                    <Typography variant="h6" gutterBottom>
+                      {resource.title}
+                    </Typography>
+                    <Typography variant="body2" sx={{ mb: 2 }}>
+                      {resource.body.length > 100
+                        ? `${resource.body.substring(0, 100)}...`
+                        : resource.body}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ px: 2, pb: 2 }}>
+                    <Typography variant="body2" color="text.secondary">
+                      Created at: {formatDate(resource.created_at)}
+                    </Typography>
+                    {resource.editted_at && (
+                      <Typography variant="body2" color="text.secondary">
+                        Edited at: {formatDate(resource.editted_at)}
+                      </Typography>
+                    )}
+                    <Stack direction="row" spacing={2} mt={2}>
+                      <Button
+                        variant="contained"
+                        sx={{ backgroundColor: 'black', color: 'white', fontSize: '0.75rem' }}
+                        href={resource.resource_url}
+                      >
+                        Learn More
+                      </Button>
+                      {isLoggedIn && (
+                        <>
                           <Button
                             variant="contained"
-                            sx={{ backgroundColor: 'black', color: 'white', fontSize: '0.75rem' }}
-                            href={resource.resource_url}
+                            color="secondary"
+                            startIcon={<Iconify icon="eva:trash-2-outline" />}
+                            onClick={() => handleDeleteResource(resource.resource_id)}
+                            sx={{ fontSize: '0.75rem' }}
                           >
-                            Learn More
+                            Delete Resource
                           </Button>
-                        )}
-                        {isLoggedIn && (
-                          <>
-                            <Button
-                              variant="contained"
-                              color="secondary"
-                              startIcon={<Iconify icon="eva:trash-2-outline" />}
-                              onClick={() => handleDeleteResource(resource.resource_id)}
-                              sx={{ fontSize: '0.75rem' }}
-                            >
-                              Delete Resource
-                            </Button>
-                            <Button
-                              variant="contained"
-                              sx={{ 
-                                fontSize: '0.75rem',
-                                backgroundColor: '#FF8C00', // Darker orange
-                                '&:hover': { backgroundColor: '#FF7F00' } // Even darker orange on hover
-                              }}
-                              startIcon={<Iconify icon="eva:edit-outline" />}
-                              onClick={() => handleOpenEditModal(resource)}
-                            >
-                              Edit Resource
-                            </Button>
-                          </>
-                        )}
-                      </Stack>
-                    </Box>
-                  </Grid>
-                ))
-              ) : (
-                <Typography variant="body1" align="center">
-                  No resources found.
-                </Typography>
-              )}
-            </Grid>
-            <Stack direction="row" justifyContent="center" mt={4}>
-              <Pagination
-                count={Math.ceil(filteredResources.length / rowsPerPage)}
-                page={page}
-                onChange={handlePageChange}
-                color="primary"
-              />
-            </Stack>
-          </>
+                          <Button
+                            variant="contained"
+                            sx={{ 
+                              fontSize: '0.75rem',
+                              backgroundColor: '#FF8C00', // Darker orange
+                              '&:hover': { backgroundColor: '#FF7F00' } // Even darker orange on hover
+                            }}
+                            startIcon={<Iconify icon="eva:edit-outline" />}
+                            onClick={() => handleOpenEditModal(resource)}
+                          >
+                            Edit Resource
+                          </Button>
+                        </>
+                      )}
+                    </Stack>
+                  </Box>
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
         )}
-        <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleCloseSnackbar}>
-          <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
-            {snackbarMessage}
-          </Alert>
-        </Snackbar>
-        <Modal open={modalOpen} onClose={handleCloseModal}>
-          <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4, borderRadius: 1 }}>
-            <AddEducationalResource onClose={handleCloseModal} />
-          </Box>
-        </Modal>
-        <Modal open={editModalOpen} onClose={handleCloseEditModal}>
-          <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4, borderRadius: 1 }}>
-            {editResource && <EditEducationalResource resource={editResource} onClose={handleCloseEditModal} />}
-          </Box>
-        </Modal>
+
+        <Stack spacing={2} mt={4} alignItems="center">
+          <Pagination
+            count={Math.ceil(filteredResources.length / rowsPerPage)}
+            page={page}
+            onChange={handlePageChange}
+            color="primary"
+          />
+        </Stack>
       </Container>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity="info" sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+
+      <Modal open={modalOpen} onClose={handleCloseModal}>
+        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', maxWidth: 800, bgcolor: 'background.paper', borderRadius: 2, boxShadow: 24, p: 4 }}>
+          <AddEducationalResource onClose={() => { handleCloseModal(); setRefreshTrigger(!refreshTrigger); }} />
+        </Box>
+      </Modal>
+
+      <Modal open={editModalOpen} onClose={handleCloseEditModal}>
+        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', maxWidth: 800, bgcolor: 'background.paper', borderRadius: 2, boxShadow: 24, p: 4 }}>
+          {editResource && (
+            <EditEducationalResource resource={editResource} onClose={() => { handleCloseEditModal(); setRefreshTrigger(!refreshTrigger); }} />
+          )}
+        </Box>
+      </Modal>
     </Box>
   );
 };

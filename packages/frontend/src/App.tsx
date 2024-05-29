@@ -5,7 +5,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import NavBar from './components/NavBar';
 import Home from './pages/Homepage/Home';
 import About from './pages/About';
-import Providers from './pages/Provider';
+import Providers from './pages/Providers/Provider';
 import DocumentUpload from './pages/DocumentUpload';
 import EducationalResources from './pages/EduResources/EduResources';
 import Footer from './components/Footer';
@@ -17,10 +17,10 @@ import Privacy from './pages/Privacy';
 import DocumentsDashboard from './pages/DocumentsDashboard';
 import DeleteEducationalResources from './pages/deleteEduResource';
 import AddEducationalResource from './pages/EduResources/addEduResource';
-import AddConsultants from './pages/addConsultants';
-import DeleteConsulantant from './pages/deleteConsultant';
-import AddContractor from './pages/addContractor';
-import DeleteContractor from './pages/deleteContractor';
+//import AddConsultants from './pages/Providers/addConsultants';
+import DeleteConsulantant from './pages/Providers/deleteConsultant';
+//import AddContractor from './pages/Providers/addContractor';
+import DeleteContractor from './pages/Providers/deleteContractor';
 import Reports from './pages/Reports';
 import CalculationReccomendation from './components/CalculationRec';
 import CalcUsageStats from './components/CalculatorUsageStats';
@@ -39,6 +39,8 @@ import UserManagement from './pages/UserManagement';
 function App() {
   const identityPoolId = import.meta.env.VITE_IDENTITY_POOL_ID; // Cognito Identity Pool ID
   const mapName = import.meta.env.VITE_MAP_NAME; // Amazon Location Service Map Name
+
+
 
   Hub.listen('auth', ({ payload }) => {
     switch (payload.event) {
@@ -112,8 +114,8 @@ function App() {
       <Route path="/addEduResource" element={<AddEducationalResource onClose={function (): void {
         throw new Error('Function not implemented.');
       } } />} />
-      <Route path="/addConsultants" element={<AddConsultants />} />
-      <Route path="/addContractor" element={<AddContractor />} />
+      {/* <Route path="/addConsultants" element={<AddConsultants />} />
+      <Route path="/addContractor" element={<AddContractor />} /> */}
       <Route path="/deleteConsultant" element={<DeleteConsulantant />} />
       <Route path="/deleteContractor" element={<DeleteContractor />} />
       <Route path="/Reports" element={<Reports />} />

@@ -20,7 +20,7 @@ const EditEducationalResource: React.FC<EditEducationalResourceProps> = ({ resou
   const [title, setTitle] = useState(resource.title);
   const [body, setBody] = useState(resource.body);
   const [resourceUrl, setResourceUrl] = useState(resource.resource_url);
-  const [image, setImage] = useState<File | null>(null);
+  const [resourceImg, setResourceImg] = useState(resource.resource_img);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -40,22 +40,17 @@ const EditEducationalResource: React.FC<EditEducationalResourceProps> = ({ resou
       setErrors(validationErrors);
       return;
     }
-  
+
     setIsLoading(true);
-  
-    let resourceImgBase64 = null;
-    if (image) {
-      resourceImgBase64 = await convertToBase64(image);
-    }
-  
+
     const resourceData = JSON.stringify({
       resource_id: resource.resource_id,
       title,
       body,
       resource_url: resourceUrl,
-      resource_img: resourceImgBase64
+      resource_img: resourceImg
     });
-  
+
     try {
       const response = await fetch(`${API_BASE_URL}/resources/${resource.resource_id}`, {
         method: 'PUT',
@@ -64,9 +59,9 @@ const EditEducationalResource: React.FC<EditEducationalResourceProps> = ({ resou
         },
         body: resourceData
       });
-  
+
       if (!response.ok) throw new Error('Failed to update resource');
-  
+
       setMessage('Resource updated successfully');
       setTimeout(() => {
         onClose(); // Close the modal on successful submit
@@ -76,22 +71,6 @@ const EditEducationalResource: React.FC<EditEducationalResourceProps> = ({ resou
     } finally {
       setIsLoading(false);
     }
-  };
-  
-
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      setImage(event.target.files[0]);
-    }
-  };
-
-  const convertToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = error => reject(error);
-    });
   };
 
   return (
@@ -133,24 +112,14 @@ const EditEducationalResource: React.FC<EditEducationalResourceProps> = ({ resou
         error={!!errors.resourceUrl}
         helperText={errors.resourceUrl}
       />
-      <Button
-        variant="contained"
-        component="label"
+      <TextField
+        label="Image URL"
+        variant="outlined"
+        fullWidth
+        value={resourceImg || ''}
+        onChange={e => setResourceImg(e.target.value)}
         sx={{ mb: 2 }}
-      >
-        Upload Image
-        <input
-          type="file"
-          hidden
-          accept="image/*"
-          onChange={handleImageChange}
-        />
-      </Button>
-      {image && (
-        <Typography variant="body2" sx={{ mb: 2 }}>
-          {image.name}
-        </Typography>
-      )}
+      />
       <Box sx={{ position: 'relative' }}>
         <Button type="submit" variant="contained" color="primary" disabled={isLoading} fullWidth sx={{ mb: 2 }}>
           Update Resource
