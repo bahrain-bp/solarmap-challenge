@@ -30,7 +30,7 @@ import { Authenticator } from './modules/Authenticator';
 import { getCurrentUser, signOut } from 'aws-amplify/auth';
 import '@aws-amplify/ui-react/styles.css';
 import { Hub } from 'aws-amplify/utils';
-// import Chatbot from './components/AmazonLexSolarMapChatbot';
+import Chatbot from './components/AmazonLexSolarMapChatbot';
 import Inquiry from './pages/Inquiry';
 import AdminMap from './pages/AdminMap';
 import ErrorView from './pages/Error/ErrorView';
@@ -166,7 +166,7 @@ function App() {
             {isLoggedIn ? authRoutes : normRoutes}
           </Box>
           <Footer />
-          {/* <Chatbot /> */}
+          <Chatbot />
         </Box>
       </BrowserRouter>
     </ThemeProvider>
