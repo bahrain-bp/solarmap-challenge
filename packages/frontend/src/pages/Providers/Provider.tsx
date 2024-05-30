@@ -341,22 +341,23 @@ const Providers: React.FC<ProvidersProps> = ({ isLoggedIn }) => {
                     backgroundColor: '#073763',
                     position: 'relative',
                     height: '100%',
+                     color: 'white'
                   }}
                 >
                   <Box sx={{ p: 2 }}>
                     <Typography variant="h6" gutterBottom>
                       {consultant.name}
                     </Typography>
-                    <Typography variant="body2" sx={{ mb: 2 }}>
+                    <Typography variant="body2" sx={{ mb: 2, color: 'white' }}>
                       Level: {consultant.level}
                     </Typography>
-                    <Typography variant="body2" sx={{ mb: 2 }}>
+                    <Typography variant="body2" sx={{ mb: 2, color: 'white' }}>
                       CRPEP Number: {consultant.crep_num}
                     </Typography>
-                    <Typography variant="body2" sx={{ mb: 2 }}>
+                    <Typography variant="body2" sx={{ mb: 2, color: 'white' }}>
                       Contact Information: {consultant.contact_info}
                     </Typography>
-                    <Typography variant="body2" sx={{ mb: 2 }}>
+                    <Typography variant="body2" sx={{ mb: 2, color: 'white' }}>
                       Fax: {consultant.fax}
                     </Typography>
                   </Box>

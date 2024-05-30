@@ -30,8 +30,10 @@ export function applyFilter<T extends User>({
   inputData = stabilizedThis.map((el) => el[0]);
 
   if (filterName) {
-    inputData = inputData.filter(
-      (user) => user.Attributes.find((attr) => attr.Name === 'email')?.Value.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+    inputData = inputData.filter((user) =>
+      user.Attributes.some((attr) =>
+        attr.Value.toLowerCase().includes(filterName.toLowerCase())
+      )
     );
   }
 
