@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Feature, Polygon } from 'geojson';
 import maplibregl from 'maplibre-gl';
 import React, { useEffect, useRef, useState } from 'react';
-// import SolarPanelCalculator from './SolarPanelCalculator';
+import SolarPanelCalculator from './SolarPanelCalculator';
 
 // Define coordinates array here
 let coordinates = [
@@ -437,7 +437,7 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
       )}
 
       <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
-        {/* <SolarPanelCalculator /> */}
+        <SolarPanelCalculator />
         <div id="map" style={{ width: '100%', height: '100%' }}>
           {errorMessage && (
             <div style={{ color: 'red', position: 'absolute', top: '10px', left: '10px' }}>{errorMessage}</div>
