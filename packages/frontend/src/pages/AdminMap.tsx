@@ -4,6 +4,10 @@ import L from 'leaflet';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Modal, Button } from 'react-bootstrap';
 import exportString from "../api_url";
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+
 
 const apiurl: string = exportString();
 const API_BASE_URL = apiurl;
@@ -27,6 +31,24 @@ const AdminMap = () => {
     editMode: boolean;
   }[]>([]);
   const [mapClickable, setMapClickable] = useState<boolean>(false);
+  const handleTableRowClick = (point: any) => {
+    if (map) {
+      map.setView([point.latitude, point.longitude], 15);
+    }
+  };
+  const customIcon = new L.Icon({
+    iconRetinaUrl: markerIcon2x,
+    iconUrl: markerIcon,
+    shadowUrl: markerShadow,
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    tooltipAnchor: [16, -28],
+    shadowSize: [41, 41],
+  });
+  const [searchTerm, setSearchTerm] = useState<string>('');
+
+
 
   useEffect(() => {
     const leafletMap = L.map('map').setView([26.0667, 50.5577], 10);
@@ -61,7 +83,7 @@ const AdminMap = () => {
   useEffect(() => {
     if (map && additionalPoints.length > 0) {
       additionalPoints.forEach(point => {
-        L.marker([point.latitude, point.longitude])
+        L.marker([point.latitude, point.longitude], { icon: customIcon })
           .addTo(map)
           .bindPopup(`
             <b>Name:</b> ${point.owner_name}<br/>
@@ -73,15 +95,17 @@ const AdminMap = () => {
     }
   }, [map, additionalPoints]);
 
+
   useEffect(() => {
     if (map && clickCoordinates) {
-      L.marker([clickCoordinates.lat, clickCoordinates.lng])
+      L.marker([clickCoordinates.lat, clickCoordinates.lng], { icon: customIcon })
         .addTo(map)
         .openPopup();
       setShowForm(true);
       setMapClickable(false);
     }
   }, [clickCoordinates, map]);
+
 
   useEffect(() => {
     if (map && mapClickable) {
@@ -109,7 +133,7 @@ const AdminMap = () => {
         latitude: clickCoordinates.lat,
         longitude: clickCoordinates.lng
       };
-  
+
       try {
         const response = await fetch(`${API_BASE_URL}/solarpanel`, {
           method: 'POST',
@@ -118,16 +142,16 @@ const AdminMap = () => {
           },
           body: JSON.stringify(newPoint)
         });
-  
+
         if (!response.ok) {
           throw new Error('Failed to add solar panel point');
         }
-  
+
         const responseData = await response.json();
         console.log('Solar panel point added successfully:', responseData);
-  
+
         setAdditionalPoints([...additionalPoints, { ...newPoint, editMode: false }]);
-  
+
         setName('');
         setAddress('');
         setPanels(0);
@@ -152,18 +176,18 @@ const AdminMap = () => {
         const response = await fetch(`${API_BASE_URL}/solarpanel/${solarPanelIdToDelete}`, {
           method: 'DELETE',
         });
-  
+
         if (!response.ok) {
           throw new Error('Failed to delete solar panel point');
         }
-  
+
         const responseData = await response.json();
         console.log('Solar panel point deleted successfully:', responseData);
-  
+
         const updatedPoints = [...additionalPoints];
         updatedPoints.splice(index, 1);
         setAdditionalPoints(updatedPoints);
-  
+
         if (map) {
           map.eachLayer((layer) => {
             if (layer instanceof L.Marker) {
@@ -238,33 +262,46 @@ const AdminMap = () => {
     setMapClickable(false);
   };
 
+  // Insights calculation
+  const totalPanels = additionalPoints.reduce((sum, point) => sum + point.number_of_panel, 0);
+  const averagePanels = additionalPoints.length > 0 ? (totalPanels / additionalPoints.length).toFixed(2) : 0;
+  const totalInstallations = additionalPoints.length;
+  const earliestInstallation = additionalPoints.length > 0 ? new Date(Math.min(...additionalPoints.map(point => new Date(point.installation_date).getTime()))).toLocaleDateString() : 'N/A';
+  const latestInstallation = additionalPoints.length > 0 ? new Date(Math.max(...additionalPoints.map(point => new Date(point.installation_date).getTime()))).toLocaleDateString() : 'N/A';
+
   return (
     <div className="container mt-3">
       <div className="row">
         <div className="col">
-          <div id="map" style={{ height: '600px', width: '100%', position: 'relative' }}>
-            {mapClickable && (
-              <div
-                style={{
-                  backgroundColor: 'green',
-                  color: 'white',
-                  padding: '10px',
-                  position: 'absolute',
-                  textAlign: 'center',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  zIndex: 999,
-                }}
-              >
-                Click on a point on the map
-              </div>
-            )}
+          <div className="map-container" style={{ position: 'relative' }}>
+            <div id="map" style={{ height: '300px', width: '100%' }}>
+              {mapClickable && (
+                <div
+                  style={{
+                    backgroundColor: 'green',
+                    color: 'white',
+                    padding: '10px',
+                    position: 'absolute',
+                    textAlign: 'center',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    zIndex: 500,
+                  }}
+                >
+                  Click on a point on the map
+                </div>
+              )}
+            </div>
+            <Button
+              onClick={() => setMapClickable(true)}
+              style={{ position: 'absolute', bottom: '5px', left: '10px', zIndex: 501, backgroundColor: 'skyblue', color: 'black' }}>
+              Add Point
+            </Button>
           </div>
-          <Button onClick={() => setMapClickable(true)} style={{ marginTop: '10px' }}>Add Point</Button>
         </div>
       </div>
-      <Modal show={showForm && clickCoordinates !== null} onHide={handleCloseForm}>
+      <Modal show={showForm && clickCoordinates !== null} onHide={handleCloseForm} centered>
         <Modal.Header closeButton>
           <Modal.Title>Add New Point</Modal.Title>
         </Modal.Header>
@@ -272,19 +309,19 @@ const AdminMap = () => {
           <form>
             <div className="mb-3">
               <label className="form-label">Name:</label>
-              <input type="text" className="form-control" value={name} onChange={(e) => setName(e.target.value)} />
+              <input type="text" className="form-control" value={name} onChange={(e) => setName(e.target.value)} required/>
             </div>
             <div className="mb-3">
               <label className="form-label">Address:</label>
-              <input type="text" className="form-control" value={address} onChange={(e) => setAddress(e.target.value)} />
+              <input type="text" className="form-control" value={address} onChange={(e) => setAddress(e.target.value)} required/>
             </div>
             <div className="mb-3">
               <label className="form-label">Panels:</label>
-              <input type="number" className="form-control" value={panels} onChange={(e) => setPanels(parseInt(e.target.value))} />
+              <input type="number" className="form-control" value={panels} onChange={(e) => setPanels(parseInt(e.target.value))} required/>
             </div>
             <div className="mb-3">
               <label className="form-label">Installation Date:</label>
-              <input type="date" className="form-control" value={installationDate} onChange={(e) => setInstallationDate(e.target.value)} />
+              <input type="date" className="form-control" value={installationDate} onChange={(e) => setInstallationDate(e.target.value)} required/>
             </div>
           </form>
         </Modal.Body>
@@ -299,108 +336,154 @@ const AdminMap = () => {
       </Modal>
       <div className="row mt-3">
         <div className="col">
-          <h2>Additional Points</h2>
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Address</th>
-                <th>Latitude</th>
-                <th>Longitude</th>
-                <th>Panels</th>
-                <th>Installation Date</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {additionalPoints.map((point, index) => (
-                <tr key={index}>
-                  <td>
-                    {point.editMode ? (
-                      <input
-                        type="text"
-                        value={point.owner_name}
-                        onChange={(e) => {
-                          const updatedPoints = [...additionalPoints];
-                          updatedPoints[index].owner_name = e.target.value;
-                          setAdditionalPoints(updatedPoints);
-                        }}
-                      />
-                    ) : (
-                      point.owner_name
-                    )}
-                  </td>
-                  <td>
-                    {point.editMode ? (
-                      <input
-                        type="text"
-                        value={point.installation_address}
-                        onChange={(e) => {
-                          const updatedPoints = [...additionalPoints];
-                          updatedPoints[index].installation_address = e.target.value;
-                          setAdditionalPoints(updatedPoints);
-                        }}
-                      />
-                    ) : (
-                      point.installation_address
-                    )}
-                  </td>
-                  <td>{point.latitude}</td>
-                  <td>{point.longitude}</td>
-                  <td>
-                    {point.editMode ? (
-                      <input
-                        type="number"
-                        value={point.number_of_panel}
-                        onChange={(e) => {
-                          const updatedPoints = [...additionalPoints];
-                          updatedPoints[index].number_of_panel = parseInt(e.target.value);
-                          setAdditionalPoints(updatedPoints);
-                        }}
-                      />
-                    ) : (
-                      point.number_of_panel
-                    )}
-                  </td>
-                  <td>
-                    {point.editMode ? (
-                      <input
-                        type="date"
-                        value={point.installation_date}
-                        onChange={(e) => {
-                          const updatedPoints = [...additionalPoints];
-                          updatedPoints[index].installation_date = e.target.value;
-                          setAdditionalPoints(updatedPoints);
-                        }}
-                      />
-                    ) : (
-                      point.installation_date
-                    )}
-                  </td>
-                  <td>
-                    {point.editMode ? (
-                      <Button
-                        variant="success"
-                        onClick={() => handleSaveEdit(index)}
-                        disabled={!point.owner_name || !point.installation_address || !point.number_of_panel || !point.installation_date}
-                      >
-                        Save
-                      </Button>
-                    ) : (
-                      <Button variant="warning" onClick={() => handleEditPoint(index)} disabled={point.editMode}>
-                        Edit
-                      </Button>
-                    )}
-                    <Button className="mx-2" variant="danger" onClick={() => handleDeletePoint(index)}>Delete</Button>
-                  </td>
+          <div style={{ position: 'relative' }}>
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Search"
+              style={{ position: 'absolute', top: 0, right: 0, width: '200px' }}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <div style={{ maxHeight: '250px', overflowY: 'auto', marginTop: '40px' }}>
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Address</th>
+                  <th>Latitude</th>
+                  <th>Longitude</th>
+                  <th>Panels</th>
+                  <th>Installation Date</th>
+                  <th>Action</th>
                 </tr>
-              ))}
+              </thead>
+              <tbody>
+                {additionalPoints
+                  .filter(point => point.owner_name.toLowerCase().includes(searchTerm.toLowerCase()))
+                  .map((point, index) => (
+                    <tr key={index} onClick={() => handleTableRowClick(point)}>
+                      <td>
+                        {point.editMode ? (
+                          <input
+                            type="text"
+                            value={point.owner_name}
+                            onChange={(e) => {
+                              const updatedPoints = [...additionalPoints];
+                              updatedPoints[index].owner_name = e.target.value;
+                              setAdditionalPoints(updatedPoints);
+                            }}
+                          />
+                        ) : (
+                          point.owner_name
+                        )}
+                      </td>
+                      <td>
+                        {point.editMode ? (
+                          <input
+                            type="text"
+                            value={point.installation_address}
+                            onChange={(e) => {
+                              const updatedPoints = [...additionalPoints];
+                              updatedPoints[index].installation_address = e.target.value;
+                              setAdditionalPoints(updatedPoints);
+                            }}
+                          />
+                        ) : (
+                          point.installation_address
+                        )}
+                      </td>
+                      <td>{point.latitude}</td>
+                      <td>{point.longitude}</td>
+                      <td>
+                        {point.editMode ? (
+                          <input
+                            type="number"
+                            value={point.number_of_panel}
+                            onChange={(e) => {
+                              const updatedPoints = [...additionalPoints];
+                              updatedPoints[index].number_of_panel = parseInt(e.target.value);
+                              setAdditionalPoints(updatedPoints);
+                            }}
+                          />
+                        ) : (
+                          point.number_of_panel
+                        )}
+                      </td>
+                      <td>
+                        {point.editMode ? (
+                          <input
+                            type="date"
+                            value={point.installation_date}
+                            onChange={(e) => {
+                              const updatedPoints = [...additionalPoints];
+                              updatedPoints[index].installation_date = e.target.value;
+                              setAdditionalPoints(updatedPoints);
+                            }}
+                          />
+                        ) : (
+                          point.installation_date
+                        )}
+                      </td>
+                      <td>
+                        {point.editMode ? (
+                          <Button
+                            variant="success"
+                            onClick={() => handleSaveEdit(index)}
+                            disabled={!point.owner_name || !point.installation_address || !point.number_of_panel || !point.installation_date}
+                          >
+                            Save
+                          </Button>
+                        ) : (
+                          <Button variant="warning" onClick={() => handleEditPoint(index)} disabled={point.editMode}>
+                            Edit
+                          </Button>
+                        )}
+                        <Button className="mx-2" variant="danger" onClick={() => handleDeletePoint(index)}>Delete</Button>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      {/* Insights Table */}
+      <div className="row mt-3">
+        <div className="col">
+          <h2>Insights</h2>
+          <table className="table">
+            <tbody>
+              <tr>
+                <td>Total Panels</td>
+                <td>{totalPanels}</td>
+              </tr>
+              <tr>
+                <td>Average Panels per Installation</td>
+                <td>{averagePanels}</td>
+              </tr>
+              <tr>
+                <td>Total Installations</td>
+                <td>{totalInstallations}</td>
+              </tr>
+              <tr>
+                <td>Earliest Installation Date</td>
+                <td>{earliestInstallation}</td>
+              </tr>
+              <tr>
+                <td>Latest Installation Date</td>
+                <td>{latestInstallation}</td>
+              </tr>
             </tbody>
           </table>
         </div>
       </div>
     </div>
   );
-};
+}
 
 export default AdminMap;
+
+

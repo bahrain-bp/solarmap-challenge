@@ -30,6 +30,7 @@ import ReportIcon from '@mui/icons-material/Assessment';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import FolderIcon from '@mui/icons-material/Folder';
 import MapIcon from '@mui/icons-material/Map';
+import ThermostatIcon from '@mui/icons-material/Thermostat';
 import StatsIcon from '@mui/icons-material/BarChart';
 import { LinkProps } from '@mui/material/Link';
 
@@ -60,7 +61,7 @@ const StyledLink = styled(Link)(({ theme }) => ({
   '&:hover, &.active': {
     textDecoration: 'none',
     backgroundColor: theme.palette.primary.dark,
-    color: theme.palette.common.white,
+    color: theme.palette.common.white, // Ensure the color remains white
     borderRadius: theme.shape.borderRadius,
     padding: theme.spacing(1),
     marginRight: theme.spacing(1),
@@ -124,7 +125,9 @@ const icons: { [key: string]: JSX.Element } = {
   'Business Dashboard': <DashboardIcon />,
   'Documents Dashboard': <FolderIcon />,
   'Admin Map': <MapIcon />,
+  'Heat Map': <ThermostatIcon />,
   'Calculator Usage Stats': <StatsIcon />,
+  'User': <PeopleIcon/>
 };
 
 const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
@@ -188,10 +191,12 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
   ].some(isActive);
 
   const isAdminDropdownActive = [
+    '/UserManagement',
     '/Reports',
     '/QuickSightDashboard',
     '/DocumentsDashboard',
     '/AdminMap',
+    '/AdminMapAnalytics',
     '/calcUsageStats',
   ].some(isActive);
 
@@ -314,6 +319,19 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
           </ListItem>
           <Collapse in={adminMenuOpen} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
+            <ListItem disablePadding>
+                <DrawerLink
+                  href="/UserManagement"
+                  sx={{ width: '100%', pl: 4 }}
+                  active={isActive('/UserManagement')}
+                >
+                  {icons.User}
+                  <ListItemText
+                    primary="User Management"
+                    sx={{ marginLeft: theme.spacing(1) }}
+                  />
+                </DrawerLink>
+              </ListItem>
               <ListItem disablePadding>
                 <DrawerLink
                   href="/Reports"
@@ -362,6 +380,19 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
                   {icons['Admin Map']}
                   <ListItemText
                     primary="Admin Map"
+                    sx={{ marginLeft: theme.spacing(1) }}
+                  />
+                </DrawerLink>
+              </ListItem>
+              <ListItem disablePadding>
+                <DrawerLink
+                  href="/AdminMapAnalytics"
+                  sx={{ width: '100%', pl: 4 }}
+                  active={isActive('/AdminMapAnalytics')}
+                >
+                  {icons['Heat Map']}
+                  <ListItemText
+                    primary="Heat Map"
                     sx={{ marginLeft: theme.spacing(1) }}
                   />
                 </DrawerLink>
@@ -499,6 +530,14 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
                     <MenuItem
                       onClick={handleClose}
                       component={Link}
+                      href="/UserManagement"
+                      className={isActive('/UserManagements') ? 'active' : ''}
+                    >
+                      User Management
+                    </MenuItem>
+                    <MenuItem
+                      onClick={handleClose}
+                      component={Link}
                       href="/Reports"
                       className={isActive('/Reports') ? 'active' : ''}
                     >
@@ -527,6 +566,14 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
                       className={isActive('/AdminMap') ? 'active' : ''}
                     >
                       Admin Map
+                    </MenuItem>
+                    <MenuItem
+                      onClick={handleClose}
+                      component={Link}
+                      href="/AdminMapAnalytics"
+                      className={isActive('/AdminMapAnalytics') ? 'active' : ''}
+                    >
+                      Heat Map
                     </MenuItem>
                     <MenuItem
                       onClick={handleClose}

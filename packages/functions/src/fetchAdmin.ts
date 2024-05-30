@@ -1,34 +1,32 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
-import { SQL } from "./dbConfig";
+import { CognitoIdentityProviderClient, ListUsersCommand } from '@aws-sdk/client-cognito-identity-provider';
+
+const client = new CognitoIdentityProviderClient({ region: process.env.AWS_REGION });
 
 export const handler: APIGatewayProxyHandler = async (event) => {
-    try {
-        const rows = await SQL.DB
-            .selectFrom("admin") 
-            .select([
-                'admin.admin_id',       
-                'admin.username',
-                'admin.email',
-                'admin.first_name',
-                'admin.last_name'
-            ])
-            .execute();
+  const userPoolId = process.env.USER_POOL_ID;
 
-        console.log('Query successful');
-        
-        return {
-            statusCode: 200,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(rows),
-        };
-    } catch (error) {
-        console.error('Error during database operation:', error);
-        
-        const errorMessage = (error instanceof Error) ? error.message : 'Unknown error';
-        
-        return {
-            statusCode: 500,
-            body: JSON.stringify({ message: 'Failed to fetch admin data', error: errorMessage }),
-        };
-    }
+  if (!userPoolId) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ message: 'User Pool ID is not configured' }),
+    };
+  }
+
+  try {
+    const command = new ListUsersCommand({ UserPoolId: userPoolId });
+    const response = await client.send(command);
+    const users = response.Users || [];
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify(users),
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ message: 'Failed to list users', error }),
+    };
+  }
 };

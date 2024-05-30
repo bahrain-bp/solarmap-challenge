@@ -1,8 +1,9 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import { SQL } from "./dbConfig";
 import AWS from 'aws-sdk';
+import moment from 'moment-timezone';
 
-// Initialize the SNS service
+//Initialize the SNS service
 const sns = new AWS.SNS();
 
 const truncateText = (text: string, wordLimit: number) => {
@@ -36,13 +37,8 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   }
 
   try {
-    let imageBlob = null;
-
-    // Only process the image if it's provided
-    if (resource_img) {
-      // Convert base64 string to binary data
-      imageBlob = Buffer.from(resource_img, 'base64');
-    }
+    // Get current date and time in Bahrain timezone
+    const createdAt = moment().tz('Asia/Bahrain').format('YYYY-MM-DD HH:mm:ss');
 
     console.log('Inserting educational resource into database...');
     await SQL.DB
@@ -51,7 +47,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
         title: title,
         body: body,
         resource_url: resource_url,
-        resource_img: imageBlob,  // Storing the BLOB directly in the database
+        resource_img: resource_img,  
+        created_at: createdAt, // Storing the current date and time
+        editted_at: null, // Initialize edited_at as null
       })
       .execute();
     console.log('Educational resource insert successful');
@@ -75,7 +73,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     console.log(`Sending SNS messages to ${subscriptions.length} subscribers...`);
     const snsPromises = subscriptions.map(({ phone, first_name, last_name }) => {
       const snsParams = {
-        Message: `Hi ${first_name} ${last_name}!\n\nA new educational resource titled "${title}" has been posted: ${truncatedBody}\n\nFor more information: ${resource_url}`,
+        Message: `Hi ${first_name} ${last_name}!\n\nA new educational resource titled "${title}" has been posted: ${truncatedBody}...\n\nFor more information, visit our website!`,
         PhoneNumber: phone,
       };
 

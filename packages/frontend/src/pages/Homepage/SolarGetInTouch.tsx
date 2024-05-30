@@ -2,19 +2,22 @@ import { SetStateAction, useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
-import Typography from '../components/Typography';
+import Typography from '../../components/Typography';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLifeRing } from '@fortawesome/free-solid-svg-icons';
-import exportString from "../api_url";
+import exportString from "../../api_url";
 import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import Alert from '@mui/material/Alert';
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 const API_BASE_URL = exportString();
 
 function SolarGetInTouch() {
   const [feedback, setFeedback] = useState("");
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [loading, setLoading] = useState(false); // New loading state
   const [open, setOpen] = useState(false);
 
   const handleFeedbackChange = (e: { target: { value: SetStateAction<string>; }; }) => {
@@ -23,6 +26,7 @@ function SolarGetInTouch() {
 
   const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
+    setLoading(true); // Set loading to true
 
     try {
       await fetch(`${API_BASE_URL}/feedback`, {
@@ -38,8 +42,9 @@ function SolarGetInTouch() {
     } catch (error) {
       console.error("Error submitting feedback:", error);
     } finally {
+      setLoading(false); // Set loading to false
       setFeedback("");
-      setOpen(false);
+      //setOpen(false);
     }
   };
 
@@ -121,10 +126,16 @@ function SolarGetInTouch() {
               fullWidth
               required
               sx={{ mt: 2, mb: 2 }}
+              disabled={loading} // Disable input when loading
             />
-            <Button type="submit" variant="contained" color="primary">
+            <Button type="submit" variant="contained" color="primary" disabled={loading}>
               Submit
             </Button>
+            {loading && (
+              <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+                <CircularProgress />
+              </Box>
+            )}
             {submitSuccess && (
               <Alert severity="success" sx={{ mt: 2 }}>
                 Feedback submitted successfully!
