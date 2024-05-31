@@ -96,7 +96,6 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
             { utterance: 'Calculation'},
             { utterance: 'Data & Privacy'},
             { utterance: 'Process'},
-            { utterance: 'About'},
         ],
         fulfillmentCodeHook: {
             enabled: true,
@@ -500,7 +499,7 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
                                     value: "Asphalt"
                                  },
                               ],
-                              imageUrl: "https://husain-s3-for-artifacts.s3.amazonaws.com/2270785dde37f5988ec612a8a074d0e8",
+                              imageUrl: "https://webshop.s3.amazonaws.com/_backups/single/files/prolift/css/material%20blog.png",
                               subtitle: "What type of roof do you have? Is it flat, sloped, metal, tile, asphalt, or something else?",
                               title: "Roof Type"
                            },
