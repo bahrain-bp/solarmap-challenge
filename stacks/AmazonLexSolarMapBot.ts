@@ -91,6 +91,7 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
             { utterance: 'Another'},
             { utterance: 'Next'},
             { utterance: 'Again'},
+            { utterance: 'Help'},
         ],
         fulfillmentCodeHook: {
             enabled: true,
