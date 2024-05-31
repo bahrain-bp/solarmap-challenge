@@ -11,7 +11,7 @@ interface GetEduResponse {
 
 export async function handler(): Promise<GetEduResponse> {
   try {
-    // Fetch the data without converting the image
+    // Fetch the data including the image URL
     const rows = await SQL.DB
       .selectFrom('educational_resource')
       .select([
@@ -19,19 +19,13 @@ export async function handler(): Promise<GetEduResponse> {
         'title',
         'body',
         'resource_url',
-        'resource_img',  // Retrieve the binary image data directly
+        'resource_img',  // Retrieve the image URL directly
         'created_at', 
         'editted_at'
       ])
       .execute();
 
-    // Convert binary image data to Base64 string if it exists
-    const convertedRows = rows.map(row => ({
-      ...row,
-      resource_img: row.resource_img ? Buffer.from(row.resource_img).toString('base64') : null
-    }));
-
-    console.log('Query successful', convertedRows);
+    console.log('Query successful', rows);
 
     return {
       statusCode: 200,
@@ -39,7 +33,7 @@ export async function handler(): Promise<GetEduResponse> {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*', // Adjust the origin according to your CORS policy
       },
-      body: JSON.stringify(convertedRows),
+      body: JSON.stringify(rows),
     };
   } catch (error) {
     console.error('Error during database operation:', error);

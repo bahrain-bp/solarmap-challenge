@@ -8,8 +8,12 @@ import { DocumentProcessingStack } from "./stacks/DocumentProcessingStack";
 import { MapStack } from "./stacks/MapStack";
 import { AuthStack } from "./stacks/AuthStack";
 import { ImgDetection } from "./stacks/ImgDetection";
+
 import { AmazonLexSolarMapBot } from "./stacks/AmazonLexSolarMapBot";
 import { AmazonLexSolarMapFulfillment } from "./stacks/AmazonLexSolarMapFulfillment";
+
+import { WebSocketStack } from "./stacks/WebSocketStack";
+
 
 export default {
   config(_input) {
@@ -35,6 +39,7 @@ export default {
     else {
       app.stack(DBStack)
       .stack(AuthStack)
+      .stack(WebSocketStack)
       .stack(DocumentProcessingStack) // Initialize "DocumentProcessingStack" stack before "ApiStack" stack (Dependency)
       .stack(ImgDetection)
       .stack(AmazonLexSolarMapFulfillment)

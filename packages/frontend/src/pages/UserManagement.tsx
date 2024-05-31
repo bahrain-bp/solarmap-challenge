@@ -7,7 +7,9 @@ import TableEmptyRows from '../usertable/table-empty-rows';
 import { emptyRows, getComparator } from '../usertable/utils';
 import { applyFilter } from '../usertable/filterUtil';
 import Scrollbar from '../components/scrollbar';
-import { Table, TableBody, TableContainer, TablePagination, CircularProgress, Backdrop } from '@mui/material';
+import { Table, TableBody, TableContainer, TablePagination, CircularProgress, Box, Typography } from '@mui/material';
+import solarprovider from '../assets/usermanagement.jpg';
+import pattern from '../assets/pattern.png';
 
 interface User {
   Username: string;
@@ -20,7 +22,6 @@ interface User {
 const UserManagement: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState<boolean>(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -30,7 +31,6 @@ const UserManagement: React.FC = () => {
   const [formError, setFormError] = useState<string | null>(null);
   const [formSuccess, setFormSuccess] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [operationLoading, setOperationLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -43,7 +43,7 @@ const UserManagement: React.FC = () => {
         setUsers(data);
       } catch (err) {
         console.error(err);
-        setError('Failed to fetch users');
+        setFormError('Failed to fetch users');
       } finally {
         setLoading(false);
       }
@@ -63,7 +63,6 @@ const UserManagement: React.FC = () => {
     e.preventDefault();
     setFormError(null);
     setFormSuccess(null);
-    setOperationLoading(true);
 
     try {
       const url = `${import.meta.env.VITE_API_URL}/users`;
@@ -96,8 +95,6 @@ const UserManagement: React.FC = () => {
     } catch (err) {
       console.error(err);
       setFormError(isEditing ? 'Failed to update user' : 'Failed to create user');
-    } finally {
-      setOperationLoading(false);
     }
   };
 
@@ -112,7 +109,6 @@ const UserManagement: React.FC = () => {
   };
 
   const handleDeleteClick = async (email: string) => {
-    setOperationLoading(true);
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/users`, {
         method: 'DELETE',
@@ -135,8 +131,6 @@ const UserManagement: React.FC = () => {
     } catch (err) {
       console.error(err);
       setFormError('Failed to delete user');
-    } finally {
-      setOperationLoading(false);
     }
   };
 
@@ -178,126 +172,167 @@ const UserManagement: React.FC = () => {
 
   const notFound = !dataFiltered.length && !!filterName;
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
-
   return (
-    <div className="container">
-      <Backdrop open={operationLoading} style={{ zIndex: 1301 }}>
-        <CircularProgress />
-      </Backdrop>
-      <h1>User Management</h1>
-      <button className="btn btn-primary mb-3" onClick={() => { setShowForm(!showForm); setIsEditing(false); }}>
-        {showForm ? 'Hide Form' : 'Add User'}
-      </button>
-      {showForm && (
-        <form onSubmit={handleSubmit} className="mb-3">
-          {formError && <div className="alert alert-danger">{formError}</div>}
-          {formSuccess && <div className="alert alert-success">{formSuccess}</div>}
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              className="form-control"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              readOnly={isEditing} // Make email read-only when editing
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="firstName">First Name</label>
-            <input
-              type="text"
-              className="form-control"
-              id="firstName"
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="lastName">Last Name</label>
-            <input
-              type="text"
-              className="form-control"
-              id="lastName"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <button type="submit" className="btn btn-primary">
-            {isEditing ? 'Update User' : 'Create User'}
+    <Box sx={{ backgroundColor: 'white', display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <Box sx={{ position: 'relative', width: '100%', height: '300px', overflow: 'hidden' }}>
+        <img
+          src={solarprovider}
+          alt="User Management"
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            filter: 'brightness(70%) blur(3px)',
+            borderRadius: '0'
+          }}
+        />
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            color: 'white',
+            textAlign: 'center',
+          }}
+        >
+          <Typography variant="h3" component="h1" gutterBottom>
+            User Management
+          </Typography>
+          <Typography variant="h6">
+            Manage users effectively with our user management system.
+          </Typography>
+        </Box>
+      </Box>
+      <Box sx={{ background: `url(${pattern})`, backgroundSize: 'cover', backgroundPosition: 'center', py: 8, marginTop: '-4px', flex: 1 }}>
+        <div className="container">
+          <button className="btn btn-primary mb-3" onClick={() => { setShowForm(!showForm); setIsEditing(false); }}>
+            {showForm ? 'Hide Form' : 'Add User'}
           </button>
-        </form>
-      )}
-      <div className="table-responsive" style={{ maxHeight: '300px', overflowY: 'auto' }}>
-        <UserTableToolbar
-          filterName={filterName}
-          onFilterName={handleFilterByName}
-        />
-
-        <Scrollbar>
-          <TableContainer sx={{ overflow: 'unset' }}>
-            <Table sx={{ minWidth: 800 }}>
-              <TableMainHead
-                order={order}
-                orderBy={orderBy}
-                onRequestSort={handleSort}
-                headLabel={[
-                  { id: 'zift1', label: '' },
-                  { id: 'Username', label: 'Email' },
-                  { id: 'given_name', label: 'First Name' },
-                  { id: 'family_name', label: 'Last Name' },
-                  { id: 'zift2', label: '' }
-                ]}
-              />
-              <TableBody>
-                {dataFiltered
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row) => (
-                    <UserTableRow
-                      key={row.Username}
-                      email={row.Attributes.find((attr) => attr.Name === 'email')?.Value || 'N/A'}
-                      firstName={row.Attributes.find((attr) => attr.Name === 'given_name')?.Value || 'N/A'}
-                      lastName={row.Attributes.find((attr) => attr.Name === 'family_name')?.Value || 'N/A'}
-                      onClickEdit={() => handleEditClick(row)}
-                      onClickDelete={() => handleDeleteClick(row.Attributes.find((attr) => attr.Name === 'email')?.Value || '')}
-                    />
-                  ))}
-
-                <TableEmptyRows
-                  height={77}
-                  emptyRows={emptyRows(page, rowsPerPage, users.length)}
+          {showForm && (
+            <form onSubmit={handleSubmit} className="mb-3">
+              {formError && <div className="alert alert-danger">{formError}</div>}
+              {formSuccess && <div className="alert alert-success">{formSuccess}</div>}
+              <div className="form-group">
+                <label htmlFor="email">Email</label>
+                <input
+                  type="email"
+                  className="form-control"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  readOnly={isEditing} // Make email read-only when editing
                 />
-
-                {notFound && <TableNoData query={filterName} />}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Scrollbar>
-
-        <TablePagination
-          page={page}
-          component="div"
-          count={users.length}
-          rowsPerPage={rowsPerPage}
-          onPageChange={handleChangePage}
-          rowsPerPageOptions={[5, 10, 25, 50, 100]}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </div>
-    </div>
+              </div>
+              <div className="form-group">
+                <label htmlFor="firstName">First Name</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="firstName"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="lastName">Last Name</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="lastName"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <button type="submit" className="btn btn-primary">
+                {isEditing ? 'Update User' : 'Create User'}
+              </button>
+            </form>
+          )}
+          <div className="table-responsive">
+            <UserTableToolbar
+              filterName={filterName}
+              onFilterName={handleFilterByName}
+            />
+            <Scrollbar>
+              <TableContainer sx={{ overflow: 'unset', position: 'relative' }}>
+                {loading && (
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: 'rgba(255, 255, 255, 0.7)',
+                      zIndex: 1
+                    }}
+                  >
+                    <CircularProgress />
+                  </Box>
+                )}
+                <Table sx={{ minWidth: 800 }}>
+                  <TableMainHead
+                    order={order}
+                    orderBy={orderBy}
+                    onRequestSort={handleSort}
+                    headLabel={[
+                      { id: 'empty1', label: '' },
+                      { id: 'Username', label: 'Email' },
+                      { id: 'given_name', label: 'First Name' },
+                      { id: 'family_name', label: 'Last Name' },
+                      { id: 'email_verified', label: 'Verified' },
+                      { id: 'empty2', label: '' }
+                    ]}
+                  />
+                  <TableBody>
+                    {dataFiltered
+                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      .map((row) => {
+                        const verified = row.Attributes.find((attr) => attr.Name === 'email_verified')?.Value;
+                        return (
+                          <UserTableRow
+                            key={row.Username}
+                            email={row.Attributes.find((attr) => attr.Name === 'email')?.Value || 'N/A'}
+                            firstName={row.Attributes.find((attr) => attr.Name === 'given_name')?.Value || 'N/A'}
+                            lastName={row.Attributes.find((attr) => attr.Name === 'family_name')?.Value || 'N/A'}
+                            verified={verified === 'true' ? 'Verified' : 'Not Verified'}
+                            onClickEdit={() => handleEditClick(row)}
+                            onClickDelete={() => handleDeleteClick(row.Attributes.find((attr) => attr.Name === 'email')?.Value || '')}
+                          />
+                        );
+                      })}
+                    <TableEmptyRows
+                      height={77}
+                      emptyRows={emptyRows(page, rowsPerPage, users.length)}
+                    />
+                    {notFound && <TableNoData query={filterName} />}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Scrollbar>
+            <TablePagination
+              page={page}
+              component="div"
+              count={users.length}
+              rowsPerPage={rowsPerPage}
+              onPageChange={handleChangePage}
+              rowsPerPageOptions={[5, 10, 25]}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </div>
+        </div>
+      </Box>
+    </Box>
   );
 };
 
