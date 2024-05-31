@@ -32,7 +32,7 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
         'SolarMapBot',
         provider.serviceToken(),
         {
-            botName: 'SolarMapBot',
+            botName: stack.stackName + '-SolarMapBot',
             dataPrivacy: {
                 childDirected: false,
             },
