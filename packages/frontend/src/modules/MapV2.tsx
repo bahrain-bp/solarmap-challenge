@@ -6,6 +6,13 @@ import maplibregl from 'maplibre-gl';
 import React, { useEffect, useRef, useState } from 'react';
 import SolarPanelCalculator from "./SolarPanelCalculator";
 
+// @ts-ignore
+MapboxDraw.constants.classes.CONTROL_BASE = "maplibregl-ctrl";
+// @ts-ignore
+MapboxDraw.constants.classes.CONTROL_PREFIX = "maplibregl-ctrl-";
+// @ts-ignore
+MapboxDraw.constants.classes.CONTROL_GROUP = "maplibregl-ctrl-group";
+
 // Define coordinates array here
 let coordinates = [
   [
