@@ -53,11 +53,11 @@ def close(intent_request, session_attributes, fulfillment_state, message):
 def calculate_solar_panel_estimate(property_size, location, electricity_consumption, roof_orientation, roof_type, shading, budget, installation_timeline):
     # Define cost per solar panel based on budget
     if budget == 'Low':
-        cost_per_panel = 800  # Assume lower cost for low budget
+        cost_per_panel = 600  # Adjusted lower cost for low budget
     elif budget == 'Medium':
-        cost_per_panel = 1000  # Assume medium cost for medium budget
+        cost_per_panel = 800  # Adjusted medium cost for medium budget
     else:
-        cost_per_panel = 1200  # Assume higher cost for high budget
+        cost_per_panel = 1000  # Adjusted higher cost for high budget
     
     # Define production factor based on roof orientation
     if roof_orientation == 'South':
@@ -77,11 +77,11 @@ def calculate_solar_panel_estimate(property_size, location, electricity_consumpt
     
     # Calculate total area of solar panels needed based on property size
     if property_size == 'Small':
-        total_area_needed = 50  # Placeholder value for small property size
+        total_area_needed = 40  # Adjusted lower value for small property size
     elif property_size == 'Medium':
-        total_area_needed = 100  # Placeholder value for medium property size
+        total_area_needed = 80  # Adjusted lower value for medium property size
     else:
-        total_area_needed = 150  # Placeholder value for large property size
+        total_area_needed = 120  # Adjusted lower value for large property size
     
     # Calculate total electricity consumption in kWh per month
     if electricity_consumption == 'Low':
@@ -94,16 +94,19 @@ def calculate_solar_panel_estimate(property_size, location, electricity_consumpt
     # Calculate total electricity production per month in kWh
     total_electricity_production = total_area_needed * production_factor * shading_factor * 5  # 5 kWh per square meter per day
     
-    # Calculate total electricity savings per month
-    total_electricity_savings = total_electricity_consumption - total_electricity_production
+    # Calculate total electricity savings per year
+    total_electricity_savings = (total_electricity_consumption - total_electricity_production) * 12
     
-    # Calculate total cost of solar panels
-    total_cost = total_area_needed * cost_per_panel
+    # Add installation cost factor (percentage of total cost)
+    installation_cost_factor = 0.2  # 20% of total cost for installation
     
-    # Calculate ROI in months
+    # Calculate total cost of solar panels including installation
+    total_cost = total_area_needed * cost_per_panel * (1 + installation_cost_factor)
+    
+    # Calculate ROI in years
     if total_electricity_savings <= 0:
         # Set ROI to a specific value when total electricity savings are non-positive
-        roi = 7  # Placeholder value for average ROI when savings are less than or equal to 0
+        roi = float('inf')  # Placeholder value for ROI when savings are less than or equal to 0
     else:
         roi = total_cost / total_electricity_savings
     
@@ -112,6 +115,7 @@ def calculate_solar_panel_estimate(property_size, location, electricity_consumpt
         'cost': total_cost,
         'roi': roi
     }
+
 
 
 def GetSolarPanelInstallationEstimateIntent(intent_request):
