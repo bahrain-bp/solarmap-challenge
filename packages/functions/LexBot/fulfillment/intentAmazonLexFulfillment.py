@@ -77,11 +77,11 @@ def calculate_solar_panel_estimate(property_size, location, electricity_consumpt
     
     # Calculate total area of solar panels needed based on property size
     if property_size == 'Small':
-        total_area_needed = 50 * 0.75  # Placeholder value for small property size
+        total_area_needed = 50  # Placeholder value for small property size
     elif property_size == 'Medium':
-        total_area_needed = 100 * 0.75  # Placeholder value for medium property size
+        total_area_needed = 100  # Placeholder value for medium property size
     else:
-        total_area_needed = 150 * 0.75  # Placeholder value for large property size
+        total_area_needed = 150  # Placeholder value for large property size
     
     # Calculate total electricity consumption in kWh per month
     if electricity_consumption == 'Low':
@@ -112,7 +112,6 @@ def calculate_solar_panel_estimate(property_size, location, electricity_consumpt
         'cost': total_cost,
         'roi': roi
     }
-
 
 
 def GetSolarPanelInstallationEstimateIntent(intent_request):
