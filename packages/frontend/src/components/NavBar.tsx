@@ -117,7 +117,6 @@ const DrawerLink = styled(Link, {
 
 const icons: { [key: string]: JSX.Element } = {
   Home: <HomeIcon />,
-  About: <InfoIcon />,
   Providers: <PeopleIcon />,
   'Document Upload': <UploadFileIcon />,
   'Educational Resources': <SchoolIcon />,
@@ -127,7 +126,8 @@ const icons: { [key: string]: JSX.Element } = {
   'Admin Map': <MapIcon />,
   'Heat Map': <ThermostatIcon />,
   'Calculator Usage Stats': <StatsIcon />,
-  'User': <PeopleIcon/>
+  'User': <PeopleIcon />,
+  About: <InfoIcon />
 };
 
 const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
@@ -219,19 +219,6 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
       </ListItem>
       <ListItem disablePadding>
         <DrawerLink
-          href="/About"
-          sx={{ width: '100%' }}
-          active={isActive('/About')}
-        >
-          {icons.About}
-          <ListItemText
-            primary="About"
-            sx={{ marginLeft: theme.spacing(1) }}
-          />
-        </DrawerLink>
-      </ListItem>
-      <ListItem disablePadding>
-        <DrawerLink
           href="/Provider"
           sx={{ width: '100%' }}
           active={isActive('/Provider')}
@@ -307,6 +294,19 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
           </ListItem>
         </List>
       </Collapse>
+      <ListItem disablePadding>
+        <DrawerLink
+          href="/About"
+          sx={{ width: '100%' }}
+          active={isActive('/About')}
+        >
+          {icons.About}
+          <ListItemText
+            primary="About"
+            sx={{ marginLeft: theme.spacing(1) }}
+          />
+        </DrawerLink>
+      </ListItem>
       {isLoggedIn && (
         <>
           <ListItem button onClick={handleAdminDashboardMenuClick}>
@@ -319,7 +319,7 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
           </ListItem>
           <Collapse in={adminMenuOpen} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-            <ListItem disablePadding>
+              <ListItem disablePadding>
                 <DrawerLink
                   href="/UserManagement"
                   sx={{ width: '100%', pl: 4 }}
@@ -441,12 +441,6 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
                 Home
               </StyledLink>
               <StyledLink
-                href="/About"
-                className={isActive('/About') ? 'active' : ''}
-              >
-                About
-              </StyledLink>
-              <StyledLink
                 href="/Provider"
                 className={isActive('/Provider') ? 'active' : ''}
               >
@@ -504,6 +498,12 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
                   Carbon Calculator
                 </MenuItem>
               </Menu>
+              <StyledLink
+                href="/About"
+                className={isActive('/About') ? 'active' : ''}
+              >
+                About
+              </StyledLink>
               {isLoggedIn && (
                 <>
                   <DropdownButton
