@@ -50,13 +50,76 @@ def close(intent_request, session_attributes, fulfillment_state, message):
         'requestAttributes': intent_request['requestAttributes'] if 'requestAttributes' in intent_request else None
     }
 
-def GetSolarPanelInstallationEstimateIntent(intent_request):
+def calculate_solar_panel_estimate(property_size, location, electricity_consumption, roof_orientation, roof_type, shading, budget, installation_timeline):
+    # Define cost per solar panel based on budget
+    if budget == 'Low':
+        cost_per_panel = 800  # Assume lower cost for low budget
+    elif budget == 'Medium':
+        cost_per_panel = 1000  # Assume medium cost for medium budget
+    else:
+        cost_per_panel = 1200  # Assume higher cost for high budget
     
+    # Define production factor based on roof orientation
+    if roof_orientation == 'South':
+        production_factor = 1.2  # Higher production for south-facing roofs
+    elif roof_orientation == 'East':
+        production_factor = 1.0  # Average production for east-facing roofs
+    else:
+        production_factor = 0.8  # Lower production for other orientations
+    
+    # Define shading factor
+    if shading == 'Low':
+        shading_factor = 1.1  # Low shading, slightly higher production
+    elif shading == 'Medium':
+        shading_factor = 0.9  # Medium shading, lower production
+    else:
+        shading_factor = 0.7  # High shading, much lower production
+    
+    # Calculate total area of solar panels needed based on property size
+    if property_size == 'Small':
+        total_area_needed = 50 * 0.75  # Placeholder value for small property size
+    elif property_size == 'Medium':
+        total_area_needed = 100 * 0.75  # Placeholder value for medium property size
+    else:
+        total_area_needed = 150 * 0.75  # Placeholder value for large property size
+    
+    # Calculate total electricity consumption in kWh per month
+    if electricity_consumption == 'Low':
+        total_electricity_consumption = 300  # Placeholder value for low consumption
+    elif electricity_consumption == 'Medium':
+        total_electricity_consumption = 500  # Placeholder value for medium consumption
+    else:
+        total_electricity_consumption = 800  # Placeholder value for high consumption
+    
+    # Calculate total electricity production per month in kWh
+    total_electricity_production = total_area_needed * production_factor * shading_factor * 5  # 5 kWh per square meter per day
+    
+    # Calculate total electricity savings per month
+    total_electricity_savings = total_electricity_consumption - total_electricity_production
+    
+    # Calculate total cost of solar panels
+    total_cost = total_area_needed * cost_per_panel
+    
+    # Calculate ROI in months
+    if total_electricity_savings <= 0:
+        # Set ROI to a specific value when total electricity savings are non-positive
+        roi = 7  # Placeholder value for average ROI when savings are less than or equal to 0
+    else:
+        roi = total_cost / total_electricity_savings
+    
+    return {
+        'total_panels': total_area_needed,
+        'cost': total_cost,
+        'roi': roi
+    }
+
+
+
+def GetSolarPanelInstallationEstimateIntent(intent_request):
     session_attributes = get_session_attributes(intent_request)
     
     # Extracting slot values from the event
     slots = get_slots(intent_request)
-    print(slots)
     
     property_size = get_slot(intent_request, 'PropertySizeSlot')
     location = get_slot(intent_request, 'LocationSlot')
@@ -67,9 +130,11 @@ def GetSolarPanelInstallationEstimateIntent(intent_request):
     budget = get_slot(intent_request, 'BudgetSlot')
     installation_timeline = get_slot(intent_request, 'InstallationTimelineSlot')
     
-    # Calculaton to be added here
+    # Calculate solar panel estimate
+    estimate = calculate_solar_panel_estimate(property_size, location, electricity_consumption, roof_orientation, roof_type, shading, budget, installation_timeline)
     
-    text = "ROI: 6 months, Cost: 750 BD, Solar Panels: 8."
+    # Construct response text
+    text = f"ROI: {estimate['roi']} months, Cost: {estimate['cost']} BD, Solar Panels: {estimate['total_panels']}."
 
     message = {
         'contentType': 'PlainText',
@@ -79,6 +144,7 @@ def GetSolarPanelInstallationEstimateIntent(intent_request):
     fulfillment_State ="Fulfilled"
     # Return the calculated estimate
     return close(intent_request, session_attributes, fulfillment_State, message)
+
 
 def WelcomeIntent(intent_request):
     # Retrieve session attributes

@@ -447,10 +447,6 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
                                     value: "East"
                                  },
                                  { 
-                                    text: "West",
-                                    value: "West"
-                                 },
-                                 { 
                                     text: "Multiple directions",
                                     value: "Multiple directions"
                                  },
@@ -486,6 +482,10 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
                                     value: "Sloped"
                                  },
                                  { 
+                                    text: "Metal",
+                                    value: "Metal"
+                                 },
+                                 { 
                                     text: "Tile",
                                     value: "Tile"
                                  },
@@ -495,7 +495,7 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
                                  },
                               ],
                               imageUrl: "https://husain-s3-for-artifacts.s3.amazonaws.com/2270785dde37f5988ec612a8a074d0e8",
-                              subtitle: "What type of roof do you have? Is it flat, sloped, metal, tile, or asphalt?",
+                              subtitle: "What type of roof do you have? Is it flat, sloped, metal, tile, asphalt, or something else?",
                               title: "Roof Type"
                            },
                         },
@@ -555,15 +555,15 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
                               buttons: [ 
                                  { 
                                     text: "Low-cost",
-                                    value: "Low-cost"
+                                    value: "Low"
                                  },
                                  { 
                                     text: "Medium-cost",
-                                    value: "Medium-cost"
+                                    value: "Medium"
                                  },
                                  { 
                                     text: "High-cost",
-                                    value: "High-cost"
+                                    value: "High"
                                  },
                               ],
                               imageUrl: "https://softmediadevelopment.s3.amazonaws.com/assets/css/helper/img/payment/cash-border.png",
@@ -594,11 +594,11 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
                                  },
                                  { 
                                     text: "Within 3 months",
-                                    value: "Within 3 months"
+                                    value: "3 months"
                                  },
                                  { 
                                     text: "Within 6 months",
-                                    value: "Within 6 months"
+                                    value: "6 months"
                                  },   
                               ],
                               imageUrl: "https://tempdev.s3.amazonaws.com/assets/bower_components/Ionicons/png/512/ios7-time-outline.png",
