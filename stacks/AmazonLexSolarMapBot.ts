@@ -334,16 +334,16 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
                            imageResponseCard: { 
                               buttons: [ 
                                  { 
-                                    text: "small",
-                                    value: "small"
+                                    text: "Small",
+                                    value: "Small"
                                  },
                                  { 
-                                    text: "medium",
-                                    value: "medium"
+                                    text: "Medium",
+                                    value: "Medium"
                                  },
                                  { 
-                                    text: "large",
-                                    value: "large"
+                                    text: "Large",
+                                    value: "Large"
                                  },
                               ],
                               imageUrl: "https://devs.s3.amazonaws.com/biosphere-reserve-apartments-elviria/A4_La_Floresta_sur_Exterior_property_for_sale2_jun16.jpg",
@@ -369,20 +369,16 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
                            imageResponseCard: { 
                               buttons: [ 
                                  { 
-                                    text: "city center",
-                                    value: "city center"
+                                    text: "City center",
+                                    value: "City center"
                                  },
                                  { 
-                                    text: "suburb",
-                                    value: "suburb"
+                                    text: "Suburb",
+                                    value: "Suburb"
                                  },
                                  { 
-                                    text: "large",
-                                    value: "large"
-                                 },
-                                 { 
-                                    text: "rural area",
-                                    value: "rural area"
+                                    text: "Rural area",
+                                    value: "Rural area"
                                  },
                               ],
                               imageUrl: "https://tempdev.s3.amazonaws.com/assets/bower_components/Ionicons/png/512/ios7-location.png",
@@ -408,16 +404,16 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
                            imageResponseCard: { 
                               buttons: [ 
                                  { 
-                                    text: "low",
-                                    value: "low"
+                                    text: "Low",
+                                    value: "Low"
                                  },
                                  { 
-                                    text: "medium",
-                                    value: "medium"
+                                    text: "Medium",
+                                    value: "Medium"
                                  },
                                  { 
-                                    text: "high",
-                                    value: "high"
+                                    text: "High",
+                                    value: "High"
                                  },
                               ],
                               imageUrl: "https://tempdev.s3.amazonaws.com/assets/bower_components/Ionicons/png/512/ios7-bolt.png",
@@ -443,20 +439,20 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
                            imageResponseCard: { 
                               buttons: [ 
                                  { 
-                                    text: "south",
-                                    value: "south"
+                                    text: "South",
+                                    value: "South"
                                  },
                                  { 
-                                    text: "east",
-                                    value: "east"
+                                    text: "East",
+                                    value: "East"
                                  },
                                  { 
-                                    text: "west",
-                                    value: "west"
+                                    text: "West",
+                                    value: "West"
                                  },
                                  { 
-                                    text: "multiple directions",
-                                    value: "multiple directions"
+                                    text: "Multiple directions",
+                                    value: "Multiple directions"
                                  },
                               ],
                               imageUrl: "https://devs.s3.amazonaws.com/new-villas-build-estepona/Roof-terrace-1.jpg",
@@ -482,20 +478,20 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
                            imageResponseCard: { 
                               buttons: [ 
                                  { 
-                                    text: "flat",
-                                    value: "flat"
+                                    text: "Flat",
+                                    value: "Flat"
                                  },
                                  { 
-                                    text: "sloped",
-                                    value: "sloped"
+                                    text: "Sloped",
+                                    value: "Sloped"
                                  },
                                  { 
-                                    text: "tile",
-                                    value: "tile"
+                                    text: "Tile",
+                                    value: "Tile"
                                  },
                                  { 
-                                    text: "asphalt",
-                                    value: "asphalt"
+                                    text: "Asphalt",
+                                    value: "Asphalt"
                                  },
                               ],
                               imageUrl: "https://husain-s3-for-artifacts.s3.amazonaws.com/2270785dde37f5988ec612a8a074d0e8",
@@ -522,16 +518,16 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
                            imageResponseCard: { 
                               buttons: [ 
                                  { 
-                                    text: "low",
-                                    value: "low"
+                                    text: "Low",
+                                    value: "Low"
                                  },
                                  { 
-                                    text: "medium",
-                                    value: "medium"
+                                    text: "Medium",
+                                    value: "Medium"
                                  },
                                  { 
-                                    text: "high",
-                                    value: "high"
+                                    text: "High",
+                                    value: "High"
                                  },
                               ],
                               imageUrl: "https://1ae.s3.amazonaws.com/Scotland%20Images/Sunlight%20on%20Scottish%20Farmhouse.JPG",
@@ -558,16 +554,16 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
                            imageResponseCard: { 
                               buttons: [ 
                                  { 
-                                    text: "low-cost",
-                                    value: "low-cost"
+                                    text: "Low-cost",
+                                    value: "Low-cost"
                                  },
                                  { 
-                                    text: "medium-cost",
-                                    value: "medium-cost"
+                                    text: "Medium-cost",
+                                    value: "Medium-cost"
                                  },
                                  { 
-                                    text: "high-cost",
-                                    value: "high-cost"
+                                    text: "High-cost",
+                                    value: "High-cost"
                                  },
                               ],
                               imageUrl: "https://softmediadevelopment.s3.amazonaws.com/assets/css/helper/img/payment/cash-border.png",
@@ -597,12 +593,12 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
                                     value: "ASAP"
                                  },
                                  { 
-                                    text: "within 3 months",
-                                    value: "within 3 months"
+                                    text: "Within 3 months",
+                                    value: "Within 3 months"
                                  },
                                  { 
-                                    text: "within 6 months",
-                                    value: "within 6 months"
+                                    text: "Within 6 months",
+                                    value: "Within 6 months"
                                  },   
                               ],
                               imageUrl: "https://tempdev.s3.amazonaws.com/assets/bower_components/Ionicons/png/512/ios7-time-outline.png",
