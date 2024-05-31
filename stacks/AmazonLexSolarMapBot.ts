@@ -15,9 +15,7 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
     const amazonLexSolarMapFulfillment = use(AmazonLexSolarMapFulfillment);
     const fulfillmentFunction = amazonLexSolarMapFulfillment.fulfillmentFunction;
     
-    // https://buckets.grayhatwarfare.com/
-
-    // Setup our custom resource from the AWS Serverless Application Repo.
+    // Setting up the custom resource from the AWS Serverless Application Repo.
     // Application link: https://serverlessrepo.aws.amazon.com/applications/us-east-1/777566285978/lex-v2-cfn-cr
     const provider = new LexCustomResource(
         stack,
@@ -28,9 +26,7 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
         }
     );
 
-    // The LexBotDefinition class is our main entry point to Lex bot creation.
-    // Once we're happy with our bot definition, call `botDefinition.build()` to
-    // generate the resource.
+    // The LexBotDefinition class is the main entry point to Lex bot creation.
     const botDefinition = new LexBotDefinition(
         stack,
         'SolarMapBot',
@@ -47,6 +43,7 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
     );
 
     // Add a language for our bot to which we can add intents/slots and slot types.
+
     const locale = botDefinition.addLocale({
         localeId: 'en_US',
         nluIntentConfidenceThreshold: 0.40,
@@ -56,7 +53,7 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
     });
 
 
-    /////////////////////////////////////////////////Welcome Intent/////////////////////////////////////////////////
+    // Welcome Intent
 
     locale.addSlotType({
         slotTypeName: 'SolarMapSlot',
@@ -173,7 +170,7 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
 
 
 
-    /////////////////////////////////////////////////Calculation Intent/////////////////////////////////////////////////
+    // Calculation Intent
 
     locale.addSlotType({
         slotTypeName: 'ElectricityConsumptionSlot',
