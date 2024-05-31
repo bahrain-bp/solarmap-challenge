@@ -103,7 +103,7 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
                     {
                         message: {
                             plainTextMessage: {
-                                value: 'Okay, your selected category is "{SolarMapSlot}", please confirm.',
+                                value: 'Okay, your selected category is "{SolarMapSlot}", please type "Confirm".',
                             },
                         },
                     },
