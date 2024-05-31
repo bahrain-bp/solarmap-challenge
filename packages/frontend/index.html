@@ -62,6 +62,31 @@
 <body>
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
+  <script src="https://d39f5gozic56r7.cloudfront.net/lex-web-ui-loader.min.js"></script>
+  <script>
+    var loaderOpts = {
+      baseUrl: 'https://d39f5gozic56r7.cloudfront.net/',
+      shouldLoadMinDeps: true
+    };
+    var loader = new ChatBotUiLoader.IframeLoader(loaderOpts);
+    var chatbotUiConfig = {
+        ui: {
+          parentOrigin: "https://dtehlozh63tbl.cloudfront.net",
+          parentOrigin: "http://localhost:5173",
+          parentOrigin: window.location.origin,
+        }
+            /* Example of setting session attributes on parent page
+            lex: {
+              sessionAttributes: {
+                userAgent: navigator.userAgent,
+                QNAClientFilter: ''
+              }
+            }
+            */
+          };
+    loader.load(chatbotUiConfig)
+      .catch(function (error) { console.error(error); });
+  </script>
 </body>
 
 </html>

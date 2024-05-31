@@ -13,6 +13,13 @@ import { createMapLibreGlMapController } from "@maptiler/geocoding-control/mapli
 import "@maptiler/geocoding-control/style.css";
 import 'maplibre-gl/dist/maplibre-gl.css';
 
+// @ts-ignore
+MapboxDraw.constants.classes.CONTROL_BASE = "maplibregl-ctrl";
+// @ts-ignore
+MapboxDraw.constants.classes.CONTROL_PREFIX = "maplibregl-ctrl-";
+// @ts-ignore
+MapboxDraw.constants.classes.CONTROL_GROUP = "maplibregl-ctrl-group";
+
 // Define coordinates array here
 let coordinates = [
   [
