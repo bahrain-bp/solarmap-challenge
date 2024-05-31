@@ -92,6 +92,11 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
             { utterance: 'Next'},
             { utterance: 'Again'},
             { utterance: 'Help'},
+            { utterance: 'Providers'},
+            { utterance: 'Calculation'},
+            { utterance: 'Data & Privacy'},
+            { utterance: 'Process'},
+            { utterance: 'About'},
         ],
         fulfillmentCodeHook: {
             enabled: true,
@@ -210,7 +215,7 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
         slotTypeValues: [
             { sampleValue: { value: 'ASAP' } },
             { sampleValue: { value: '3 months' } },
-            { sampleValue: { value: 'Anything' } },
+            { sampleValue: { value: '6 months' } },
             { sampleValue: { value: 'Flexible' } },
         ],
     });
