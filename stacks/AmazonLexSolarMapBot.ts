@@ -29,7 +29,7 @@ export function AmazonLexSolarMapBot({ stack }: StackContext) {
     // The LexBotDefinition class is the main entry point to Lex bot creation.
     const botDefinition = new LexBotDefinition(
         stack,
-        'SolarMapBot',
+        'Lex',
         provider.serviceToken(),
         {
             botName: stack.stackName + '-SolarMapBot',
