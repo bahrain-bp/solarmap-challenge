@@ -28,13 +28,16 @@ def lambda_handler(event, context):
 
             # Decode image to binary and convert to RGBA
             image = Image.open(io.BytesIO(image_body)).convert("RGBA")
+            
+            # Resize the image to 640x640 pixels
+            # image = image.resize((640, 640))
 
             # Create a transparent overlay
             overlay = Image.new("RGBA", image.size, (0, 0, 0, 0))
             draw = ImageDraw.Draw(overlay)
 
             model = inference.get_model("satellite-map/5")
-            response = model.infer(image=base64.b64encode(image_body).decode('utf-8'))
+            response = model.infer(image=base64.b64encode(image_body).decode('utf-8'), confidence=0.0, iou_threshold=0.0)
 
             print("Model Response: ", response)
 
@@ -42,9 +45,10 @@ def lambda_handler(event, context):
                 for res in response:
                     if res.predictions:
                         for prediction in res.predictions:
-                            points = [(point.x, point.y) for point in prediction.points]
-                            # Draw the mask with transparency
-                            draw.polygon(points, outline=(255, 0, 0, 255), fill=(0, 0, 255, 128))  # Fill with semi-transparent blue
+                            if len(prediction.points) >= 2:  # Ensure there are enough points to form a polygon
+                                points = [(point.x, point.y) for point in prediction.points]
+                                # Draw the mask with very light transparency
+                                draw.polygon(points, outline=(255, 0, 0, 255), fill=(0, 0, 255, 50))  # Reduced alpha to 50 for more transparency
 
                 # Combine the original image with the overlay
                 combined = Image.alpha_composite(image, overlay).convert("RGB")
@@ -71,4 +75,3 @@ def lambda_handler(event, context):
         'statusCode': 400,
         'body': json.dumps({'message': "No records found in the event"})
     }
-
