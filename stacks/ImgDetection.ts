@@ -83,6 +83,7 @@ const queue = new Queue(stack, "rooftopQueue", {
                 type: "queue",
                 queue: queue,
                 events: ["object_created"],
+                filters: [{ prefix: "uploads/" }],
             }
         }
     });

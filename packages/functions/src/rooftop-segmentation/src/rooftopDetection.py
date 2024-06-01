@@ -58,6 +58,7 @@ def lambda_handler(event, context):
                 combined.save(annotated_image_binary, format='JPEG')
                 annotated_image_binary.seek(0)
 
+                # Upload the image to S3 after processing is complete
                 s3.upload_fileobj(annotated_image_binary, bucket_name, "annotated_frames/" + object_key.split("/")[-1])
 
                 return {
