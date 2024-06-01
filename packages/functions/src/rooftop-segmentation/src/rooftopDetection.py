@@ -9,6 +9,39 @@ import io
 # Create an S3 client
 s3 = boto3.client('s3')
 
+def calculate_polygon_area(points):
+    """
+    Calculate the area of a polygon using the Shoelace formula.
+    """
+    if len(points) < 3:  # Not a polygon
+        return 0
+
+    x = np.array([p[0] for p in points])
+    y = np.array([p[1] for p in points])
+
+    # Shoelace formula
+    area = 0.5 * np.abs(np.dot(x, np.roll(y, 1)) - np.dot(y, np.roll(x, 1)))
+    return area
+
+def convert_pixel_area_to_m2(pixel_area, image_size, real_world_area):
+    """
+    Convert the area in pixels to the area in square meters.
+    image_size: (width, height) of the image in pixels
+    real_world_area: (width, height) of the real-world area corresponding to the image
+    """
+    image_width, image_height = image_size
+    real_width, real_height = real_world_area
+
+    # Calculate the area of the image in square meters
+    real_image_area_m2 = real_width * real_height
+
+    # Calculate the area of a single pixel in square meters
+    pixel_area_m2 = real_image_area_m2 / (image_width * image_height)
+
+    # Convert the pixel area to square meters
+    area_m2 = pixel_area * pixel_area_m2
+    return area_m2
+
 def lambda_handler(event, context):
     print(event)
     if 'Records' in event and len(event['Records']) > 0:
@@ -49,6 +82,13 @@ def lambda_handler(event, context):
                                 points = [(point.x, point.y) for point in prediction.points]
                                 # Draw the mask with very light transparency
                                 draw.polygon(points, outline=(255, 0, 0, 255), fill=(0, 0, 255, 50))  # Reduced alpha to 50 for more transparency
+
+                                # Calculate the area of the polygon
+                                pixel_area = calculate_polygon_area(points)
+                                # Assuming real_world_area is known (for example, 100m x 100m)
+                                real_world_area = (100, 100)
+                                area_m2 = convert_pixel_area_to_m2(pixel_area, image.size, real_world_area)
+                                print(f"Area of shaded segmentation: {area_m2:.2f} square meters")
 
                 # Combine the original image with the overlay
                 combined = Image.alpha_composite(image, overlay).convert("RGB")
