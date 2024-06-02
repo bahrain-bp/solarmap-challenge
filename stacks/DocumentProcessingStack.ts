@@ -2,15 +2,18 @@ import { Function, Bucket, Queue, StackContext, use } from "sst/constructs";
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { DBStack } from "./DBStack";
 import { Duration } from "aws-cdk-lib";
+import { WebSocketStack } from "./WebSocketStack";
+
 
 export function DocumentProcessingStack({ stack }: StackContext) {
-
+    
+    const { table } = use(WebSocketStack);
     const { db } = use(DBStack);
     
     const filterFunction = new Function(stack, "filterFunction", { handler: "packages/functions/src/filter-pdf-lambda.handler",
     timeout: "120 seconds", memorySize: 256, retryAttempts: 0, /*runtime: "python3.11"*/});
 
-    filterFunction.bind([db]);
+    filterFunction.bind([db, table]);
     
     const filterQueue = new Queue(stack, "Filter-Queue", {
         consumer: filterFunction,

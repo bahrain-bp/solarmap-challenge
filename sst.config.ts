@@ -40,10 +40,12 @@ export default {
     else {
       app.stack(DBStack)
       .stack(AuthStack)
+      .stack(WebSocketStack)
       .stack(DocumentProcessingStack) // Initialize "DocumentProcessingStack" stack before "ApiStack" stack (Dependency)
+      
       .stack(ImgDetection)
 
-      .stack(WebSocketStack)
+
 
       // .stack(AmazonLexSolarMapFulfillment)
       // .stack(AmazonLexSolarMapBot, {
