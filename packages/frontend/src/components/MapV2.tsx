@@ -4,7 +4,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Feature, Polygon } from 'geojson';
 import maplibregl from 'maplibre-gl';
 import React, { useEffect, useRef, useState } from 'react';
-// import SolarPanelCalculator from './SolarPanelCalculator';
 
 // @ts-ignore
 MapboxDraw.constants.classes.CONTROL_BASE = "maplibregl-ctrl";
@@ -14,15 +13,7 @@ MapboxDraw.constants.classes.CONTROL_PREFIX = "maplibregl-ctrl-";
 MapboxDraw.constants.classes.CONTROL_GROUP = "maplibregl-ctrl-group";
 
 // Define coordinates array here
-let coordinates = [
-  [
-    [0, 0], // Placeholder coordinates
-    [0, 0],
-    [0, 0],
-    [0, 0],
-    [0, 0] // closing the polygon to bottom left
-  ]
-];
+let coordinates: [number, number][][] = [];
 
 interface MapV2Props {
   identityPoolId: string;
@@ -36,7 +27,6 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
   const [errorMessage, setErrorMessage] = useState<string>('');
   const mapRef = useRef<maplibregl.Map | null>(null);
   const [boxSize, setBoxSize] = useState<number>(0.001);  // Initial size of the box in degrees
-
 
   useEffect(() => {
     const initializeMap = async () => {
@@ -60,13 +50,13 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
 
         mapRef.current.getCanvas().className = 'mapboxgl-canvas maplibregl-canvas';
         mapRef.current.getContainer().classList.add('mapboxgl-map');
-const canvasContainer = mapRef.current.getCanvasContainer();
-canvasContainer.classList.add('mapboxgl-canvas-container');
-if (canvasContainer.classList.contains('maplibregl-interactive')) {
-  canvasContainer.classList.add('mapboxgl-interactive');
-}
+        const canvasContainer = mapRef.current.getCanvasContainer();
+        canvasContainer.classList.add('mapboxgl-canvas-container');
+        if (canvasContainer.classList.contains('maplibregl-interactive')) {
+          canvasContainer.classList.add('mapboxgl-interactive');
+        }
+
         mapRef.current.on('load', () => {
-          // Insert the layer beneath any symbol layer.
           mapRef.current?.addSource('openmaptiles', {
             url: `https://api.maptiler.com/tiles/v3/tiles.json?key=UGho1CzUl0HDsQMTTKJ0`,
             type: 'vector',
@@ -101,7 +91,7 @@ if (canvasContainer.classList.contains('maplibregl-interactive')) {
               }
             },
           );
-          // Add geolocate control to the map.
+
           mapRef.current?.addControl(
             new maplibregl.GeolocateControl({
               positionOptions: {
@@ -109,13 +99,13 @@ if (canvasContainer.classList.contains('maplibregl-interactive')) {
               },
               trackUserLocation: true
             }),
-            'top-left', // Positioning the control at the top left
+            'top-left',
           );
+
           const draw = new MapboxDraw({
             displayControlsDefault: false,
             controls: {
-              point: true, // Enable only point drawing
-              // trash: true
+              point: true,
             }
           });
 
@@ -128,12 +118,12 @@ if (canvasContainer.classList.contains('maplibregl-interactive')) {
               const coordinates = feature.geometry.coordinates;
               setFeatureCoordinates([coordinates]);
               drawBoxAroundPoint(coordinates);
-              setIsModalVisible(true); // Show modal after drawing the box
+              setIsModalVisible(true);
 
               mapRef.current?.flyTo({
                 center: coordinates,
-                zoom: 17, // Set the desired zoom level here
-                essential: true // This ensures the transition is not interrupted
+                zoom: 17,
+                essential: true
               });
 
             }
@@ -160,10 +150,7 @@ if (canvasContainer.classList.contains('maplibregl-interactive')) {
         mapRef.current.remove();
       }
     };
-  }, [identityPoolId, mapName]); // Effect dependencies
-
-
-
+  }, [identityPoolId, mapName]);
 
   const styleMapControls = () => {
     const buttons = document.querySelectorAll(
@@ -178,27 +165,26 @@ if (canvasContainer.classList.contains('maplibregl-interactive')) {
       (button as HTMLElement).style.display = "flex";
       (button as HTMLElement).style.justifyContent = "center";
       (button as HTMLElement).style.alignItems = "center";
-      });
-    };
+    });
+  };
 
-    useEffect(() => {
-      styleMapControls();
-  
-      if (mapRef.current) {
-        mapRef.current.on("draw.create", styleMapControls);
-      }
-    }, [drawControl]);
+  useEffect(() => {
+    styleMapControls();
 
+    if (mapRef.current) {
+      mapRef.current.on("draw.create", styleMapControls);
+    }
+  }, [drawControl]);
 
   const drawBoxAroundPoint = (center: number[], size: number = boxSize) => {
     const [lng, lat] = center;
     coordinates = [
       [
-        [lng - size, lat - size], // bottom left
-        [lng + size, lat - size], // bottom right
-        [lng + size, lat + size], // top right
-        [lng - size, lat + size], // top left
-        [lng - size, lat - size]  // closing the polygon to bottom left
+        [lng - size, lat - size],
+        [lng + size, lat - size],
+        [lng + size, lat + size],
+        [lng - size, lat + size],
+        [lng - size, lat - size]
       ]
     ];
 
@@ -230,25 +216,6 @@ if (canvasContainer.classList.contains('maplibregl-interactive')) {
             'fill-opacity': 0.4
           }
         });
-
-
-        /*
-
-        // Load an image to use as the pattern
-        const image = mapRef.current.loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/64px-Cat_silhouette.svg.png');
-        // Declare the image
-        mapRef.current.addImage('pattern', (await image).data);
-
-                // Use it
-                mapRef.current?.addLayer({
-                  'id': 'pattern-layer',
-                  'type': 'fill',
-                  'source': 'box-source',
-                  'paint': {
-                      'fill-pattern': 'pattern'
-                  }
-              });
-              */
       }
     }
   };
@@ -291,8 +258,7 @@ if (canvasContainer.classList.contains('maplibregl-interactive')) {
 
   const handleSubmit = () => {
     setIsModalVisible(false);
-    // Hide or remove the draw control and any drawn features before capturing the image
-    // Temporarily remove the 3D buildings layer
+
     if (mapRef.current?.getLayer('3d-buildings')) {
       mapRef.current.removeLayer('3d-buildings');
       mapRef.current.removeSource('openmaptiles');
@@ -313,14 +279,12 @@ if (canvasContainer.classList.contains('maplibregl-interactive')) {
         return;
       }
 
-      // Calculate bounding box in pixel coordinates on the canvas
       const bounds = coordinates[0].map(coord => mapRef.current!.project(new maplibregl.LngLat(coord[0], coord[1])));
       const minX = Math.min(...bounds.map(b => b.x));
       const maxX = Math.max(...bounds.map(b => b.x));
       const minY = Math.min(...bounds.map(b => b.y));
       const maxY = Math.max(...bounds.map(b => b.y));
 
-      // Create a new canvas to draw the cropped image
       const width = maxX - minX;
       const height = maxY - minY;
       const croppedCanvas = document.createElement('canvas');
@@ -328,11 +292,14 @@ if (canvasContainer.classList.contains('maplibregl-interactive')) {
       croppedCanvas.height = height;
       const ctx = croppedCanvas.getContext('2d');
 
-      // Draw the cropped area onto the new canvas
-      ctx!.drawImage(canvas, minX, minY, width, height, 0, 0, width, height);
+      const sx = Math.floor(minX);
+      const sy = Math.floor(minY);
+      const sWidth = Math.ceil(width);
+      const sHeight = Math.ceil(height);
+
+      ctx!.drawImage(canvas, sx, sy, sWidth, sHeight, 0, 0, sWidth, sHeight);
       const dataUrl = croppedCanvas.toDataURL('image/png');
 
-      // Convert the data URL to a Blob and save it
       const byteString = atob(dataUrl.split(',')[1]);
       const mimeString = dataUrl.split(',')[0].split(':')[1].split(';')[0];
       const ab = new ArrayBuffer(byteString.length);
@@ -342,31 +309,18 @@ if (canvasContainer.classList.contains('maplibregl-interactive')) {
       }
       const blob = new Blob([ab], { type: mimeString });
 
-
-
       console.log('blob:', blob);
       console.log('mime:', mimeString);
 
-
-      // Save the Blob locally
-      // const link = document.createElement('a');
-      // link.href = window.URL.createObjectURL(blob);
-      // link.download = 'cropped_map.png'; // Update the file name
-      // link.click();
-
-
-
-      // Assuming `dataUrl` is your image encoded as a data URL
       fetch(dataUrl)
         .then(res => res.blob())
         .then(blob => {
           const formData = new FormData();
           formData.append('file', blob, 'cropped_map.png');
 
-          // POST request to the server
-          fetch(import.meta.env.VITE_API_URL + '/detectionUpload', { // Assuming the endpoint is relative
+          fetch(import.meta.env.VITE_API_URL + '/detectionUpload', {
             method: 'POST',
-            body: formData,  // Sending as FormData, not JSON
+            body: formData,
           })
             .then(response => response.json())
             .then(data => {
@@ -377,15 +331,9 @@ if (canvasContainer.classList.contains('maplibregl-interactive')) {
             });
         });
 
-
-
-
-      // Optionally re-add removed elements if needed
       reAddDrawControl();
       reAddBoxLayer();
-      // Re-add 3D buildings layer if it was previously visible
       if (!mapRef.current?.getLayer('3d-buildings')) {
-        // Add 3D buildings layer back to the map
         mapRef.current?.addSource('openmaptiles', {
           url: `https://api.maptiler.com/tiles/v3/tiles.json?key=UGho1CzUl0HDsQMTTKJ0`,
           type: 'vector',
@@ -421,8 +369,6 @@ if (canvasContainer.classList.contains('maplibregl-interactive')) {
     });
   };
 
-
-
   const handleReset = () => {
     if (drawControl) {
       drawControl.deleteAll();
@@ -441,7 +387,7 @@ if (canvasContainer.classList.contains('maplibregl-interactive')) {
     <>
       {isModalVisible && featureCoordinates && (
         <div className="modal show" role="dialog" style={{ display: 'block', position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 1050 }}>
-          <div className="modal-dialog" role="document" style={{ width: '300px' }}> {/* Smaller width */}
+          <div className="modal-dialog" role="document" style={{ width: '300px' }}>
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Is your property within these bounds?</h5>
@@ -450,7 +396,6 @@ if (canvasContainer.classList.contains('maplibregl-interactive')) {
                 </button>
               </div>
               <div className="modal-body" style={{ padding: '10px' }}>
-                {/* <p>Please confirm if your property is within the drawn box.</p> */}
                 <label>Adjust box size:</label>
                 <input
                   type="range"
@@ -465,7 +410,6 @@ if (canvasContainer.classList.contains('maplibregl-interactive')) {
                       drawBoxAroundPoint(featureCoordinates[0], newSize);
                     }
                   }}
-
                   style={{ width: '100%' }}
                 />
               </div>
@@ -480,7 +424,6 @@ if (canvasContainer.classList.contains('maplibregl-interactive')) {
       )}
 
       <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
-        {/* <SolarPanelCalculator /> */}
         <div id="map" style={{ width: '100%', height: '100%' }}>
           {errorMessage && (
             <div style={{ color: 'red', position: 'absolute', top: '10px', left: '10px' }}>{errorMessage}</div>
@@ -493,4 +436,3 @@ if (canvasContainer.classList.contains('maplibregl-interactive')) {
 };
 
 export default MapV2;
-
