@@ -15,6 +15,7 @@ interface UnsubscribeFormProps {
 const UnsubscribeForm: React.FC<UnsubscribeFormProps> = ({ open, onClose }) => {
   const [phone, setPhone] = useState('');
   const [message, setMessage] = useState<string | null>(null);
+  const [messageSeverity, setMessageSeverity] = useState<'success' | 'error' | 'info' | 'warning'>('info');
   const [loading, setLoading] = useState(false);
 
   const handlePhoneChange = (value: string) => {
@@ -24,6 +25,7 @@ const UnsubscribeForm: React.FC<UnsubscribeFormProps> = ({ open, onClose }) => {
   const handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
+    setMessage(null);
 
     try {
       const response = await fetch(`${API_BASE_URL}/unsubscribe`, {
@@ -38,11 +40,14 @@ const UnsubscribeForm: React.FC<UnsubscribeFormProps> = ({ open, onClose }) => {
 
       if (response.ok) {
         setMessage(result.message);
+        setMessageSeverity('success');
       } else {
-        setMessage(result.error || 'Failed to unsubscribe.');
+        setMessage(result.message || result.error || 'Failed to unsubscribe.');
+        setMessageSeverity('error');
       }
     } catch (error) {
       setMessage('Network error, please try again later.');
+      setMessageSeverity('error');
     } finally {
       setLoading(false);
     }
@@ -82,14 +87,14 @@ const UnsubscribeForm: React.FC<UnsubscribeFormProps> = ({ open, onClose }) => {
             disabled: loading,
           }}
         />
-        <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2,  mb: 2}} disabled={loading}>
+        <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2, mb: 2 }} disabled={loading}>
           {loading ? <CircularProgress size={24} /> : 'Unsubscribe'}
         </Button>
         <Button variant="outlined" color="secondary" onClick={onClose} fullWidth>
           Cancel
         </Button>
         {message && (
-          <Alert severity="error" sx={{ mt: 2 }}>
+          <Alert severity={messageSeverity} sx={{ mt: 2 }}>
             {message}
           </Alert>
         )}

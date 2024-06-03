@@ -22,13 +22,12 @@ export const handler: APIGatewayProxyHandler = async (event) => {
 
   try {
     const body: CreateUserEvent = JSON.parse(event.body || '{}');
-
     const { email, temporaryPassword, firstName, lastName } = body;
 
-    // Create user and send welcome email
+    // Create user and send welcome email with temporary password
     const createUserCommand = new AdminCreateUserCommand({
       UserPoolId: userPoolId,
-      Username: email,  // Username should be the email
+      Username: email,
       TemporaryPassword: temporaryPassword,
       UserAttributes: [
         { Name: 'email', Value: email },
@@ -39,17 +38,6 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     });
 
     await client.send(createUserCommand);
-
-    // Optionally, trigger the email verification if not already triggered
-    const verifyUserCommand = new AdminUpdateUserAttributesCommand({
-      UserPoolId: userPoolId,
-      Username: email,
-      UserAttributes: [
-        { Name: 'email_verified', Value: 'false' },
-      ],
-    });
-
-    await client.send(verifyUserCommand);
 
     return {
       statusCode: 200,
