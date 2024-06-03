@@ -5,7 +5,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import NavBar from './components/NavBar';
 import Home from './pages/Homepage/Home';
 import About from './pages/About';
-import Providers from './pages/Provider';
+import Providers from './pages/Providers/Provider';
 import DocumentUpload from './pages/DocumentUpload';
 import EducationalResources from './pages/EduResources/EduResources';
 import Footer from './components/Footer';
@@ -17,10 +17,10 @@ import Privacy from './pages/Privacy';
 import DocumentsDashboard from './pages/DocumentsDashboard';
 import DeleteEducationalResources from './pages/deleteEduResource';
 import AddEducationalResource from './pages/EduResources/addEduResource';
-import AddConsultants from './pages/addConsultants';
-import DeleteConsulantant from './pages/deleteConsultant';
-import AddContractor from './pages/addContractor';
-import DeleteContractor from './pages/deleteContractor';
+//import AddConsultants from './pages/Providers/addConsultants';
+import DeleteConsulantant from './pages/Providers/deleteConsultant';
+//import AddContractor from './pages/Providers/addContractor';
+import DeleteContractor from './pages/Providers/deleteContractor';
 import Reports from './pages/Reports';
 import CalculationReccomendation from './components/CalculationRec';
 import CalcUsageStats from './components/CalculatorUsageStats';
@@ -30,7 +30,7 @@ import { Authenticator } from './modules/Authenticator';
 import { getCurrentUser, signOut } from 'aws-amplify/auth';
 import '@aws-amplify/ui-react/styles.css';
 import { Hub } from 'aws-amplify/utils';
-import Chatbot from './components/AmazonLexSolarMapChatbot';
+// import Chatbot from './components/AmazonLexSolarMapChatbot';
 import Inquiry from './pages/Inquiry';
 import AdminMap from './pages/AdminMap';
 import ErrorView from './pages/Error/ErrorView';
@@ -114,8 +114,8 @@ function App() {
       <Route path="/addEduResource" element={<AddEducationalResource onClose={function (): void {
         throw new Error('Function not implemented.');
       } } />} />
-      <Route path="/addConsultants" element={<AddConsultants />} />
-      <Route path="/addContractor" element={<AddContractor />} />
+      {/* <Route path="/addConsultants" element={<AddConsultants />} />
+      <Route path="/addContractor" element={<AddContractor />} /> */}
       <Route path="/deleteConsultant" element={<DeleteConsulantant />} />
       <Route path="/deleteContractor" element={<DeleteContractor />} />
       <Route path="/Reports" element={<Reports />} />
@@ -168,7 +168,7 @@ function App() {
             {isLoggedIn ? authRoutes : normRoutes}
           </Box>
           <Footer />
-          <Chatbot />
+          {/* <Chatbot /> */}
         </Box>
       </BrowserRouter>
     </ThemeProvider>

@@ -1,13 +1,13 @@
 // Import necessary constructs and stacks
-import { Api, StackContext, use } from "sst/constructs";
-import { DBStack } from "./DBStack";
 import { CacheHeaderBehavior, CachePolicy } from "aws-cdk-lib/aws-cloudfront";
-import { Duration } from "aws-cdk-lib/core";
-import { DocumentProcessingStack } from "./DocumentProcessingStack";
 import { PolicyStatement } from "aws-cdk-lib/aws-iam";
-import { ImgDetection } from "./ImgDetection";
-// import { AmazonLexSolarMapFulfillment } from "./AmazonLexSolarMapFulfillment";
+import { Duration } from "aws-cdk-lib/core";
+import { Api, StackContext, use } from "sst/constructs";
+import { AmazonLexSolarMapFulfillment } from "./AmazonLexSolarMapFulfillment";
+import { DBStack } from "./DBStack";
+import { DocumentProcessingStack } from "./DocumentProcessingStack";
 import { EmailAPIStack } from "./EmailAPIStack";
+import { ImgDetection } from "./ImgDetection";
 import { AuthStack } from "./AuthStack";
 import { WebSocketStack } from "./WebSocketStack";
 
@@ -25,8 +25,8 @@ export function ApiStack(context: StackContext) {
     const mapsBucket = imgDetection.bucket;
 
 
-    // const amazonLexSolarMapFulfillment = use(AmazonLexSolarMapFulfillment);
-    // const communicationFunction = amazonLexSolarMapFulfillment.communicationFunction;
+    const amazonLexSolarMapFulfillment = use(AmazonLexSolarMapFulfillment);
+    const communicationFunction = amazonLexSolarMapFulfillment.communicationFunction;
 
 
     // Call the EmailAPIStack function to get the email API
@@ -67,8 +67,7 @@ export function ApiStack(context: StackContext) {
             "GET /inquiry": "packages/functions/src/fetchInquiry.handler",
 
             "GET /testWebSocket": "packages/functions/src/testWebSocket.handler",
-
-
+          
             "PUT /resources/{resource_id}": "packages/functions/src/updateEduResources.handler",
             // Lambda function to send SNS SMS messages to subscribed users
             "POST /subscribe": "packages/functions/src/postSubscription.handler",
@@ -93,7 +92,7 @@ export function ApiStack(context: StackContext) {
                     })],
                 }
             },
-            
+
 
             // Define routes for document upload and image detection
             "POST /upload": {
@@ -120,11 +119,11 @@ export function ApiStack(context: StackContext) {
                     }
                 }
             },
-            // "GET /communicate": {
-            //     cdk: {
-            //         function: communicationFunction,
-            //     }
-            // },
+            "POST /communicate": {
+                cdk: {
+                    function: communicationFunction,
+                },
+            },
             // Sample Pyhton lambda function
             "GET /": {
                 function: {
@@ -151,7 +150,7 @@ export function ApiStack(context: StackContext) {
                     permissions: [new PolicyStatement({
                         actions: ['quicksight:*'],
                         resources: ['arn:aws:quicksight:*:*:namespace/default', 'arn:aws:quicksight:*:*:dashboard/60731b32-1883-450f-99e9-19af71b09054',
-                        'arn:aws:quicksight:us-east-1:211125369004:topic/xonhtgcNUZJP5UsUTL6RtKQPgpQmPIV5'
+                            'arn:aws:quicksight:us-east-1:211125369004:topic/xonhtgcNUZJP5UsUTL6RtKQPgpQmPIV5'
                         ],
 
                     })],

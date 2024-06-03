@@ -47,7 +47,7 @@ const AdminMapAnalytics = () => {
   const pointerLngLat = useRef<maplibregl.LngLat | null>(null);
 
   const location = { lng: 50.5860, lat: 26.15 };
-  const zoom = 10;
+  const zoom = 12;
   const selectedBuildingId = useRef<string | null>(null);
   const weatherData = useRef<WeatherData | null>(null);
   const showChart = useRef(true);
@@ -55,18 +55,25 @@ const AdminMapAnalytics = () => {
 
   const customColoramp = new maptilerweather.ColorRamp({
     stops: [
-      { value: 20, color: [254, 224, 144, 255] },
-      { value: 25, color: [253, 174, 97, 255] },
-      { value: 30, color: [244, 109, 67, 255] },
-      { value: 40, color: [215, 48, 39, 255] },
-      { value: 55, color: [165, 0, 38, 255] },
+      { value: -65, color: [49, 54, 149, 255] },
+          { value: -40, color: [69, 117, 180, 255] },
+          { value: -30, color: [116, 173, 209, 255] },
+          { value: -20, color: [171, 217, 233, 255] },
+          { value: -10, color: [224, 243, 248, 255] },
+          { value: 0, color: [255, 255, 255, 255] },
+          { value: 12, color: [255, 255, 191, 255] },
+          { value: 20, color: [254, 224, 144, 255] },
+          { value: 25, color: [253, 174, 97, 255] },
+          { value: 30, color: [244, 109, 67, 255] },
+          { value: 40, color: [215,48,39, 255] },
+          { value: 55, color: [165, 0, 38, 255] },
     ],
   });
 
-  let bound = new maplibregl.LngLatBounds(
-    new maplibregl.LngLat(50.3, 25.5357),
-    new maplibregl.LngLat(50.8120, 26.3870)
-  );
+  // let bound = new maplibregl.LngLatBounds(
+  //   new maplibregl.LngLat(50.3, 25.5357),
+  //   new maplibregl.LngLat(50.8120, 26.3870)
+  // );
 
   maptilersdk.config.apiKey = 'kezi9tzOQF1AmUYRwkVd';
 
@@ -148,7 +155,7 @@ const AdminMapAnalytics = () => {
       style: maptilersdk.MapStyle.BACKDROP,
       center: [location.lng, location.lat],
       zoom: zoom,
-      maxBounds: bound,
+      // maxBounds: bound,
     });
 
     mapInstance.current = mapItems;
