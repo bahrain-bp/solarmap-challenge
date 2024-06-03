@@ -298,7 +298,7 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
             .then(response => response.json())
             .then(data => {
               console.log('Success:', data);
-              navigate('/');  // Redirect to home page after success
+              navigate('/SegmentationResults');  // Redirect to home page after success
             })
             .catch(error => {
               console.error('Error:', error);
