@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { styled, useTheme } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
-import Link from '@mui/material/Link';
 import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -32,9 +31,8 @@ import FolderIcon from '@mui/icons-material/Folder';
 import MapIcon from '@mui/icons-material/Map';
 import ThermostatIcon from '@mui/icons-material/Thermostat';
 import StatsIcon from '@mui/icons-material/BarChart';
-import { LinkProps } from '@mui/material/Link';
 
-interface DrawerLinkProps extends LinkProps {
+interface DrawerLinkProps {
   active: boolean;
 }
 
@@ -53,31 +51,31 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   },
 }));
 
-const StyledLink = styled(Link)(({ theme }) => ({
+const StyledLink = styled(Button)(({ theme }) => ({
   color: theme.palette.common.white,
   marginLeft: theme.spacing(3),
   fontFamily: 'Quicksand, sans-serif',
+  textTransform: 'none', // Ensures text is not in all caps
   transition: 'background-color 0.3s ease-in-out, transform 0.3s ease',
   '&:hover, &.active': {
-    textDecoration: 'none',
     backgroundColor: theme.palette.primary.dark,
-    color: theme.palette.common.white, // Ensure the color remains white
+    color: theme.palette.common.white,
     borderRadius: theme.shape.borderRadius,
     padding: theme.spacing(1),
     marginRight: theme.spacing(1),
-    transform: 'scale(1.05)', // Scale up slightly on hover
+    transform: 'scale(1.05)',
   },
 }));
 
 const DropdownButton = styled(Button)(({ theme }) => ({
   color: theme.palette.common.white,
   marginLeft: theme.spacing(1),
-  textTransform: 'none',
+  textTransform: 'none', // Ensures text is not in all caps
   fontFamily: 'Quicksand, sans-serif',
   transition: 'background-color 0.3s, transform 0.3s ease',
   '&:hover, &.active': {
     backgroundColor: theme.palette.primary.dark,
-    transform: 'scale(1.05)', // Scale up slightly on hover
+    transform: 'scale(1.05)',
   },
 }));
 
@@ -85,9 +83,10 @@ const RightLink = styled(Button)(({ theme }) => ({
   color: theme.palette.common.white,
   borderColor: theme.palette.common.white,
   fontFamily: 'Quicksand, sans-serif',
+  textTransform: 'none', // Ensures text is not in all caps
   '&:hover': {
     backgroundColor: theme.palette.primary.dark,
-    transform: 'scale(1.05)', // Scale up slightly on hover
+    transform: 'scale(1.05)',
   },
 }));
 
@@ -98,20 +97,19 @@ const DrawerList = styled(List)(({ theme }) => ({
   fontFamily: 'Quicksand, sans-serif',
 }));
 
-const DrawerLink = styled(Link, {
-  shouldForwardProp: (prop) => prop !== 'active',
-})<DrawerLinkProps>(({ theme, active }) => ({
+const DrawerLink = styled(Box)<DrawerLinkProps>(({ theme, active }) => ({
   color: theme.palette.common.white,
   textDecoration: 'none',
-  backgroundColor: active ? theme.palette.primary.dark : 'transparent', // Highlight background if active
+  backgroundColor: active ? theme.palette.primary.dark : 'transparent',
   display: 'flex',
   alignItems: 'center',
+  padding: theme.spacing(1, 2),
   transition: 'background-color 0.3s ease-in-out, transform 0.3s ease',
+  cursor: 'pointer', // Ensure cursor shows as pointer
   '&:hover, &.active': {
-    textDecoration: 'none',
     backgroundColor: theme.palette.primary.dark,
     color: theme.palette.common.white,
-    transform: 'scale(1.05)', // Scale up slightly on hover
+    transform: 'scale(1.05)',
   },
 }));
 
@@ -126,7 +124,7 @@ const icons: { [key: string]: JSX.Element } = {
   'Admin Map': <MapIcon />,
   'Heat Map': <ThermostatIcon />,
   'Calculator Usage Stats': <StatsIcon />,
-  'User': <PeopleIcon />,
+  User: <PeopleIcon />,
   About: <InfoIcon />
 };
 
@@ -140,6 +138,7 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const location = useLocation();
+  const navigate = useNavigate();
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -183,7 +182,6 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
     setAdminAnchorEl(null);
   };
 
-  // Check if any menu item is active to style the parent dropdown
   const isDropdownActive = [
     '/DocumentUpload',
     '/MapV2',
@@ -203,211 +201,113 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
   const drawerContent = (
     <DrawerList>
       <ListItem>
-        <Link href="/" sx={{ width: '100%' }}>
-          <img
-            src={logo}
-            alt="Logo"
-            style={{ height: '55px', margin: theme.spacing(1) }}
-          />
-        </Link>
+        <img
+          src={logo}
+          alt="Logo"
+          style={{ height: '55px', margin: theme.spacing(1), cursor: 'pointer' }}
+          onClick={() => navigate('/')}
+        />
       </ListItem>
       <ListItem disablePadding>
-        <DrawerLink href="/" sx={{ width: '100%' }} active={isActive('/')}>
+        <DrawerLink active={isActive('/')} onClick={() => navigate('/')}>
           {icons.Home}
           <ListItemText primary="Home" sx={{ marginLeft: theme.spacing(1) }} />
         </DrawerLink>
       </ListItem>
       <ListItem disablePadding>
-        <DrawerLink
-          href="/Provider"
-          sx={{ width: '100%' }}
-          active={isActive('/Provider')}
-        >
+        <DrawerLink active={isActive('/Provider')} onClick={() => navigate('/Provider')}>
           {icons.Providers}
-          <ListItemText
-            primary="Providers"
-            sx={{ marginLeft: theme.spacing(1) }}
-          />
+          <ListItemText primary="Providers" sx={{ marginLeft: theme.spacing(1) }} />
         </DrawerLink>
       </ListItem>
       <ListItem disablePadding>
-        <DrawerLink
-          href="/EducationalResources"
-          sx={{ width: '100%' }}
-          active={isActive('/EducationalResources')}
-        >
+        <DrawerLink active={isActive('/EducationalResources')} onClick={() => navigate('/EducationalResources')}>
           {icons['Educational Resources']}
-          <ListItemText
-            primary="Educational Resources"
-            sx={{ marginLeft: theme.spacing(1) }}
-          />
+          <ListItemText primary="Educational Resources" sx={{ marginLeft: theme.spacing(1) }} />
         </DrawerLink>
       </ListItem>
       <ListItem button onClick={handleMapMenuClick}>
         {icons['Admin Map']}
-        <ListItemText
-          primary="Map & Calculator"
-          sx={{ marginLeft: theme.spacing(1) }}
-        />
+        <ListItemText primary="Map & Calculator" sx={{ marginLeft: theme.spacing(1) }} />
         {mapMenuOpen ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
       <Collapse in={mapMenuOpen} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           <ListItem disablePadding>
-            <DrawerLink
-              href="/DocumentUpload"
-              sx={{ width: '100%', pl: 4 }}
-              active={isActive('/DocumentUpload')}
-            >
+            <DrawerLink active={isActive('/DocumentUpload')} onClick={() => navigate('/DocumentUpload')} sx={{ pl: 4 }}>
               {icons['Document Upload']}
-              <ListItemText
-                primary="Document Upload"
-                sx={{ marginLeft: theme.spacing(1) }}
-              />
+              <ListItemText primary="Document Upload" sx={{ marginLeft: theme.spacing(1) }} />
             </DrawerLink>
           </ListItem>
           <ListItem disablePadding>
-            <DrawerLink
-              href="/MapV2"
-              sx={{ width: '100%', pl: 4 }}
-              active={isActive('/MapV2')}
-            >
+            <DrawerLink active={isActive('/MapV2')} onClick={() => navigate('/MapV2')} sx={{ pl: 4 }}>
               {icons['Admin Map']}
-              <ListItemText
-                primary="Map"
-                sx={{ marginLeft: theme.spacing(1) }}
-              />
+              <ListItemText primary="Map" sx={{ marginLeft: theme.spacing(1) }} />
             </DrawerLink>
           </ListItem>
           <ListItem disablePadding>
-            <DrawerLink
-              href="/CarbonEmissionsCalculator"
-              sx={{ width: '100%', pl: 4 }}
-              active={isActive('/CarbonEmissionsCalculator')}
-            >
+            <DrawerLink active={isActive('/CarbonEmissionsCalculator')} onClick={() => navigate('/CarbonEmissionsCalculator')} sx={{ pl: 4 }}>
               {icons['Calculator Usage Stats']}
-              <ListItemText
-                primary="Carbon Calculator"
-                sx={{ marginLeft: theme.spacing(1) }}
-              />
+              <ListItemText primary="Carbon Calculator" sx={{ marginLeft: theme.spacing(1) }} />
             </DrawerLink>
           </ListItem>
         </List>
       </Collapse>
       <ListItem disablePadding>
-        <DrawerLink
-          href="/About"
-          sx={{ width: '100%' }}
-          active={isActive('/About')}
-        >
+        <DrawerLink active={isActive('/About')} onClick={() => navigate('/About')}>
           {icons.About}
-          <ListItemText
-            primary="About"
-            sx={{ marginLeft: theme.spacing(1) }}
-          />
+          <ListItemText primary="About" sx={{ marginLeft: theme.spacing(1) }} />
         </DrawerLink>
       </ListItem>
       {isLoggedIn && (
         <>
           <ListItem button onClick={handleAdminDashboardMenuClick}>
             {icons.Reports}
-            <ListItemText
-              primary="Admin Dashboard"
-              sx={{ marginLeft: theme.spacing(1) }}
-            />
+            <ListItemText primary="Admin Dashboard" sx={{ marginLeft: theme.spacing(1) }} />
             {adminMenuOpen ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
           <Collapse in={adminMenuOpen} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
               <ListItem disablePadding>
-                <DrawerLink
-                  href="/UserManagement"
-                  sx={{ width: '100%', pl: 4 }}
-                  active={isActive('/UserManagement')}
-                >
+                <DrawerLink active={isActive('/UserManagement')} onClick={() => navigate('/UserManagement')} sx={{ pl: 4 }}>
                   {icons.User}
-                  <ListItemText
-                    primary="User Management"
-                    sx={{ marginLeft: theme.spacing(1) }}
-                  />
+                  <ListItemText primary="User Management" sx={{ marginLeft: theme.spacing(1) }} />
                 </DrawerLink>
               </ListItem>
               <ListItem disablePadding>
-                <DrawerLink
-                  href="/Reports"
-                  sx={{ width: '100%', pl: 4 }}
-                  active={isActive('/Reports')}
-                >
+                <DrawerLink active={isActive('/Reports')} onClick={() => navigate('/Reports')} sx={{ pl: 4 }}>
                   {icons.Reports}
-                  <ListItemText
-                    primary="Reports"
-                    sx={{ marginLeft: theme.spacing(1) }}
-                  />
+                  <ListItemText primary="Reports" sx={{ marginLeft: theme.spacing(1) }} />
                 </DrawerLink>
               </ListItem>
               <ListItem disablePadding>
-                <DrawerLink
-                  href="/QuickSightDashboard"
-                  sx={{ width: '100%', pl: 4 }}
-                  active={isActive('/QuickSightDashboard')}
-                >
+                <DrawerLink active={isActive('/QuickSightDashboard')} onClick={() => navigate('/QuickSightDashboard')} sx={{ pl: 4 }}>
                   {icons['Business Dashboard']}
-                  <ListItemText
-                    primary="Business Dashboard"
-                    sx={{ marginLeft: theme.spacing(1) }}
-                  />
+                  <ListItemText primary="Business Dashboard" sx={{ marginLeft: theme.spacing(1) }} />
                 </DrawerLink>
               </ListItem>
               <ListItem disablePadding>
-                <DrawerLink
-                  href="/DocumentsDashboard"
-                  sx={{ width: '100%', pl: 4 }}
-                  active={isActive('/DocumentsDashboard')}
-                >
+                <DrawerLink active={isActive('/DocumentsDashboard')} onClick={() => navigate('/DocumentsDashboard')} sx={{ pl: 4 }}>
                   {icons['Documents Dashboard']}
-                  <ListItemText
-                    primary="Documents Dashboard"
-                    sx={{ marginLeft: theme.spacing(1) }}
-                  />
+                  <ListItemText primary="Documents Dashboard" sx={{ marginLeft: theme.spacing(1) }} />
                 </DrawerLink>
               </ListItem>
               <ListItem disablePadding>
-                <DrawerLink
-                  href="/AdminMap"
-                  sx={{ width: '100%', pl: 4 }}
-                  active={isActive('/AdminMap')}
-                >
+                <DrawerLink active={isActive('/AdminMap')} onClick={() => navigate('/AdminMap')} sx={{ pl: 4 }}>
                   {icons['Admin Map']}
-                  <ListItemText
-                    primary="Admin Map"
-                    sx={{ marginLeft: theme.spacing(1) }}
-                  />
+                  <ListItemText primary="Admin Map" sx={{ marginLeft: theme.spacing(1) }} />
                 </DrawerLink>
               </ListItem>
               <ListItem disablePadding>
-                <DrawerLink
-                  href="/AdminMapAnalytics"
-                  sx={{ width: '100%', pl: 4 }}
-                  active={isActive('/AdminMapAnalytics')}
-                >
+                <DrawerLink active={isActive('/AdminMapAnalytics')} onClick={() => navigate('/AdminMapAnalytics')} sx={{ pl: 4 }}>
                   {icons['Heat Map']}
-                  <ListItemText
-                    primary="Heat Map"
-                    sx={{ marginLeft: theme.spacing(1) }}
-                  />
+                  <ListItemText primary="Heat Map" sx={{ marginLeft: theme.spacing(1) }} />
                 </DrawerLink>
               </ListItem>
               <ListItem disablePadding>
-                <DrawerLink
-                  href="/calcUsageStats"
-                  sx={{ width: '100%', pl: 4 }}
-                  active={isActive('/calcUsageStats')}
-                >
+                <DrawerLink active={isActive('/calcUsageStats')} onClick={() => navigate('/calcUsageStats')} sx={{ pl: 4 }}>
                   {icons['Calculator Usage Stats']}
-                  <ListItemText
-                    primary="Statistics"
-                    sx={{ marginLeft: theme.spacing(1) }}
-                  />
+                  <ListItemText primary="Statistics" sx={{ marginLeft: theme.spacing(1) }} />
                 </DrawerLink>
               </ListItem>
             </List>
@@ -432,24 +332,16 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
               <MenuIcon />
             </IconButton>
           )}
-          <Link href="/" className={isActive('/') ? 'active' : ''}>
-            <img src={logo} alt="Logo" style={{ height: '55px' }} />
-          </Link>
+          <img src={logo} alt="Logo" style={{ height: '55px', cursor: 'pointer' }} onClick={() => navigate('/')} />
           {!isMobile && (
             <>
-              <StyledLink href="/" className={isActive('/') ? 'active' : ''}>
+              <StyledLink onClick={() => navigate('/')} className={isActive('/') ? 'active' : ''}>
                 Home
               </StyledLink>
-              <StyledLink
-                href="/Provider"
-                className={isActive('/Provider') ? 'active' : ''}
-              >
+              <StyledLink onClick={() => navigate('/Provider')} className={isActive('/Provider') ? 'active' : ''}>
                 Providers
               </StyledLink>
-              <StyledLink
-                href="/EducationalResources"
-                className={isActive('/EducationalResources') ? 'active' : ''}
-              >
+              <StyledLink onClick={() => navigate('/EducationalResources')} className={isActive('/EducationalResources') ? 'active' : ''}>
                 Educational Resources
               </StyledLink>
               <DropdownButton
@@ -468,40 +360,40 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
                 onClose={handleClose}
                 MenuListProps={{
                   sx: {
-                    bgcolor: 'rgb(7, 55, 99)', // Same background color as NavBar
-                    color: 'white', // White text color
+                    bgcolor: 'rgb(7, 55, 99)',
+                    color: 'white',
                   },
                 }}
               >
                 <MenuItem
-                  onClick={handleClose}
-                  component={Link}
-                  href="/DocumentUpload"
+                  onClick={() => {
+                    navigate('/DocumentUpload');
+                    handleClose();
+                  }}
                   className={isActive('/DocumentUpload') ? 'active' : ''}
                 >
                   Document Upload
                 </MenuItem>
                 <MenuItem
-                  onClick={handleClose}
-                  component={Link}
-                  href="/MapV2"
+                  onClick={() => {
+                    navigate('/MapV2');
+                    handleClose();
+                  }}
                   className={isActive('/MapV2') ? 'active' : ''}
                 >
                   Map
                 </MenuItem>
                 <MenuItem
-                  onClick={handleClose}
-                  component={Link}
-                  href="/CarbonEmissionsCalculator"
+                  onClick={() => {
+                    navigate('/CarbonEmissionsCalculator');
+                    handleClose();
+                  }}
                   className={isActive('/CarbonEmissionsCalculator') ? 'active' : ''}
                 >
                   Carbon Calculator
                 </MenuItem>
               </Menu>
-              <StyledLink
-                href="/About"
-                className={isActive('/About') ? 'active' : ''}
-              >
+              <StyledLink onClick={() => navigate('/About')} className={isActive('/About') ? 'active' : ''}>
                 About
               </StyledLink>
               {isLoggedIn && (
@@ -522,86 +414,85 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
                     onClose={handleClose}
                     MenuListProps={{
                       sx: {
-                        bgcolor: 'rgb(7, 55, 99)', // Same background color as NavBar
-                        color: 'white', // White text color
+                        bgcolor: 'rgb(7, 55, 99)',
+                        color: 'white',
                       },
                     }}
                   >
                     <MenuItem
-                      onClick={handleClose}
-                      component={Link}
-                      href="/UserManagement"
-                      className={isActive('/UserManagements') ? 'active' : ''}
+                      onClick={() => {
+                        navigate('/UserManagement');
+                        handleClose();
+                      }}
+                      className={isActive('/UserManagement') ? 'active' : ''}
                     >
                       User Management
                     </MenuItem>
                     <MenuItem
-                      onClick={handleClose}
-                      component={Link}
-                      href="/Reports"
+                      onClick={() => {
+                        navigate('/Reports');
+                        handleClose();
+                      }}
                       className={isActive('/Reports') ? 'active' : ''}
                     >
                       Reports
                     </MenuItem>
                     <MenuItem
-                      onClick={handleClose}
-                      component={Link}
-                      href="/QuickSightDashboard"
+                      onClick={() => {
+                        navigate('/QuickSightDashboard');
+                        handleClose();
+                      }}
                       className={isActive('/QuickSightDashboard') ? 'active' : ''}
                     >
                       Business Dashboard
                     </MenuItem>
                     <MenuItem
-                      onClick={handleClose}
-                      component={Link}
-                      href="/DocumentsDashboard"
+                      onClick={() => {
+                        navigate('/DocumentsDashboard');
+                        handleClose();
+                      }}
                       className={isActive('/DocumentsDashboard') ? 'active' : ''}
                     >
                       Documents Dashboard
                     </MenuItem>
                     <MenuItem
-                      onClick={handleClose}
-                      component={Link}
-                      href="/AdminMap"
+                      onClick={() => {
+                        navigate('/AdminMap');
+                        handleClose();
+                      }}
                       className={isActive('/AdminMap') ? 'active' : ''}
                     >
                       Admin Map
                     </MenuItem>
                     <MenuItem
-                      onClick={handleClose}
-                      component={Link}
-                      href="/AdminMapAnalytics"
+                      onClick={() => {
+                        navigate('/AdminMapAnalytics');
+                        handleClose();
+                      }}
                       className={isActive('/AdminMapAnalytics') ? 'active' : ''}
                     >
                       Heat Map
                     </MenuItem>
                     <MenuItem
-                      onClick={handleClose}
-                      component={Link}
-                      href="/calcUsageStats"
+                      onClick={() => {
+                        navigate('/calcUsageStats');
+                        handleClose();
+                      }}
                       className={isActive('/calcUsageStats') ? 'active' : ''}
                     >
                       Statistics
                     </MenuItem>
                   </Menu>
+
                 </>
               )}
             </>
           )}
-          <Box
-            sx={{
-              flex: 1,
-              display: 'flex',
-              justifyContent: 'flex-end',
-              alignItems: 'center',
-            }}
-          >
+          <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
             {isLoggedIn ? (
               <>
                 {userName && (
-                  <Box
-                    sx={{ color: 'common.white', marginRight: 1, marginLeft: 1 }}
-                  >
+                  <Box sx={{ color: 'common.white', marginRight: 1, marginLeft: 1 }}>
                     Hello, {userName}!
                   </Box>
                 )}
@@ -610,21 +501,13 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
                     <ExitToAppIcon />
                   </IconButton>
                 ) : (
-                  <RightLink
-                    onClick={onLogInButton}
-                    variant="outlined"
-                    className={isActive('/logout') ? 'active' : ''}
-                  >
+                  <RightLink onClick={onLogInButton} variant="outlined" className={isActive('/logout') ? 'active' : ''}>
                     Logout
                   </RightLink>
                 )}
               </>
             ) : (
-              <RightLink
-                onClick={onLogInButton}
-                variant="outlined"
-                className={isActive('/login') ? 'active' : ''}
-              >
+              <RightLink onClick={onLogInButton} variant="outlined" className={isActive('/login') ? 'active' : ''}>
                 Login
               </RightLink>
             )}
@@ -639,7 +522,7 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
       >
         {drawerContent}
       </Drawer>
-      <Toolbar /> {/* This Toolbar is just to offset the content below the AppBar */}
+      <Toolbar />
     </Box>
   );
 };
