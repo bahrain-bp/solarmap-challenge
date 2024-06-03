@@ -3,6 +3,7 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 import { DBStack } from "./DBStack";
 import { Duration } from "aws-cdk-lib";
 import { WebSocketStack } from "./WebSocketStack";
+import { filter } from "lodash";
 
 
 export function DocumentProcessingStack({ stack }: StackContext) {
@@ -26,6 +27,8 @@ export function DocumentProcessingStack({ stack }: StackContext) {
             },
         },
     });
+
+    filterFunction.attachPermissions("*");
     
 
     const documentsFunction = new Function(stack, "documentsFunction", { handler: "packages/functions/src/process-pdf-lambda.handler",
