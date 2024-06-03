@@ -14,7 +14,7 @@ const DocumentUpload: React.FC = () => {
   const [uploading, setUploading] = useState<boolean>(false);
   const [canUpload, setCanUpload] = useState<boolean>(true);
   const [message, setMessage] = useState<string>("");
-  const [parsedData, setParsedData] = useState<Record<string, any>>({});
+  const [, setParsedData] = useState<Record<string, any>>({});
   const [estimateData, setEstimateData] = useState<null | { estimatedPanels: number; estimatedCost: number; paybackPeriod: number }>(null);
   const [isCalculating, setIsCalculating] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
