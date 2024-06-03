@@ -4,6 +4,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Feature, Polygon } from 'geojson';
 import maplibregl from 'maplibre-gl';
 import React, { useEffect, useRef, useState } from 'react';
+import ToggleIcon from '@mui/icons-material/ToggleOn'; // Import toggle icon
+import ToggleOffIcon from '@mui/icons-material/ToggleOff'; // Import toggle off icon
+
 
 // npm install --save @maptiler/geocoding-control
 import './geoCoding.css'
@@ -12,6 +15,15 @@ import { GeocodingControl } from "@maptiler/geocoding-control/react";
 import { createMapLibreGlMapController } from "@maptiler/geocoding-control/maplibregl-controller";
 import "@maptiler/geocoding-control/style.css";
 import 'maplibre-gl/dist/maplibre-gl.css';
+import SolarPanelCalculator from "./SolarPanelCalculator";
+import IconButton from "@mui/material/IconButton";
+
+// @ts-ignore
+MapboxDraw.constants.classes.CONTROL_BASE = "maplibregl-ctrl";
+// @ts-ignore
+MapboxDraw.constants.classes.CONTROL_PREFIX = "maplibregl-ctrl-";
+// @ts-ignore
+MapboxDraw.constants.classes.CONTROL_GROUP = "maplibregl-ctrl-group";
 
 // Define coordinates array here
 let coordinates = [
@@ -38,6 +50,12 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
   const [boxSize, setBoxSize] = useState<number>(0.001);  // Initial size of the box in degrees
 
   const [mapController, setMapController] = useState<MapController | undefined>()
+  const [isCalculatorVisible, setIsCalculatorVisible] = useState(false);
+
+  // Function to handle toggle
+  const handleToggle = () => {
+    setIsCalculatorVisible(prevState => !prevState);
+  };
 
   useEffect(() => {
     const initializeMap = async () => {
@@ -414,7 +432,6 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
 
   return (
     <>
-    <h2>Please navigate to your property and use the pin to start the calculation process.</h2>
       {isModalVisible && featureCoordinates && (
         <div className="modal show" role="dialog" style={{ display: 'block', position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 1050 }}>
           <div className="modal-dialog" role="document" style={{ width: '300px' }}> {/* Smaller width */}
@@ -455,9 +472,25 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
         </div>
       )}
 
-      <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
+      <div style={{ position: 'relative', width: '100%', height: '90vh' }}>
         <div className="geocoding">
           <GeocodingControl apiKey={import.meta.env.VITE_TILER_API_KEY} country={"BH"} mapController={mapController} />
+        </div>
+        <div>
+        <div className="geocoding">
+        <GeocodingControl apiKey={import.meta.env.VITE_TILER_API_KEY} country={"BH"} mapController={mapController} />
+      </div>
+      {/* Toggle button */}
+      <IconButton
+        color="primary"
+        onClick={handleToggle}
+        style={{ position: 'absolute', top: '10px', left: '300px', width: '30px', height: '30px', color: 'black', backgroundColor: 'white', zIndex: 50 }}
+      >
+        {/* Toggle icon based on visibility state */}
+        {isCalculatorVisible ? <ToggleIcon /> : <ToggleOffIcon />}
+      </IconButton>
+      {/* SolarPanelCalculator component */}
+      {isCalculatorVisible && <SolarPanelCalculator />}
         </div>
         <div id="map" style={{ width: '100%', height: '100%' }}>
           {errorMessage && (

@@ -26,3 +26,4 @@ export type Row = {
 };
 
 export * as SQL from "./dbConfig";
+

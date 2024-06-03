@@ -128,10 +128,10 @@ const SolarPanelCalculator = () => {
   return (
     <div>
       {/* Solar Panel Calculator Overlay */}
-      <div style={{ position: 'absolute', top: 0, left: 0, zIndex: 999, width: '300px', padding: '15px' }}>
+      <div style={{ position: 'absolute', top: 0, left: 0, zIndex: 5, width: '300px', padding: '10px', marginTop: '32px' }}>
         <div className="card">
           <div className="card-body">
-            <h5 className="card-title">Solar Panel Calculator</h5>
+            <h5 className="card-title">Solar Calculator</h5>
             <form>
               <div className="form-group">
                 <label htmlFor="rooftopSize">Rooftop Size (m²)</label>
@@ -166,7 +166,7 @@ const SolarPanelCalculator = () => {
       </div>
 
       {/* ROI Overlay */}
-      <div style={{ position: 'absolute', top: 0, left: '280px', zIndex: 999, width: '300px', padding: '15px' }}>
+      <div style={{ position: 'absolute', top: 0, left: '280px', zIndex: 999, width: '300px', paddingRight: '80px', paddingLeft: '20px', marginTop: '140px' }}>
         <div className="card">
           <div className="card-body">
             <p>Number of Solar Panels: {numPanels}</p>
@@ -182,7 +182,7 @@ const SolarPanelCalculator = () => {
       <div style={{ position: 'absolute', bottom: 0, left: 0, zIndex: 999, width: '300px', padding: '15px' }}>
         <div className="card">
           <div className="card-body">
-            <h5 className="card-title">Carbon Footprint Calculator</h5>
+            <h5 className="card-title">Carbon Calculator</h5>
             <p>Kilometers Driven Saved: {kmDrivenSaved}</p>
             <p>Emissions Saved (kg): {emissionsSaved}</p>
             <p>Trees Planted: {treesPlanted}</p>

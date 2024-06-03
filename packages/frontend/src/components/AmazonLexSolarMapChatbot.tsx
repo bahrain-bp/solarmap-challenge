@@ -23,18 +23,40 @@ const Chatbot = () => {
 
     const handleMessageChange = (event: React.ChangeEvent<HTMLInputElement>) => setInputValue(event.target.value);
 
-    const handleSendMessage = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSendMessage = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         if (!inputValue.trim()) return;
-        const userMessage: Message = { text: inputValue, sender: 'user' }; // Explicitly typed as 'Message'
-        setMessages([...messages, userMessage]);
+    
+        // Send the user's message to the chat log
+        const userMessage: Message = { text: inputValue, sender: 'user' };
+        setMessages(prevMessages => [...prevMessages, userMessage]);
+    
+        // Clear input field
         setInputValue('');
-
-        // Set a delay for the bot's response
-        setTimeout(() => {
-            const botResponse: Message = { text: 'Processing...', sender: 'bot' }; // Explicitly typed as 'Message'
+    
+        try {
+            // Call the /communicate API endpoint to process the user's message
+            const response = await fetch(import.meta.env.VITE_API_URL+'/communicate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ text: userMessage.text })
+            });
+    
+            if (!response.ok) throw new Error('Failed to fetch');
+    
+            const data = await response.json();
+    
+            // Add bot's response to the chat log
+            const botResponse: Message = { text: data.message, sender: 'bot' };
             setMessages(prevMessages => [...prevMessages, botResponse]);
-        }, 1000);  // Delay of 1000 milliseconds (1 second)
+        } catch (error) {
+            console.error('Error fetching bot response:', error);
+            // Handle error case in chat interface
+            const errorResponse: Message = { text: 'Sorry, there was an error processing your request.', sender: 'bot' };
+            setMessages(prevMessages => [...prevMessages, errorResponse]);
+        }
     };
 
 

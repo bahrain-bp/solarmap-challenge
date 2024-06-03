@@ -1,6 +1,7 @@
 import { SQL } from "./dbConfig";
 import moment from 'moment';
-
+import { DynamoDB, ApiGatewayManagementApi } from "aws-sdk";
+import { Table } from "sst/node/table";
 
 interface Block {
   Id: string;
@@ -63,12 +64,12 @@ function getRelationships(keyMap: Record<string, Block>, valueMap: Record<string
 
 export const handler = async (event: any): Promise<any> => {
   try {
+    console.log("Event: ", JSON.stringify(event));
 
     const sqsMessageBody = JSON.parse(event.Records[0].body);
     const textractResult = sqsMessageBody.textractResult;
     const combinedText = sqsMessageBody.combinedText;
     const electricitySupply = sqsMessageBody.electricityEntityText;
-
 
     const key_map: Record<string, Block> = {};
     const value_map: Record<string, Block> = {};
@@ -89,46 +90,29 @@ export const handler = async (event: any): Promise<any> => {
     const kvs = getRelationships(key_map, value_map, block_map);
     
     console.log("Data:", kvs);
-    /*
-    ["key":"value",...,"key":"value"]
-    */
-
 
     console.log("Address:", combinedText);
     console.log('Maximum Electricity Power Supply:', electricitySupply);
     
     const formattedElectricitySupply = parseInt(electricitySupply.replace(/\skWh/, ''));
     
-
-
-
-    const issueDateStr = kvs['Issue Date: ']; // Extract the value associated with the key 'Issue Date:'
-    // console.log('Issue Date:', issueDateStr)
+    const issueDateStr = kvs['Issue Date: ']; 
     const issueDate = moment(issueDateStr, 'DD/MM/YYYY');
-    // Format the date as YYYY-MM-DD
     const formattedIssueDate = issueDate.format('YYYY-MM-DD');
     console.log('Issue Date:', formattedIssueDate);
 
-
-
-
     const BD = parseFloat(kvs['BD ']);
     const rate = parseFloat(kvs['Rate ']);
-    const monthlyBill = BD * ((rate * 10) + 1); // Float
-    // console.log('BD:', BD);
+    const monthlyBill = BD * ((rate * 10) + 1); 
     console.log('Rate:', rate, 'BD');
     console.log('Monthly Bill:', monthlyBill, 'BD');
 
-
     const usage = kvs['Actual '];
-    // Split the value string by space
     const parts = usage.split(' ');
-    // Get the last element of the array
-    const secondReading = parseInt(parts[1]); // Integer
+    const secondReading = parseInt(parts[1]); 
     console.log('Usage:', secondReading, 'kWh');
 
-
-    let isSubsidized = false; // Boolean
+    let isSubsidized = false; 
     if (kvs.hasOwnProperty('Non Domestic ')) {
       isSubsidized = true;
     } else {
@@ -136,7 +120,6 @@ export const handler = async (event: any): Promise<any> => {
     }
     console.log('Subsidized:', isSubsidized);
 
-    // Check if all required fields are provided
     if (!combinedText || !formattedIssueDate || !monthlyBill || !secondReading || !rate || !isSubsidized || !formattedElectricitySupply) {
       return {
         statusCode: 400,
@@ -144,7 +127,6 @@ export const handler = async (event: any): Promise<any> => {
       };
     }
 
-    // Insert the new vehicle into the database
     await SQL.DB
       .insertInto("ewabill")
       .values({
@@ -158,11 +140,51 @@ export const handler = async (event: any): Promise<any> => {
       })
       .execute();
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ message: 'Document inserted successfully' + 'Processing complete' + JSON.stringify({ kvs }) }), // Include kvs in the response body
+    const TableName = Table.Connections.tableName;
+    const dynamoDb = new DynamoDB.DocumentClient();
+
+    const url = "wss://fckt4ovy57.execute-api.us-east-1.amazonaws.com/prod";
+    const messageData =
+    "Address: " + combinedText + 
+    ', Maximum Electricity Power Supply: ' + electricitySupply +
+    ', Issue Date: ' + formattedIssueDate +
+    ', Rate: '+ rate + ' BD' +
+    ', Monthly Bill:' + monthlyBill + ' BD' +
+    ', Usage: ' + secondReading + ' kWh' +
+    ', Subsidized: ' + isSubsidized
+
+    const connections = await dynamoDb
+      .scan({ TableName, ProjectionExpression: "id" })
+      .promise();
+
+    console.log("Connections:", connections);
+
+    const apiG = new ApiGatewayManagementApi({
+        apiVersion: "2018-11-29",
+        endpoint: url.replace("wss://", "https://"),
+    });
+
+    const postToConnection = async function ({ id }: { id: string }) {
+      try {
+        await apiG
+          .postToConnection({ ConnectionId: id, Data: messageData })
+          .promise();
+      } catch (e) {
+        console.error(`Failed to send message to connection ${id}:`, e);
+        // @ts-ignore
+        if (e.statusCode === 410) {
+          await dynamoDb.delete({ TableName, Key: { id } }).promise();
+        }
+      }
     };
 
+    // @ts-ignore
+    await Promise.all(connections.Items.map(postToConnection));
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ message: 'Document inserted successfully and message sent to connections', kvs }),
+    };
 
   } catch (error) {
     console.error('Error processing document:', error);
