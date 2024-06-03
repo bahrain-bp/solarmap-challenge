@@ -41,11 +41,14 @@ export default {
       .stack(AuthStack)
       .stack(WebSocketStack)
       .stack(DocumentProcessingStack) // Initialize "DocumentProcessingStack" stack before "ApiStack" stack (Dependency)
+      
       .stack(ImgDetection)
+
       .stack(AmazonLexSolarMapFulfillment)
       .stack(AmazonLexSolarMapBot, {
         stackName: stackBaseName
       })
+
       .stack(ApiStack)
       .stack(MapStack)  
       .stack(FrontendStack)
