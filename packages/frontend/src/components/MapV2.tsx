@@ -302,7 +302,7 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
             })
             .catch(error => {
               console.error('Error:', error);
-              navigate('/');  // Redirect to home page even if there's an error
+              navigate('/SegmentationResults');  // Redirect to home page even if there's an error
             });
         });
 
