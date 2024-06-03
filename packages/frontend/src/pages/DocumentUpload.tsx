@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { Alert, Box, Button, Container, Grid, LinearProgress, TextField, Typography } from '@mui/material';
+import { ArcElement, BarElement, CategoryScale, Chart, Legend, LineElement, LinearScale, PointElement, Title, Tooltip } from 'chart.js';
+import React, { useEffect, useState } from "react";
 import { Bar, Line, Pie } from "react-chartjs-2";
-import { Chart, CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
-import { Box, Container, Typography, Button, TextField, Alert, LinearProgress, Grid } from '@mui/material';
+import pattern from '../assets/pattern.png'; // Update the import path as needed
 import uploadFile from "../uploadFile";
-import pattern from '../assets/pattern.png';  // Update the import path as needed
-import royal from '../../assets/Royal.jpg';      // Update the import path as needed
 
 Chart.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend, ArcElement);
 
