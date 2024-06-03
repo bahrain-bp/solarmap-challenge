@@ -51,8 +51,8 @@ const QuickSightDashboard: React.FC = () => {
         const options = {
           url: dashboardUrl,
           container: dashboardRef.current,
-          height: '1500px',
-          width: '1850px',
+          height: '2000px',
+          width: '100%',
         };
 
         await embeddingContext.embedDashboard(options);
@@ -69,8 +69,8 @@ const QuickSightDashboard: React.FC = () => {
         const options = {
           url: searchUrl,
           container: searchRef.current,
-          height: '50px',
-          width: '1850px',
+          height: '50px',  
+          width: '100%', 
         };
 
         await embeddingContext.embedQSearchBar(options);
