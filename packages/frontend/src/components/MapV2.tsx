@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Feature, Polygon } from 'geojson';
 import maplibregl from 'maplibre-gl';
 import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 // @ts-ignore
 MapboxDraw.constants.classes.CONTROL_BASE = "maplibregl-ctrl";

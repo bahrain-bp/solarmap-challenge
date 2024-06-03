@@ -5,6 +5,7 @@ import inference
 import numpy as np
 from PIL import Image, ImageDraw, ImageColor
 import io
+import requests
 
 # Create an S3 client
 s3 = boto3.client('s3')
@@ -70,9 +71,11 @@ def lambda_handler(event, context):
             draw = ImageDraw.Draw(overlay)
 
             model = inference.get_model("satellite-map/5")
-            response = model.infer(image=base64.b64encode(image_body).decode('utf-8'), confidence=0.0, iou_threshold=0.0)
+            response = model.infer(image=base64.b64encode(image_body).decode('utf-8'), confidence=0.07, iou_threshold=0.5)
 
             print("Model Response: ", response)
+
+            area_sizes = []
 
             try:
                 for res in response:
@@ -89,6 +92,7 @@ def lambda_handler(event, context):
                                 real_world_area = (100, 100)
                                 area_m2 = convert_pixel_area_to_m2(pixel_area, image.size, real_world_area)
                                 print(f"Area of shaded segmentation: {area_m2:.2f} square meters")
+                                area_sizes.append(area_m2)
 
                 # Combine the original image with the overlay
                 combined = Image.alpha_composite(image, overlay).convert("RGB")
@@ -97,6 +101,21 @@ def lambda_handler(event, context):
                 annotated_image_binary = io.BytesIO()
                 combined.save(annotated_image_binary, format='JPEG')
                 annotated_image_binary.seek(0)
+
+                # Convert image to base64
+                annotated_image_base64 = base64.b64encode(annotated_image_binary.getvalue()).decode('utf-8')
+
+                # Send the data to the /segmentedRooftop endpoint
+                post_data = {
+                    "segmentedImage": annotated_image_base64,
+                    "areaSizes": area_sizes
+                }
+                post_response = requests.post("https://4fa2gsnj8b.execute-api.us-east-1.amazonaws.com/segmentedRooftop", json=post_data)
+
+                if post_response.status_code == 200:
+                    print("Data successfully sent to /segmentedRooftop")
+                else:
+                    print(f"Failed to send data to /segmentedRooftop: {post_response.status_code}, {post_response.text}")
 
                 # Upload the image to S3 after processing is complete
                 s3.upload_fileobj(annotated_image_binary, bucket_name, "annotated_frames/" + object_key.split("/")[-1])

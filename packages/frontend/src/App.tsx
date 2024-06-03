@@ -24,7 +24,7 @@ import Reports from './pages/Reports';
 import CalculationReccomendation from './components/CalculationRec';
 import CalcUsageStats from './components/CalculatorUsageStats';
 
-
+import CalculationResultsPage from './pages/SegmentationResults';
 
 import { Authenticator } from './components/Authenticator';
 import { getCurrentUser, signOut } from 'aws-amplify/auth';
@@ -150,7 +150,7 @@ function App() {
             <Route path="/Inquiry" element={<Inquiry />} />
             <Route path="/DocumentsDashboard" element={<DocumentsDashboard />} />
             <Route path="/CalculationRec" element={<CalculationReccomendation />} />
-
+            <Route path="/SegmentationResults" element={<CalculationResultsPage />} />
           </Routes>
 
         </div>
