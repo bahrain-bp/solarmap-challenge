@@ -76,6 +76,7 @@ const queue = new Queue(stack, "rooftopQueue", {
 });
 
 
+
     // Create an S3 bucket and configure it to send notifications to an EventBus
     const bucket = new Bucket(stack, "myBucket", {
         notifications: {
