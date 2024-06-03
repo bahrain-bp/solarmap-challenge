@@ -170,7 +170,7 @@ function App() {
             {isLoggedIn ? authRoutes : normRoutes}
           </Box>
           <Footer />
-          <Chatbot />
+          {/* <Chatbot /> */}
         </Box>
       </BrowserRouter>
     </ThemeProvider>
