@@ -69,7 +69,7 @@ def lambda_handler(event, context):
             overlay = Image.new("RGBA", image.size, (0, 0, 0, 0))
             draw = ImageDraw.Draw(overlay)
 
-            model = inference.get_model("satellite-map/5")
+            model = inference.get_model("satellite-map/8")
             response = model.infer(image=base64.b64encode(image_body).decode('utf-8'), confidence=0.0, iou_threshold=0.0)
 
             print("Model Response: ", response)
