@@ -31,6 +31,11 @@
 <script src="https://www.unpkg.com/@aws/amazon-location-utilities-auth-helper@2"></script>
 
 
+<!--Chatbot-->
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/4.0.2/bootstrap-material-design.css'>
+<link rel='stylesheet' href='https://fonts.googleapis.com/icon?family=Material+Icons'>
+
+
 
   <!-- Mapbox GL Draw -->
 <link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet" />
@@ -47,13 +52,64 @@
   <script src="https://www.unpkg.com/@aws/amazon-location-client@1"></script>
   <!-- Import the utility library -->
   <script src="https://www.unpkg.com/@aws/amazon-location-utilities-auth-helper@1"></script>
-
+    <!-- Admin Map Weather Scripts -->
+  <script src="https://cdn.maptiler.com/maptiler-sdk-js/v2.0.3/maptiler-sdk.umd.min.js"></script>
+  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v2.0.3/maptiler-sdk.css" rel="stylesheet" />
+  <script src="https://cdn.maptiler.com/maptiler-weather/v1.1.0/maptiler-weather.umd.min.js"></script>
   <link href="./src/index.css" rel="stylesheet">
 </head>
 
 <body>
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
+  <!-- Local host
+  <script src="https://d39f5gozic56r7.cloudfront.net/lex-web-ui-loader.min.js"></script>
+  <script>
+    var loaderOpts = {
+      baseUrl: 'https://d39f5gozic56r7.cloudfront.net/',
+      shouldLoadMinDeps: true
+    };
+    var loader = new ChatBotUiLoader.IframeLoader(loaderOpts);
+    var chatbotUiConfig = {
+        ui: {
+          parentOrigin: "https://dtehlozh63tbl.cloudfront.net",
+          parentOrigin: "http://localhost:5173",
+          parentOrigin: window.location.origin,
+        }
+            /* Example of setting session attributes on parent page
+            lex: {
+              sessionAttributes: {
+                userAgent: navigator.userAgent,
+                QNAClientFilter: ''
+              }
+            }
+            */
+          };
+    loader.load(chatbotUiConfig)
+      .catch(function (error) { console.error(error); });
+  </script> -->
+<!-- Prod host -->
+<script src="https://d1way8kbsrdvfl.cloudfront.net/lex-web-ui-loader.min.js"></script>
+<script>
+  var loaderOpts = {
+    baseUrl: 'https://d1way8kbsrdvfl.cloudfront.net/',
+    shouldLoadMinDeps: true
+  };
+  var loader = new ChatBotUiLoader.IframeLoader(loaderOpts);
+  var chatbotUiConfig = {
+          /* Example of setting session attributes on parent page
+          lex: {
+            sessionAttributes: {
+              userAgent: navigator.userAgent,
+              QNAClientFilter: ''
+            }
+          }
+          */
+        };
+  loader.load(chatbotUiConfig)
+    .catch(function (error) { console.error(error); });
+</script>
+  
 </body>
 
 </html>

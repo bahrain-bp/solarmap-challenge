@@ -11,12 +11,15 @@ import { StaticSite, StackContext, use } from "sst/constructs";
 import { ApiStack } from "./ApiStack";
 import { MapStack } from "./MapStack";
 import { AuthStack } from "./AuthStack";
+import { WebSocketStack } from "./WebSocketStack";
 
 export function FrontendStack({ stack, app }: StackContext) {
 
   const {api, apiCachePolicy} = use(ApiStack);
   const { mapName, identityPoolId } = use(MapStack);
   const {userPoolId, userPoolClientId} = use(AuthStack);
+  const { ws } = use(WebSocketStack);
+
 
   // const existingDistributionId = "EDEPL5WMAI026";
   // const existingDomainName = "d36no989weouwx.cloudfront.net";
@@ -31,8 +34,9 @@ export function FrontendStack({ stack, app }: StackContext) {
       VITE_APP_REGION: app.region,
       VITE_MAP_NAME: mapName,
       VITE_IDENTITY_POOL_ID: identityPoolId,
-      VITE_USER_POOL_ID: userPoolId,
+      VITE_TILER_API_KEY: 'UGho1CzUl0HDsQMTTKJ0',      VITE_USER_POOL_ID: userPoolId,
       VITE_USER_POOL_CLIENT_ID: userPoolClientId,
+      VITE_WEB_SOCKET_API_KEY: ws.url,
     },
     cdk: {
       distribution: {
