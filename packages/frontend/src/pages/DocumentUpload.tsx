@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Bar } from "react-chartjs-2";
-import { Chart, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { Bar, Line, Pie } from "react-chartjs-2";
+import { Chart, CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
+import { Box, Container, Typography, Button, TextField, Alert, LinearProgress, Grid } from '@mui/material';
 import uploadFile from "../uploadFile";
+import pattern from '../assets/pattern.png';  // Update the import path as needed
+import royal from '../../assets/Royal.jpg';      // Update the import path as needed
 
-Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+Chart.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend, ArcElement);
 
 type ListenFunction = (url: string) => void;
 
@@ -15,12 +18,11 @@ const DocumentUpload: React.FC = () => {
   const [canUpload, setCanUpload] = useState<boolean>(true);
   const [message, setMessage] = useState<string>("");
   const [, setParsedData] = useState<Record<string, any>>({});
-  const [estimateData, setEstimateData] = useState<null | { estimatedPanels: number; estimatedCost: number; paybackPeriod: number }>(null);
+  const [estimateData, setEstimateData] = useState<null | { estimatedPanels: number; estimatedCost: number; paybackPeriod: number; monthlySavings: number }>(null);
   const [isCalculating, setIsCalculating] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
 
   // Web Socket Connection
-
   useEffect(() => {
     const webSocketUrl = import.meta.env.VITE_WEB_SOCKET_API_KEY;
     console.log(webSocketUrl);
@@ -152,10 +154,10 @@ const DocumentUpload: React.FC = () => {
     // Calculate payback period (in months)
     const paybackPeriod = estimatedCost / monthlySavings;
 
-    return { estimatedPanels, estimatedCost, paybackPeriod };
+    return { estimatedPanels, estimatedCost, paybackPeriod, monthlySavings };
   };
 
-  const data = {
+  const barData = {
     labels: ['Estimated Panels', 'Estimated Cost (BD)', 'Payback Period (Months)'],
     datasets: [
       {
@@ -168,47 +170,111 @@ const DocumentUpload: React.FC = () => {
     ],
   };
 
+  const lineData = {
+    labels: Array.from({ length: 12 }, (_, i) => `Month ${i + 1}`),
+    datasets: [
+      {
+        label: 'Monthly Savings (BD)',
+        data: estimateData ? Array(12).fill(estimateData.monthlySavings) : [],
+        fill: false,
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+      },
+    ],
+  };
+
+  const pieData = {
+    labels: ['Estimated Panels', 'Estimated Cost (BD)', 'Payback Period (Months)'],
+    datasets: [
+      {
+        label: 'Proportion of Estimates',
+        data: estimateData ? [estimateData.estimatedPanels, estimateData.estimatedCost, estimateData.paybackPeriod] : [],
+        backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(153, 102, 255, 0.2)', 'rgba(255, 159, 64, 0.2)'],
+        borderColor: ['rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)'],
+        borderWidth: 1,
+      },
+    ],
+  };
+
   return (
-    <>
-      <form id="fileForm" onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <h4>To get accurate and precise solar panel installation results matching your needs</h4>
-          <br />
-          <label htmlFor="formFileLg" className="form-label">Upload Your MEWA Bill Document File:</label>
-          <input className="form-control" id="formFileLg" type="file" accept=".pdf, .png, .jpeg" />
-          <p style={{ fontSize: "12px" }}>Acceptable files are *.pdf, *.png, and *.jpeg</p>
-        </div>
-        <button className="btn btn-primary" type="submit" disabled={uploading || !canUpload}>
-          {uploading ? "Uploading..." : "Upload"}
-        </button>
-        {errorMessage && <div className="alert alert-danger mt-3">{errorMessage}</div>}
-        {successMessage && <div className="alert alert-success mt-3">{successMessage}</div>}
-      </form>
-      <br />
-
-      {isCalculating && (
-        <div className="alert alert-info mt-3">
-          <h4>Calculating... {progress}%</h4>
-          <div className="progress">
-            <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{ width: `${progress}%` }}></div>
-          </div>
-        </div>
-      )}
-
-      {message && (
-        <div className="alert alert-info mt-3">
-          <h4>Received Data:</h4>
-          <p>{message}</p>
-        </div>
-      )}
-
-      {estimateData && (
-        <div className="alert alert-info mt-3">
-          <h4>Solar Calculations:</h4>
-          <Bar data={data} />
-        </div>
-      )}
-    </>
+    <Box
+      sx={{
+        background: `url(${pattern})`, // Use imported pattern as background
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        py: 8,
+      }}
+    >
+      <Container component="section" sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        <Typography variant="h4" component="h1" gutterBottom sx={{ color: 'primary' }}>
+          Upload Your MEWA Bill Document
+        </Typography>
+        <Typography variant="body1" gutterBottom sx={{ color: 'primary' }}>
+          To get accurate and precise solar panel installation results matching your needs.
+        </Typography>
+        <form id="fileForm" onSubmit={handleSubmit}>
+          <Box sx={{ mb: 3 }}>
+            <TextField
+              fullWidth
+              id="formFileLg"
+              type="file"
+              variant="outlined"
+              InputLabelProps={{ shrink: true }}
+              inputProps={{ accept: '.pdf, .png, .jpeg' }}
+              helperText="Acceptable files are *.pdf, *.png, and *.jpeg"
+            />
+          </Box>
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            disabled={uploading || !canUpload}
+          >
+            {uploading ? "Uploading..." : "Upload"}
+          </Button>
+        </form>
+        {errorMessage && <Alert severity="error" sx={{ mt: 3 }}>{errorMessage}</Alert>}
+        {successMessage && <Alert severity="success" sx={{ mt: 3 }}>{successMessage}</Alert>}
+        {isCalculating && (
+          <Box sx={{ mt: 3 }}>
+            <Alert severity="info">
+              <Typography>Calculating... {progress}%</Typography>
+              <LinearProgress variant="determinate" value={progress} />
+            </Alert>
+          </Box>
+        )}
+        {message && (
+          <Alert severity="info" sx={{ mt: 3 }}>
+            <Typography>Received Data:</Typography>
+            <Typography>{message}</Typography>
+          </Alert>
+        )}
+        {estimateData && (
+          <Box sx={{ mt: 3 }}>
+            <Alert severity="info">
+              <Typography>Solar Calculations:</Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={4}>
+                  <Box sx={{ height: '400px' }}>
+                    <Bar data={barData} options={{ maintainAspectRatio: false }} />
+                  </Box>
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <Box sx={{ height: '400px' }}>
+                    <Line data={lineData} options={{ maintainAspectRatio: false }} />
+                  </Box>
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <Box sx={{ height: '400px' }}>
+                    <Pie data={pieData} options={{ maintainAspectRatio: false }} />
+                  </Box>
+                </Grid>
+              </Grid>
+            </Alert>
+          </Box>
+        )}
+      </Container>
+    </Box>
   );
 };
 
