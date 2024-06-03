@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Feature, Polygon } from 'geojson';
 import maplibregl from 'maplibre-gl';
 import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 // @ts-ignore
 MapboxDraw.constants.classes.CONTROL_BASE = "maplibregl-ctrl";
@@ -27,6 +28,7 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
   const [errorMessage, setErrorMessage] = useState<string>('');
   const mapRef = useRef<maplibregl.Map | null>(null);
   const [boxSize, setBoxSize] = useState<number>(0.0005);  // Adjusted initial size of the box in degrees
+  const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
     const initializeMap = async () => {
@@ -280,6 +282,7 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
               .then(response => response.json())
               .then(data => {
                 console.log('Success:', data);
+                navigate('/'); // Redirect to home page after successful submission
               })
               .catch(error => {
                 console.error('Error:', error);
