@@ -26,7 +26,7 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const mapRef = useRef<maplibregl.Map | null>(null);
-  const [boxSize, setBoxSize] = useState<number>(0.0005);  // Adjusted initial size of the box in degrees
+  const [boxSize, setBoxSize] = useState<number>(0.001);  // Initial size of the box in degrees
 
   useEffect(() => {
     const initializeMap = async () => {
@@ -62,6 +62,36 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
             type: 'vector',
           });
 
+          // mapRef.current?.addLayer(
+          //   {
+          //     'id': '3d-buildings',
+          //     'source': 'openmaptiles',
+          //     'source-layer': 'building',
+          //     'type': 'fill-extrusion',
+          //     'minzoom': 15,
+          //     'paint': {
+          //       'fill-extrusion-color': [
+          //         'interpolate',
+          //         ['linear'],
+          //         ['get', 'render_height'], 0, 'lightgray', 200, 'royalblue', 400, 'lightblue'
+          //       ],
+          //       'fill-extrusion-height': [
+          //         'interpolate',
+          //         ['linear'],
+          //         ['zoom'],
+          //         15,
+          //         0,
+          //         16,
+          //         ['get', 'render_height']
+          //       ],
+          //       'fill-extrusion-base': ['case',
+          //         ['>=', ['get', 'zoom'], 16],
+          //         ['get', 'render_min_height'], 0
+          //       ]
+          //     }
+          //   },
+          // );
+
           mapRef.current?.addControl(
             new maplibregl.GeolocateControl({
               positionOptions: {
@@ -92,7 +122,7 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
 
               mapRef.current?.flyTo({
                 center: coordinates,
-                zoom: 20,  // Increased zoom level
+                zoom: 19,
                 essential: true
               });
 
@@ -257,70 +287,84 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
 
       const width = maxX - minX;
       const height = maxY - minY;
-
       const croppedCanvas = document.createElement('canvas');
       croppedCanvas.width = width;
       croppedCanvas.height = height;
       const ctx = croppedCanvas.getContext('2d');
 
-      if (ctx) {
-        ctx.drawImage(canvas, minX, minY, width, height, 0, 0, width, height);
-        const dataUrl = croppedCanvas.toDataURL('image/png');
+      const sx = Math.floor(minX);
+      const sy = Math.floor(minY);
+      const sWidth = Math.ceil(width);
+      const sHeight = Math.ceil(height);
 
-        fetch(dataUrl)
-          .then(res => res.blob())
-          .then(blob => {
-            const formData = new FormData();
-            formData.append('file', blob, 'cropped_map.png');
+      ctx!.drawImage(canvas, sx, sy, sWidth, sHeight, 0, 0, sWidth, sHeight);
+      const dataUrl = croppedCanvas.toDataURL('image/png');
 
-            fetch(import.meta.env.VITE_API_URL + '/detectionUpload', {
-              method: 'POST',
-              body: formData,
+      const byteString = atob(dataUrl.split(',')[1]);
+      const mimeString = dataUrl.split(',')[0].split(':')[1].split(';')[0];
+      const ab = new ArrayBuffer(byteString.length);
+      const ia = new Uint8Array(ab);
+      for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+      }
+      const blob = new Blob([ab], { type: mimeString });
+
+      console.log('blob:', blob);
+      console.log('mime:', mimeString);
+
+      fetch(dataUrl)
+        .then(res => res.blob())
+        .then(blob => {
+          const formData = new FormData();
+          formData.append('file', blob, 'cropped_map.png');
+
+          fetch(import.meta.env.VITE_API_URL + '/detectionUpload', {
+            method: 'POST',
+            body: formData,
+          })
+            .then(response => response.json())
+            .then(data => {
+              console.log('Success:', data);
             })
-              .then(response => response.json())
-              .then(data => {
-                console.log('Success:', data);
-              })
-              .catch(error => {
-                console.error('Error:', error);
-              });
-          });
+            .catch(error => {
+              console.error('Error:', error);
+            });
+        });
 
-        reAddDrawControl();
-        reAddBoxLayer();
-        if (!mapRef.current?.getLayer('3d-buildings')) {
-          mapRef.current?.addSource('openmaptiles', {
-            url: `https://api.maptiler.com/tiles/v3/tiles.json?key=UGho1CzUl0HDsQMTTKJ0`,
-            type: 'vector',
-          });
-          mapRef.current?.addLayer({
-            'id': '3d-buildings',
-            'source': 'openmaptiles',
-            'source-layer': 'building',
-            'type': 'fill-extrusion',
-            'minzoom': 15,
-            'paint': {
-              'fill-extrusion-color': [
-                'interpolate',
-                ['linear'],
-                ['get', 'render_height'], 0, 'lightgray', 200, 'royalblue', 400, 'lightblue'
-              ],
-              'fill-extrusion-height': [
-                'interpolate',
-                ['linear'],
-                ['zoom'],
-                15,
-                0,
-                16,
-                ['get', 'render_height']
-              ],
-              'fill-extrusion-base': ['case',
-                ['>=', ['get', 'zoom'], 16],
-                ['get', 'render_min_height'], 0
-              ]
-            }
-          });
-        }
+      reAddDrawControl();
+      reAddBoxLayer();
+      if (!mapRef.current?.getLayer('3d-buildings')) {
+        mapRef.current?.addSource('openmaptiles', {
+          url: `https://api.maptiler.com/tiles/v3/tiles.json?key=UGho1CzUl0HDsQMTTKJ0`,
+          type: 'vector',
+        });
+        mapRef.current?.addLayer({
+          'id': '3d-buildings',
+          'source': 'openmaptiles',
+          'source-layer': 'building',
+          'type': 'fill-extrusion',
+          'minzoom': 15,
+          'paint': {
+            'fill-extrusion-color': [
+              'interpolate',
+              ['linear'],
+              ['get', 'render_height'], 0, 'lightgray', 200, 'royalblue', 400, 'lightblue'
+            ],
+            'fill-extrusion-height': [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              15,
+              0,
+              16,
+              ['get', 'render_height']
+            ],
+            'fill-extrusion-base': ['case',
+              ['>=', ['get', 'zoom'], 16],
+              ['get', 'render_min_height'], 0
+            ]
+          }
+        });
       }
     });
   };
@@ -355,8 +399,8 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
                 <label>Adjust box size:</label>
                 <input
                   type="range"
-                  min="0.0001"
-                  max="0.002"
+                  min="0.0005"
+                  max="0.005"
                   step="0.0001"
                   value={boxSize}
                   onChange={(e) => {
