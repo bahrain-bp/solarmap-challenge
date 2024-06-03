@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Feature, Polygon } from 'geojson';
 import maplibregl from 'maplibre-gl';
 import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 
 // @ts-ignore
 MapboxDraw.constants.classes.CONTROL_BASE = "maplibregl-ctrl";
@@ -28,6 +28,7 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
   const [errorMessage, setErrorMessage] = useState<string>('');
   const mapRef = useRef<maplibregl.Map | null>(null);
   const [boxSize, setBoxSize] = useState<number>(0.001);  // Initial size of the box in degrees
+  const navigate = useNavigate();
 
   useEffect(() => {
     const initializeMap = async () => {
@@ -63,36 +64,6 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
             type: 'vector',
           });
 
-          // mapRef.current?.addLayer(
-          //   {
-          //     'id': '3d-buildings',
-          //     'source': 'openmaptiles',
-          //     'source-layer': 'building',
-          //     'type': 'fill-extrusion',
-          //     'minzoom': 15,
-          //     'paint': {
-          //       'fill-extrusion-color': [
-          //         'interpolate',
-          //         ['linear'],
-          //         ['get', 'render_height'], 0, 'lightgray', 200, 'royalblue', 400, 'lightblue'
-          //       ],
-          //       'fill-extrusion-height': [
-          //         'interpolate',
-          //         ['linear'],
-          //         ['zoom'],
-          //         15,
-          //         0,
-          //         16,
-          //         ['get', 'render_height']
-          //       ],
-          //       'fill-extrusion-base': ['case',
-          //         ['>=', ['get', 'zoom'], 16],
-          //         ['get', 'render_min_height'], 0
-          //       ]
-          //     }
-          //   },
-          // );
-
           mapRef.current?.addControl(
             new maplibregl.GeolocateControl({
               positionOptions: {
@@ -121,12 +92,13 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
               drawBoxAroundPoint(coordinates);
               setIsModalVisible(true);
 
-              mapRef.current?.flyTo({
-                center: coordinates,
-                zoom: 19,
-                essential: true
-              });
-
+              mapRef.current?.fitBounds(
+                new maplibregl.LngLatBounds(
+                  new maplibregl.LngLat(coordinates[0] - boxSize, coordinates[1] - boxSize),
+                  new maplibregl.LngLat(coordinates[0] + boxSize, coordinates[1] + boxSize)
+                ),
+                { padding: 20 }
+              );
             }
           });
         });
@@ -326,9 +298,11 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
             .then(response => response.json())
             .then(data => {
               console.log('Success:', data);
+              navigate('/');  // Redirect to home page after success
             })
             .catch(error => {
               console.error('Error:', error);
+              navigate('/');  // Redirect to home page even if there's an error
             });
         });
 
