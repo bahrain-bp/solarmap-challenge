@@ -19,7 +19,7 @@ const DocumentUpload: React.FC = () => {
   const [isCalculating, setIsCalculating] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
 
-  //////// Web Socket Connection //////////
+  // Web Socket Connection
 
   useEffect(() => {
     const webSocketUrl = import.meta.env.VITE_WEB_SOCKET_API_KEY;
@@ -89,6 +89,9 @@ const DocumentUpload: React.FC = () => {
 
     setErrorMessage("");
     setSuccessMessage("");
+    setParsedData({});
+    setEstimateData(null);
+    setMessage("");
 
     if (canUpload && file) {
       setCanUpload(false);
@@ -192,11 +195,6 @@ const DocumentUpload: React.FC = () => {
         </div>
       )}
 
-      {/* <p style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>Example of Document:</p>
-      <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-        <img style={{ height: "600px" }} src="https://imgv2-2-f.scribdassets.com/img/document/638375183/original/44c2ab4867/1710903548?v=1" alt="Example document" />
-      </div> */}
-
       {message && (
         <div className="alert alert-info mt-3">
           <h4>Received Data:</h4>
@@ -206,10 +204,7 @@ const DocumentUpload: React.FC = () => {
 
       {estimateData && (
         <div className="alert alert-info mt-3">
-          {/* <h4>Solar Panel Estimate:</h4>
-          <p>Estimated Panels: {estimateData.estimatedPanels}</p>
-          <p>Estimated Cost: {estimateData.estimatedCost.toFixed(2)} BD</p>
-          <p>Payback Period: {estimateData.paybackPeriod.toFixed(2)} months ({(estimateData.paybackPeriod / 12).toFixed(2)} years)</p> */}
+          <h4>Solar Calculations:</h4>
           <Bar data={data} />
         </div>
       )}
