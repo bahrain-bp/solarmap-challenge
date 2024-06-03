@@ -143,7 +143,7 @@ export const handler = async (event: any): Promise<any> => {
     const TableName = Table.Connections.tableName;
     const dynamoDb = new DynamoDB.DocumentClient();
 
-    const url = "wss://zrzuvslvoj.execute-api.us-east-1.amazonaws.com/husain";
+    const url = "wss://fckt4ovy57.execute-api.us-east-1.amazonaws.com/prod";
     const messageData =
     "Address: " + combinedText + 
     ', Maximum Electricity Power Supply: ' + electricitySupply +
