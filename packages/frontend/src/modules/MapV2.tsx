@@ -7,6 +7,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import ToggleIcon from '@mui/icons-material/ToggleOn'; // Import toggle icon
 import ToggleOffIcon from '@mui/icons-material/ToggleOff'; // Import toggle off icon
 
+import { useNavigate } from 'react-router-dom';
 
 // npm install --save @maptiler/geocoding-control
 import './geoCoding.css'
@@ -25,8 +26,9 @@ MapboxDraw.constants.classes.CONTROL_PREFIX = "maplibregl-ctrl-";
 // @ts-ignore
 MapboxDraw.constants.classes.CONTROL_GROUP = "maplibregl-ctrl-group";
 
+let coordinates: [number, number][][] = [];
 // Define coordinates array here
-let coordinates = [
+/* let coordinates = [
   [
     [0, 0], // Placeholder coordinates
     [0, 0],
@@ -34,7 +36,7 @@ let coordinates = [
     [0, 0],
     [0, 0] // closing the polygon to bottom left
   ]
-];
+]; */
 
 interface MapV2Props {
   identityPoolId: string;
@@ -51,6 +53,9 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
 
   const [mapController, setMapController] = useState<MapController | undefined>()
   const [isCalculatorVisible, setIsCalculatorVisible] = useState(false);
+
+  const navigate = useNavigate();
+
 
   // Function to handle toggle
   const handleToggle = () => {
@@ -76,6 +81,14 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
           style: `https://maps.geo.${region}.amazonaws.com/maps/v0/maps/${mapName}/style-descriptor`,
           ...authHelper.getMapAuthenticationOptions(),
         });
+
+        mapRef.current.getCanvas().className = 'mapboxgl-canvas maplibregl-canvas';
+        mapRef.current.getContainer().classList.add('mapboxgl-map');
+        const canvasContainer = mapRef.current.getCanvasContainer();
+        canvasContainer.classList.add('mapboxgl-canvas-container');
+        if (canvasContainer.classList.contains('maplibregl-interactive')) {
+          canvasContainer.classList.add('mapboxgl-interactive');
+        }
 
         mapRef.current.on('load', () => {
 
@@ -151,6 +164,14 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
               drawBoxAroundPoint(coordinates);
               setIsModalVisible(true); // Show modal after drawing the box
 
+              mapRef.current?.fitBounds(
+                new maplibregl.LngLatBounds(
+                  new maplibregl.LngLat(coordinates[0] - boxSize, coordinates[1] - boxSize),
+                  new maplibregl.LngLat(coordinates[0] + boxSize, coordinates[1] + boxSize)
+                ),
+                { padding: 20 }
+              );
+
               mapRef.current?.flyTo({
                 center: coordinates,
                 zoom: 17, // Set the desired zoom level here
@@ -182,6 +203,31 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
       }
     };
   }, [identityPoolId, mapName]); // Effect dependencies
+
+  const styleMapControls = () => {
+    const buttons = document.querySelectorAll(
+      ".mapbox-gl-draw_ctrl-draw-btn, .mapboxgl-ctrl-geolocate, .maplibregl-ctrl-geolocate"
+    );
+    buttons.forEach((button) => {
+      (button as HTMLElement).style.margin = "10px";
+      (button as HTMLElement).style.width = "40px";
+      (button as HTMLElement).style.height = "40px";
+      (button as HTMLElement).style.backgroundColor = "white";
+      (button as HTMLElement).style.borderRadius = "2px";
+      (button as HTMLElement).style.display = "flex";
+      (button as HTMLElement).style.justifyContent = "center";
+      (button as HTMLElement).style.alignItems = "center";
+    });
+  };
+
+  useEffect(() => {
+    // styleMapControls();
+
+    if (mapRef.current) {
+      mapRef.current.on("draw.create", styleMapControls);
+    }
+  }, [drawControl]);
+
 
   const drawBoxAroundPoint = (center: number[], size: number = boxSize) => {
     const [lng, lat] = center;
@@ -249,6 +295,7 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
   const reAddDrawControl = () => {
     if (drawControl && mapRef.current) {
       mapRef.current.addControl(drawControl as any);
+      // styleMapControls();
     }
   };
 
@@ -320,6 +367,14 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
       croppedCanvas.height = height;
       const ctx = croppedCanvas.getContext('2d');
 
+      // const sx = Math.floor(minX);
+      // const sy = Math.floor(minY);
+      // const sWidth = Math.ceil(width);
+      // const sHeight = Math.ceil(height);
+
+      // ctx!.drawImage(canvas, sx, sy, sWidth, sHeight, 0, 0, sWidth, sHeight);
+      
+
       // Draw the cropped area onto the new canvas
       ctx!.drawImage(canvas, minX, minY, width, height, 0, 0, width, height);
       const dataUrl = croppedCanvas.toDataURL('image/png');
@@ -363,9 +418,11 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
             .then(response => response.json())
             .then(data => {
               console.log('Success:', data);
+              navigate('/SegmentationResults');  // Redirect to home page after success
             })
             .catch(error => {
               console.error('Error:', error);
+              navigate('/SegmentationResults');  // Redirect to home page even if there's an error
             });
         });
 
