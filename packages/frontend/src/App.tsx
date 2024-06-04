@@ -26,6 +26,7 @@ import CalculationReccomendation from './components/CalculationRec';
 import CalcUsageStats from './components/CalculatorUsageStats';
 import AdminMapAnalytics from './pages/AdminMapAnalytics/AdminMapAnalytics';
 
+import CalculationResultsPage from './pages/SegmentationResults';
 import { Authenticator } from './modules/Authenticator';
 import { getCurrentUser, signOut } from 'aws-amplify/auth';
 import '@aws-amplify/ui-react/styles.css';
@@ -149,6 +150,7 @@ function App() {
       <Route path="/Terms" element={<Terms />} />
       <Route path="/Privacy" element={<Privacy />} />
       <Route path="/Inquiry" element={<Inquiry />} />
+      <Route path="/SegmentationResults" element={<CalculationResultsPage />} />
       <Route path="*" element={<ErrorView />} />
     </Routes>
   );
