@@ -16,6 +16,8 @@ import Modal from '@mui/material/Modal';
 import solarprovider from '../../assets/solarprovider.jpg';
 import AddConsultant from './addConsultants';
 import AddContractor from './addContractor';
+import EditConsultant from './editConsultant';
+import EditContractor from './editContractor';
 import pattern from '../../assets/pattern.png';
 
 const apiurl: string = exportString();
@@ -109,6 +111,7 @@ const Providers: React.FC<ProvidersProps> = ({ isLoggedIn }) => {
   const [snackbarMessage, setSnackbarMessage] = useState<string>('');
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [modalType, setModalType] = useState<string>(''); // 'consultant' or 'contractor'
+  const [editProvider, setEditProvider] = useState<Consultant | Contractor | null>(null); // Add editProvider state
   const [refreshTrigger, setRefreshTrigger] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [rowsPerPage, ] = useState<number>(6);
@@ -125,6 +128,7 @@ const Providers: React.FC<ProvidersProps> = ({ isLoggedIn }) => {
 
   const handleCloseModal = () => {
     setModalOpen(false);
+    setEditProvider(null); // Reset editProvider state on close
   };
 
   const fetchProviders = async () => {
@@ -190,6 +194,12 @@ const Providers: React.FC<ProvidersProps> = ({ isLoggedIn }) => {
     }
   };
 
+  const handleEditProvider = (provider: Consultant | Contractor, type: 'consultant' | 'contractor') => {
+    setEditProvider(provider);
+    setModalType(type);
+    setModalOpen(true);
+  };
+
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
   };
@@ -238,24 +248,24 @@ const Providers: React.FC<ProvidersProps> = ({ isLoggedIn }) => {
         </Box>
       </Box>
       <Box
-      sx={{
-        background: `url(${pattern})`, // Use imported pattern as background
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        py: 8,
-      }}
-    >
-      <Container>
-        <Box sx={{ mb: 4, p: 3, borderRadius: 2 }}>
-          <Typography variant="h6" sx={{ mb: 2 }}>
-            Contractors: These are the entities responsible for the installation and construction of solar PV systems. The levels (D, C, B, A) indicate the qualifications and capabilities of the contractors, with A being the highest.
-          </Typography>
-          <Typography variant="h6" sx={{ mb: 2 }}>
-            Consultants: These are the entities responsible for the planning, design, and consultancy services for solar PV systems. The levels (C, A) and combinations (C + B) indicate their qualifications and capabilities, with A being the highest.
-          </Typography>
-        </Box>
-        <LevelsSection />
-      </Container>
+        sx={{
+          background: `url(${pattern})`, // Use imported pattern as background
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          py: 8,
+        }}
+      >
+        <Container>
+          <Box sx={{ mb: 4, p: 3, borderRadius: 2 }}>
+            <Typography variant="h6" sx={{ mb: 2, color: 'black' }}>
+              Contractors: These are the entities responsible for the installation and construction of solar PV systems. The levels (D, C, B, A) indicate the qualifications and capabilities of the contractors, with A being the highest.
+            </Typography>
+            <Typography variant="h6" sx={{ mb: 2, color: 'black' }}>
+              Consultants: These are the entities responsible for the planning, design, and consultancy services for solar PV systems. The levels (C, A) and combinations (C + B) indicate their qualifications and capabilities, with A being the highest.
+            </Typography>
+          </Box>
+          <LevelsSection />
+        </Container>
       </Box>
       <Container sx={{ flex: 1, py: 4, pb: 8 }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
@@ -341,11 +351,11 @@ const Providers: React.FC<ProvidersProps> = ({ isLoggedIn }) => {
                     backgroundColor: '#073763',
                     position: 'relative',
                     height: '100%',
-                     color: 'white'
+                    color: 'white'
                   }}
                 >
                   <Box sx={{ p: 2 }}>
-                    <Typography variant="h6" gutterBottom>
+                    <Typography variant="h6" gutterBottom sx={{ color: 'white' }}>
                       {consultant.name}
                     </Typography>
                     <Typography variant="body2" sx={{ mb: 2, color: 'white' }}>
@@ -372,6 +382,15 @@ const Providers: React.FC<ProvidersProps> = ({ isLoggedIn }) => {
                       >
                         Delete Consultant
                       </Button>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        startIcon={<Iconify icon="eva:edit-outline" />}
+                        onClick={() => handleEditProvider(consultant, 'consultant')}
+                        sx={{ fontSize: '0.75rem' }}
+                      >
+                        Edit Consultant
+                      </Button>
                     </Stack>
                   )}
                 </Box>
@@ -387,22 +406,23 @@ const Providers: React.FC<ProvidersProps> = ({ isLoggedIn }) => {
                     backgroundColor: '#073763',
                     position: 'relative',
                     height: '100%',
+                    color: 'white'
                   }}
                 >
                   <Box sx={{ p: 2 }}>
-                    <Typography variant="h6" gutterBottom>
+                    <Typography variant="h6" gutterBottom sx={{ color: 'white' }}>
                       {contractor.name}
                     </Typography>
-                    <Typography variant="body2" sx={{ mb: 2 }}>
+                    <Typography variant="body2" sx={{ mb: 2, color: 'white' }}>
                       Level: {contractor.level}
                     </Typography>
-                    <Typography variant="body2" sx={{ mb: 2 }}>
+                    <Typography variant="body2" sx={{ mb: 2, color: 'white' }}>
                       License Number: {contractor.license_num}
                     </Typography>
-                    <Typography variant="body2" sx={{ mb: 2 }}>
+                    <Typography variant="body2" sx={{ mb: 2, color: 'white' }}>
                       Contact Information: {contractor.contact_info}
                     </Typography>
-                    <Typography variant="body2" sx={{ mb: 2 }}>
+                    <Typography variant="body2" sx={{ mb: 2, color: 'white' }}>
                       Fax: {contractor.fax}
                     </Typography>
                   </Box>
@@ -416,6 +436,15 @@ const Providers: React.FC<ProvidersProps> = ({ isLoggedIn }) => {
                         sx={{ fontSize: '0.75rem' }}
                       >
                         Delete Contractor
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        startIcon={<Iconify icon="eva:edit-outline" />}
+                        onClick={() => handleEditProvider(contractor, 'contractor')}
+                        sx={{ fontSize: '0.75rem' }}
+                      >
+                        Edit Contractor
                       </Button>
                     </Stack>
                   )}
@@ -450,11 +479,17 @@ const Providers: React.FC<ProvidersProps> = ({ isLoggedIn }) => {
 
       <Modal open={modalOpen} onClose={handleCloseModal}>
         <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', maxWidth: 800, bgcolor: 'background.paper', borderRadius: 2, boxShadow: 24, p: 4 }}>
-          {modalType === 'consultant' && (
+          {modalType === 'consultant' && !editProvider && (
             <AddConsultant onClose={() => { handleCloseModal(); setRefreshTrigger(!refreshTrigger); }} />
           )}
-          {modalType === 'contractor' && (
+          {modalType === 'contractor' && !editProvider && (
             <AddContractor onClose={() => { handleCloseModal(); setRefreshTrigger(!refreshTrigger); }} />
+          )}
+          {modalType === 'consultant' && editProvider && (
+            <EditConsultant consultant={editProvider as Consultant} onClose={() => { handleCloseModal(); setRefreshTrigger(!refreshTrigger); }} />
+          )}
+          {modalType === 'contractor' && editProvider && (
+            <EditContractor contractor={editProvider as Contractor} onClose={() => { handleCloseModal(); setRefreshTrigger(!refreshTrigger); }} />
           )}
         </Box>
       </Modal>

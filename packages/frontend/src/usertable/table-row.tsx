@@ -4,6 +4,7 @@ import TableCell from '@mui/material/TableCell';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ListAltIcon from '@mui/icons-material/ListAlt';
+import CircularProgress from '@mui/material/CircularProgress';
 import { Tooltip } from '@mui/material';
 
 // Define the props interface
@@ -12,11 +13,12 @@ interface UserTableRowProps {
   firstName: string;
   lastName: string;
   verified: string;
-  onClickEdit: () => void;
-  onClickDelete: () => void;
+  onClickEdit?: () => void;
+  onClickDelete?: () => void;
+  actionLoading?: boolean; // New prop for loading state
 }
 
-const UserTableRow: React.FC<UserTableRowProps> = ({ email, firstName, lastName, verified, onClickEdit, onClickDelete }) => {
+const UserTableRow: React.FC<UserTableRowProps> = ({ email, firstName, lastName, verified, onClickEdit, onClickDelete, actionLoading }) => {
   return (
     <TableRow hover tabIndex={-1}>
       <TableCell></TableCell>
@@ -32,6 +34,7 @@ const UserTableRow: React.FC<UserTableRowProps> = ({ email, firstName, lastName,
             size="small"
             color="primary"
             onClick={onClickEdit}
+            disabled={!onClickEdit || actionLoading} // Disable if loading
           >
             <ListAltIcon fontSize="small" />
           </Button>
@@ -43,8 +46,9 @@ const UserTableRow: React.FC<UserTableRowProps> = ({ email, firstName, lastName,
             size="small"
             color="error"
             onClick={onClickDelete}
+            disabled={!onClickDelete || actionLoading} // Disable if loading
           >
-            <DeleteIcon fontSize="small" />
+            {actionLoading ? <CircularProgress size={24} /> : <DeleteIcon fontSize="small" />}
           </Button>
         </Tooltip>
       </TableCell>

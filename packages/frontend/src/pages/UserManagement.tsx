@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Snackbar, Alert } from '@mui/material';
 import UserTableToolbar from '../usertable/table-toolbar';
 import UserTableRow from '../usertable/table-row';
 import TableNoData from '../usertable/table-no-data';
@@ -10,6 +11,7 @@ import Scrollbar from '../components/scrollbar';
 import { Table, TableBody, TableContainer, TablePagination, CircularProgress, Box, Typography } from '@mui/material';
 import solarprovider from '../assets/usermanagement.jpg';
 import pattern from '../assets/pattern.png';
+import { fetchUserAttributes } from '@aws-amplify/auth';
 
 interface User {
   Username: string;
@@ -31,6 +33,22 @@ const UserManagement: React.FC = () => {
   const [formError, setFormError] = useState<string | null>(null);
   const [formSuccess, setFormSuccess] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
+  const [actionLoading, setActionLoading] = useState<boolean>(false); // New state for action loading
+
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const data = await fetchUserAttributes();
+        const email = data.email;
+        setCurrentUserEmail(email || null);
+      } catch (err) {
+        console.error('Failed to fetch current user:', err);
+      }
+    };
+
+    fetchCurrentUser();
+  }, []);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -63,6 +81,7 @@ const UserManagement: React.FC = () => {
     e.preventDefault();
     setFormError(null);
     setFormSuccess(null);
+    setActionLoading(true); // Start loading
 
     try {
       const url = `${import.meta.env.VITE_API_URL}/users`;
@@ -95,6 +114,8 @@ const UserManagement: React.FC = () => {
     } catch (err) {
       console.error(err);
       setFormError(isEditing ? 'Failed to update user' : 'Failed to create user');
+    } finally {
+      setActionLoading(false); // End loading
     }
   };
 
@@ -109,6 +130,7 @@ const UserManagement: React.FC = () => {
   };
 
   const handleDeleteClick = async (email: string) => {
+    setActionLoading(true); // Start loading
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/users`, {
         method: 'DELETE',
@@ -117,13 +139,13 @@ const UserManagement: React.FC = () => {
         },
         body: JSON.stringify({ email })
       });
-
+  
       if (!response.ok) {
         throw new Error('Failed to delete user');
       }
-
+  
       setFormSuccess('User deleted successfully');
-
+  
       // Refresh the user list
       const updatedUsersResponse = await fetch(`${import.meta.env.VITE_API_URL}/users`);
       const updatedUsers = await updatedUsersResponse.json();
@@ -131,8 +153,11 @@ const UserManagement: React.FC = () => {
     } catch (err) {
       console.error(err);
       setFormError('Failed to delete user');
+    } finally {
+      setActionLoading(false); // End loading
     }
   };
+  
 
   // table vars
   const [page, setPage] = useState(0);
@@ -206,55 +231,73 @@ const UserManagement: React.FC = () => {
       </Box>
       <Box sx={{ background: `url(${pattern})`, backgroundSize: 'cover', backgroundPosition: 'center', py: 8, marginTop: '-4px', flex: 1 }}>
         <div className="container">
-          <button className="btn btn-primary mb-3" onClick={() => { setShowForm(!showForm); setIsEditing(false); }}>
-            {showForm ? 'Hide Form' : 'Add User'}
+          <button className="btn btn-primary mb-3" onClick={() => { setShowForm(true); setIsEditing(false); }}>
+            Add User
           </button>
-          {showForm && (
-            <form onSubmit={handleSubmit} className="mb-3">
-              {formError && <div className="alert alert-danger">{formError}</div>}
-              {formSuccess && <div className="alert alert-success">{formSuccess}</div>}
-              <div className="form-group">
-                <label htmlFor="email">Email</label>
-                <input
-                  type="email"
-                  className="form-control"
+          <Dialog open={showForm} onClose={() => setShowForm(false)}>
+            <form onSubmit={handleSubmit}>
+              <DialogTitle>{isEditing ? 'Edit User' : 'Add User'}</DialogTitle>
+              <DialogContent>
+                <TextField
+                  margin="dense"
                   id="email"
                   name="email"
+                  label="Email"
+                  type="email"
+                  fullWidth
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  readOnly={isEditing} // Make email read-only when editing
+                  InputProps={{ readOnly: isEditing }} // Correct way to use readOnly
                 />
-              </div>
-              <div className="form-group">
-                <label htmlFor="firstName">First Name</label>
-                <input
-                  type="text"
-                  className="form-control"
+
+                <TextField
+                  margin="dense"
                   id="firstName"
                   name="firstName"
+                  label="First Name"
+                  type="text"
+                  fullWidth
                   value={formData.firstName}
                   onChange={handleChange}
                   required
                 />
-              </div>
-              <div className="form-group">
-                <label htmlFor="lastName">Last Name</label>
-                <input
-                  type="text"
-                  className="form-control"
+                <TextField
+                  margin="dense"
                   id="lastName"
                   name="lastName"
+                  label="Last Name"
+                  type="text"
+                  fullWidth
                   value={formData.lastName}
                   onChange={handleChange}
                   required
                 />
-              </div>
-              <button type="submit" className="btn btn-primary">
-                {isEditing ? 'Update User' : 'Create User'}
-              </button>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={() => setShowForm(false)} color="primary">
+                  Cancel
+                </Button>
+                <Button type="submit" color="primary" disabled={actionLoading}>
+                  {actionLoading ? <CircularProgress size={24} /> : isEditing ? 'Update User' : 'Add User'}
+                </Button>
+              </DialogActions>
             </form>
-          )}
+          </Dialog>
+          <Snackbar
+            open={!!formError || !!formSuccess}
+            autoHideDuration={6000}
+            onClose={() => { setFormError(null); setFormSuccess(null); }}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+          >
+            <Alert
+              onClose={() => { setFormError(null); setFormSuccess(null); }}
+              severity={formError ? 'error' : 'success'}
+              sx={{ width: '100%' }}
+            >
+              {formError || formSuccess}
+            </Alert>
+          </Snackbar>
           <div className="table-responsive">
             <UserTableToolbar
               filterName={filterName}
@@ -295,28 +338,31 @@ const UserManagement: React.FC = () => {
                     ]}
                   />
                   <TableBody>
-                    {dataFiltered
-                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                      .map((row) => {
-                        const verified = row.Attributes.find((attr) => attr.Name === 'email_verified')?.Value;
-                        return (
-                          <UserTableRow
-                            key={row.Username}
-                            email={row.Attributes.find((attr) => attr.Name === 'email')?.Value || 'N/A'}
-                            firstName={row.Attributes.find((attr) => attr.Name === 'given_name')?.Value || 'N/A'}
-                            lastName={row.Attributes.find((attr) => attr.Name === 'family_name')?.Value || 'N/A'}
-                            verified={verified === 'true' ? 'Verified' : 'Not Verified'}
-                            onClickEdit={() => handleEditClick(row)}
-                            onClickDelete={() => handleDeleteClick(row.Attributes.find((attr) => attr.Name === 'email')?.Value || '')}
-                          />
-                        );
-                      })}
-                    <TableEmptyRows
-                      height={77}
-                      emptyRows={emptyRows(page, rowsPerPage, users.length)}
-                    />
-                    {notFound && <TableNoData query={filterName} />}
-                  </TableBody>
+  {dataFiltered
+    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+    .map((row) => {
+      const verified = row.Attributes.find((attr) => attr.Name === 'email_verified')?.Value;
+      const isCurrentUser = currentUserEmail === row.Attributes.find((attr) => attr.Name === 'email')?.Value;
+      return (
+        <UserTableRow
+          key={row.Username}
+          email={row.Attributes.find((attr) => attr.Name === 'email')?.Value || 'N/A'}
+          firstName={row.Attributes.find((attr) => attr.Name === 'given_name')?.Value || 'N/A'}
+          lastName={row.Attributes.find((attr) => attr.Name === 'family_name')?.Value || 'N/A'}
+          verified={verified === 'true' ? 'Verified' : 'Not Verified'}
+          onClickEdit={isCurrentUser ? undefined : () => handleEditClick(row)}
+          onClickDelete={isCurrentUser ? undefined : () => handleDeleteClick(row.Attributes.find((attr) => attr.Name === 'email')?.Value || '')}
+          actionLoading={actionLoading} // Pass actionLoading to UserTableRow
+        />
+      );
+    })}
+  <TableEmptyRows
+    height={77}
+    emptyRows={emptyRows(page, rowsPerPage, users.length)}
+  />
+  {notFound && <TableNoData query={filterName} />}
+</TableBody>
+
                 </Table>
               </TableContainer>
             </Scrollbar>
