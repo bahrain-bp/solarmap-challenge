@@ -490,7 +490,7 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
   return (
     <>
       {isModalVisible && featureCoordinates && (
-        <div className="modal show" role="dialog" style={{ display: 'block', position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 1050 }}>
+        <div className="modal show" role="dialog" style={{ display: 'block', position: 'fixed', top: '60%', left: '30%', transform: 'translate(-50%, -50%)', zIndex: 1050 }}>
           <div className="modal-dialog" role="document" style={{ width: '300px' }}> {/* Smaller width */}
             <div className="modal-content">
               <div className="modal-header">
@@ -515,11 +515,9 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
                       drawBoxAroundPoint(featureCoordinates[0], newSize);
                     }
                   }}
-
                   style={{ width: '100%' }}
                 />
               </div>
-
               <div className="modal-footer" style={{ padding: '10px' }}>
                 <button type="button" className="btn btn-primary" onClick={handleSubmit}>Confirm</button>
                 <button type="button" className="btn btn-secondary" onClick={handleReset}>Reset</button>
