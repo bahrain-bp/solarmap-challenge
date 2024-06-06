@@ -68,6 +68,9 @@ export function ApiStack(context: StackContext) {
 
             "GET /testWebSocket": "packages/functions/src/testWebSocket.handler",
                       "POST /segmentedRooftop": "packages/functions/src/segmentedRooftop.handler",
+              "PUT /consultants/{consultant_id}": "packages/functions/src/updateConsultant.handler",
+                      "PUT /contractors/{contractor_id}": "packages/functions/src/updateContractor.handler",
+
 
           "PUT /resources/{resource_id}": "packages/functions/src/updateEduResources.handler",
             // Lambda function to send SNS SMS messages to subscribed users
