@@ -12,9 +12,9 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import GuideHeader from '../assets/guide.jpg';
 import PlaceholderImage from '../assets/default-fallback-image.png';
 import ProvidersImg from '../assets/shutterstock_1424590880-scaled-ezgif.com-webp-to-jpg-converter.jpg';
-import MapImg from '../assets/steps-banner-mobile-ezgif.com-webp-to-jpg-converter.jpg';
+import MapImg from '../assets/bahrainmap.png';
 import EduResourceImg from '../assets/types-of-solar-panels-in-india-ezgif.com-webp-to-jpg-converter.jpg';
-import BillUploadImg from '../assets/solar-panels-1224822604-c4966ef86487433fb863c3372dd3879b.jpg';
+import BillUploadImg from '../assets/ewabill.jpg';
 import Chip from '@mui/material/Chip';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
@@ -64,11 +64,20 @@ const tutorialSteps: TutorialSteps = {
 
 const items = [
     {
-        icon: <ViewQuiltRoundedIcon />,
-        title: 'Providers',
-        description: 'Information about providers and their services.',
-        imageLight: ProvidersImg,
-        imageDark: ProvidersImg,
+        icon: <DevicesRoundedIcon />,
+        title: 'Map',
+        description: 'Interactive map tool for analysis.',
+        imageLight: MapImg,
+        imageDark: MapImg,
+        extendedDesc: 'Use the interactive map to analyze the solar potential of different areas and make informed decisions about solar panel installations.',
+    },
+    {
+        icon: <DevicesRoundedIcon />,
+        title: 'Document Upload',
+        description: 'Upload your EWA Bills for analysis.',
+        imageLight: BillUploadImg,
+        imageDark: BillUploadImg,
+        extendedDesc: 'Easily upload your EWA bills to get detailed analysis and insights on your energy consumption and potential savings with solar panels.',
     },
     {
         icon: <EdgesensorHighRoundedIcon />,
@@ -76,27 +85,23 @@ const items = [
         description: 'Access a variety of educational materials.',
         imageLight: EduResourceImg,
         imageDark: EduResourceImg,
+        extendedDesc: 'Explore a range of educational resources to learn more about solar energy, its benefits, and how it can be implemented in your property.',
+    },
+    {
+        icon: <ViewQuiltRoundedIcon />,
+        title: 'Providers',
+        description: 'Information about Contractors and Consultants and their services.',
+        imageLight: ProvidersImg,
+        imageDark: ProvidersImg,
+        extendedDesc: 'Get detailed information about contractors and consultants who can help you with your solar panel installation and maintenance needs.',
     },
     {
         icon: <DevicesRoundedIcon />,
-        title: 'Document Upload',
-        description: 'Upload and manage your documents.',
-        imageLight: BillUploadImg,
-        imageDark: BillUploadImg,
-    },
-    {
-        icon: <DevicesRoundedIcon />,
-        title: 'Map',
-        description: 'Interactive map tool for analysis.',
-        imageLight: MapImg,
-        imageDark: MapImg,
-    },
-    {
-        icon: <DevicesRoundedIcon />,
-        title: 'Carbon Calculator',
+        title: 'Carbon Footprint Calculator',
         description: 'Calculate your carbon footprint easily.',
         imageLight: PlaceholderImage,
         imageDark: PlaceholderImage,
+        extendedDesc: 'Calculate your carbon footprint and find out how much you can reduce it by switching to solar energy.',
     },
 ];
 
@@ -171,17 +176,15 @@ const Guide: React.FC = () => {
                     <Grid container spacing={6}>
                         <Grid item xs={12} md={6}>
                             <div>
-                                <Typography component="h2" variant="h4" color="text.primary">
-                                    Product features
+                                <Typography component="h2" variant="h4" color="text.primary" sx={{ pb: 4 }}>
+                                    Our Features
                                 </Typography>
                                 <Typography
                                     variant="body1"
                                     color="text.secondary"
                                     sx={{ mb: { xs: 2, sm: 4 } }}
                                 >
-                                    Here you can provide a brief overview of the key features of the
-                                    product. For example, you could list the number of features, the types
-                                    of features, add-ons, or the benefits of the features.
+                                    Our app helps you easily assess if solar panels are right for your property. It uses your property data and solar energy potential to give you accurate information. You can upload documents, see a visual of your property with potential solar panels, and get detailed reports on costs and savings. Everything is updated in real-time to make the process simple and efficient for you.
                                 </Typography>
                             </div>
                             <Grid container item gap={1} sx={{ display: { xs: 'auto', sm: 'none' } }}>
@@ -234,8 +237,7 @@ const Guide: React.FC = () => {
                                         {selectedFeature.description}
                                     </Typography>
                                     <Typography color="text.secondary" variant="body2">
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                                        Nulla vitae elit libero, a pharetra augue.
+                                        {selectedFeature.extendedDesc}
                                     </Typography>
                                     <Link
                                         color="primary"
@@ -385,19 +387,18 @@ const Guide: React.FC = () => {
                                         {selectedFeature.description}
                                     </Typography>
                                     <Typography color="text.secondary" variant="body2">
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                                        Nulla vitae elit libero, a pharetra augue.
+                                        {selectedFeature.extendedDesc}
                                     </Typography>
                                 </Box>
                             </Card>
                         </Grid>
                     </Grid>
                 </Container>
-                
+
                 <Container sx={{ flex: 1, py: 4, pb: 8 }}>
-                <Typography component="h2" variant="h4" color="text.primary" sx={{ pb: 4 }}>
-    Step by Step Tutorials
-</Typography>
+                    <Typography component="h2" variant="h4" color="text.primary" sx={{ pb: 4 }}>
+                        Step by Step Tutorials
+                    </Typography>
 
                     <ButtonGroup variant="contained" sx={{ mb: 4 }}>
                         <Button
