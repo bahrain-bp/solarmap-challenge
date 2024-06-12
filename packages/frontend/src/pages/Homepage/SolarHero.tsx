@@ -1,9 +1,16 @@
+import { useNavigate } from 'react-router-dom';
 import Button from '../../components/Button';
 import Typography from '../../components/Typography';
 import SolarHeroLayout from './SolarHeroLayout';
 import video from '../../assets/herovideo.mp4'; // Adjust the import path as needed
 
 export default function SolarHero() {
+  const navigate = useNavigate();
+
+  const handleGetStartedClick = () => {
+    navigate('/Guide');
+  };
+
   return (
     <SolarHeroLayout
       sxBackground={{
@@ -68,8 +75,7 @@ export default function SolarHero() {
           color="secondary"
           variant="contained"
           size="large"
-          component="a"
-          href="/MapV2"
+          onClick={handleGetStartedClick}
           sx={{ minWidth: 200 }}
         >
           Get Started

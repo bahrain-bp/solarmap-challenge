@@ -25,7 +25,7 @@ import Reports from './pages/Reports';
 import CalculationReccomendation from './components/CalculationRec';
 import CalcUsageStats from './components/CalculatorUsageStats';
 import AdminMapAnalytics from './pages/AdminMapAnalytics/AdminMapAnalytics';
-
+import Guide from './pages/Guide';
 import CalculationResultsPage from './pages/SegmentationResults';
 import { Authenticator } from './modules/Authenticator';
 import { getCurrentUser, signOut } from 'aws-amplify/auth';
@@ -134,6 +134,7 @@ function App() {
       <Route path="/Privacy" element={<Privacy />} />
       <Route path="/Inquiry" element={<Inquiry />} />
       <Route path="/UserManagement" element={<UserManagement />} />
+      <Route path="/Guide" element={<Guide />} />
       <Route path="*" element={<ErrorView />} />
     </Routes>
   );
@@ -150,6 +151,7 @@ function App() {
       <Route path="/Terms" element={<Terms />} />
       <Route path="/Privacy" element={<Privacy />} />
       <Route path="/Inquiry" element={<Inquiry />} />
+      <Route path="/Guide" element={<Guide />} />
       <Route path="/SegmentationResults" element={<CalculationResultsPage />} />
       <Route path="*" element={<ErrorView />} />
     </Routes>

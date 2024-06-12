@@ -31,6 +31,7 @@ import FolderIcon from '@mui/icons-material/Folder';
 import MapIcon from '@mui/icons-material/Map';
 import ThermostatIcon from '@mui/icons-material/Thermostat';
 import StatsIcon from '@mui/icons-material/BarChart';
+import BookIcon from '@mui/icons-material/Book'; // Add icon for Guide
 
 interface DrawerLinkProps {
   active: boolean;
@@ -125,7 +126,8 @@ const icons: { [key: string]: JSX.Element } = {
   'Heat Map': <ThermostatIcon />,
   'Calculator Usage Stats': <StatsIcon />,
   User: <PeopleIcon />,
-  About: <InfoIcon />
+  About: <InfoIcon />,
+  Guide: <BookIcon /> // Add icon for Guide
 };
 
 const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
@@ -212,6 +214,12 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
         <DrawerLink active={isActive('/')} onClick={() => navigate('/')}>
           {icons.Home}
           <ListItemText primary="Home" sx={{ marginLeft: theme.spacing(1) }} />
+        </DrawerLink>
+      </ListItem>
+      <ListItem disablePadding>
+        <DrawerLink active={isActive('/Guide')} onClick={() => navigate('/Guide')}>
+          {icons.Guide}
+          <ListItemText primary="Guide" sx={{ marginLeft: theme.spacing(1) }} />
         </DrawerLink>
       </ListItem>
       <ListItem disablePadding>
@@ -337,6 +345,9 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
             <>
               <StyledLink onClick={() => navigate('/')} className={isActive('/') ? 'active' : ''}>
                 Home
+              </StyledLink>
+              <StyledLink onClick={() => navigate('/Guide')} className={isActive('/Guide') ? 'active' : ''}>
+                Guide
               </StyledLink>
               <StyledLink onClick={() => navigate('/Provider')} className={isActive('/Provider') ? 'active' : ''}>
                 Providers
