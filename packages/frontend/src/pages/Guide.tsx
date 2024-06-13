@@ -11,17 +11,25 @@ import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import GuideHeader from '../assets/guide.jpg';
 import PlaceholderImage from '../assets/default-fallback-image.png';
-import ProvidersImg from '../assets/shutterstock_1424590880-scaled-ezgif.com-webp-to-jpg-converter.jpg';
+import ProvidersImg from '../assets/installing-solar-panels-ezgif.com-webp-to-jpg-converter.jpg';
 import MapImg from '../assets/bahrainmap.png';
 import EduResourceImg from '../assets/types-of-solar-panels-in-india-ezgif.com-webp-to-jpg-converter.jpg';
 import BillUploadImg from '../assets/ewabill.jpg';
+import carbon from '../assets/csm_SW_Carbon_footprint_9f8063814d.png';
+import ChatbotImg from '../assets/chatbot-3-ezgif.com-webp-to-jpg-converter.jpg';
 import Chip from '@mui/material/Chip';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
-import DevicesRoundedIcon from '@mui/icons-material/DevicesRounded';
-import EdgesensorHighRoundedIcon from '@mui/icons-material/EdgesensorHighRounded';
-import ViewQuiltRoundedIcon from '@mui/icons-material/ViewQuiltRounded';
+import InsertDriveFileRoundedIcon from '@mui/icons-material/InsertDriveFileRounded';
+import MapRoundedIcon from '@mui/icons-material/MapRounded';
+import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded';
+import PeopleRoundedIcon from '@mui/icons-material/PeopleRounded';
+import EcoRoundedIcon from '@mui/icons-material/Grass';
+import ChatRoundedIcon from '@mui/icons-material/ChatRounded';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Collapse from '@mui/material/Collapse';
+import IconButton from '@mui/material/IconButton';
 
 type TutorialStep = { title: string; heading: string; description: string };
 type Tutorial = { steps: TutorialStep[]; route: string };
@@ -60,11 +68,27 @@ const tutorialSteps: TutorialSteps = {
         ],
         route: '/EducationalResources',
     },
+    carbonFootprintCalculator: {
+        steps: [
+            { title: 'STEP 1', heading: 'Open Calculator', description: 'Open the carbon footprint calculator from the dashboard.' },
+            { title: 'STEP 2', heading: 'Input Data', description: 'Enter your energy consumption data.' },
+            { title: 'STEP 3', heading: 'View Results', description: 'See your carbon footprint and potential savings with solar panels.' },
+        ],
+        route: '/CarbonFootprintCalculator',
+    },
+    chatbot: {
+        steps: [
+            { title: 'STEP 1', heading: 'Open Chatbot', description: 'Open the chatbot from the dashboard.' },
+            { title: 'STEP 2', heading: 'Ask Questions', description: 'Type your questions about solar panels.' },
+            { title: 'STEP 3', heading: 'Get Answers', description: 'Receive instant answers from the chatbot.' },
+        ],
+        route: '/Chatbot',
+    },
 };
 
 const items = [
     {
-        icon: <DevicesRoundedIcon />,
+        icon: <MapRoundedIcon />,
         title: 'Map',
         description: 'Interactive map tool for analysis.',
         imageLight: MapImg,
@@ -72,7 +96,7 @@ const items = [
         extendedDesc: 'Use the interactive map to analyze the solar potential of different areas and make informed decisions about solar panel installations.',
     },
     {
-        icon: <DevicesRoundedIcon />,
+        icon: <InsertDriveFileRoundedIcon />,
         title: 'Document Upload',
         description: 'Upload your EWA Bills for analysis.',
         imageLight: BillUploadImg,
@@ -80,7 +104,7 @@ const items = [
         extendedDesc: 'Easily upload your EWA bills to get detailed analysis and insights on your energy consumption and potential savings with solar panels.',
     },
     {
-        icon: <EdgesensorHighRoundedIcon />,
+        icon: <SchoolRoundedIcon />,
         title: 'Educational Resources',
         description: 'Access a variety of educational materials.',
         imageLight: EduResourceImg,
@@ -88,7 +112,7 @@ const items = [
         extendedDesc: 'Explore a range of educational resources to learn more about solar energy, its benefits, and how it can be implemented in your property.',
     },
     {
-        icon: <ViewQuiltRoundedIcon />,
+        icon: <PeopleRoundedIcon />,
         title: 'Providers',
         description: 'Information about Contractors and Consultants and their services.',
         imageLight: ProvidersImg,
@@ -96,18 +120,27 @@ const items = [
         extendedDesc: 'Get detailed information about contractors and consultants who can help you with your solar panel installation and maintenance needs.',
     },
     {
-        icon: <DevicesRoundedIcon />,
+        icon: <EcoRoundedIcon />,
         title: 'Carbon Footprint Calculator',
         description: 'Calculate your carbon footprint easily.',
-        imageLight: PlaceholderImage,
-        imageDark: PlaceholderImage,
+        imageLight: carbon,
+        imageDark: carbon,
         extendedDesc: 'Calculate your carbon footprint and find out how much you can reduce it by switching to solar energy.',
+    },
+    {
+        icon: <ChatRoundedIcon />,
+        title: 'Chatbot',
+        description: 'Get instant answers about solar panels.',
+        imageLight: ChatbotImg,
+        imageDark: ChatbotImg,
+        extendedDesc: 'Use our chatbot to get instant answers to your questions about solar panels and their benefits.',
     },
 ];
 
 const Guide: React.FC = () => {
     const [currentTutorial, setCurrentTutorial] = useState<string>('calculation');
     const [showInitialOptions, setShowInitialOptions] = useState<boolean>(true);
+    const [isExpanded, setIsExpanded] = useState<boolean>(true);
     const navigate = useNavigate();
     const [selectedItemIndex, setSelectedItemIndex] = useState(0);
 
@@ -126,7 +159,7 @@ const Guide: React.FC = () => {
         navigate(tutorialSteps[currentTutorial].route);
     };
 
-    const handleOptionClick = (option: 'ewaBillUpload' | 'map') => {
+    const handleOptionClick = (option: 'ewaBillUpload' | 'map' | 'carbonFootprintCalculator' | 'chatbot') => {
         setCurrentTutorial(option);
         setShowInitialOptions(false);
     };
@@ -136,12 +169,16 @@ const Guide: React.FC = () => {
         setShowInitialOptions(true);
     };
 
-    const isCalculationView = currentTutorial === 'calculation' || currentTutorial === 'ewaBillUpload' || currentTutorial === 'map';
+    const isCalculationView = currentTutorial === 'calculation' || currentTutorial === 'ewaBillUpload' || currentTutorial === 'map' || currentTutorial === 'carbonFootprintCalculator' || currentTutorial === 'chatbot';
+
+    const handleExpandClick = () => {
+        setIsExpanded(!isExpanded);
+    };
 
     return (
         <>
             <Box sx={{ backgroundColor: 'white', display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-                <Box sx={{ position: 'relative', width: '100%', height: '300px', mb: 4, overflow: 'hidden' }}>
+                <Box sx={{ position: 'relative', width: '100%', height: '300px', mb: 0, overflow: 'hidden' }}>
                     <img
                         src={GuideHeader}
                         alt="Guide"
@@ -172,227 +209,232 @@ const Guide: React.FC = () => {
                         </Typography>
                     </Box>
                 </Box>
-                <Container id="features" sx={{ py: { xs: 8, sm: 16 } }}>
-                    <Grid container spacing={6}>
-                        <Grid item xs={12} md={6}>
-                            <div>
-                                <Typography component="h2" variant="h4" color="text.primary" sx={{ pb: 4 }}>
-                                    Our Features
-                                </Typography>
-                                <Typography
-                                    variant="body1"
-                                    color="text.secondary"
-                                    sx={{ mb: { xs: 2, sm: 4 } }}
-                                >
-                                    Our app helps you easily assess if solar panels are right for your property. It uses your property data and solar energy potential to give you accurate information. You can upload documents, see a visual of your property with potential solar panels, and get detailed reports on costs and savings. Everything is updated in real-time to make the process simple and efficient for you.
-                                </Typography>
-                            </div>
-                            <Grid container item gap={1} sx={{ display: { xs: 'auto', sm: 'none' } }}>
-                                {items.map(({ title }, index) => (
-                                    <Chip
-                                        key={index}
-                                        label={title}
-                                        onClick={() => handleItemClick(index)}
-                                        sx={{
-                                            borderColor: (theme) => {
-                                                if (theme.palette.mode === 'light') {
-                                                    return selectedItemIndex === index ? 'primary.light' : '';
-                                                }
-                                                return selectedItemIndex === index ? 'primary.light' : '';
-                                            },
-                                            background: (theme) => {
-                                                if (theme.palette.mode === 'light') {
-                                                    return selectedItemIndex === index ? 'none' : '';
-                                                }
-                                                return selectedItemIndex === index ? 'none' : '';
-                                            },
-                                            backgroundColor: selectedItemIndex === index ? 'primary.main' : '',
-                                            '& .MuiChip-label': {
-                                                color: selectedItemIndex === index ? '#fff' : '',
-                                            },
-                                        }}
-                                    />
-                                ))}
-                            </Grid>
-                            <Box
-                                component={Card}
-                                variant="outlined"
-                                sx={{
-                                    display: { xs: 'auto', sm: 'none' },
-                                    mt: 4,
-                                }}
-                            >
-                                <CardMedia
-                                    component="img"
-                                    alt={selectedFeature.title}
-                                    height="280"
-                                    image={selectedFeature.imageLight}
-                                    title={selectedFeature.title}
-                                />
-                                <Box sx={{ px: 2, pb: 2 }}>
-                                    <Typography color="text.primary" variant="body2" fontWeight="bold">
-                                        {selectedFeature.title}
-                                    </Typography>
-                                    <Typography color="text.secondary" variant="body2" sx={{ my: 0.5 }}>
-                                        {selectedFeature.description}
-                                    </Typography>
-                                    <Typography color="text.secondary" variant="body2">
-                                        {selectedFeature.extendedDesc}
-                                    </Typography>
-                                    <Link
-                                        color="primary"
-                                        variant="body2"
-                                        fontWeight="bold"
-                                        sx={{
-                                            display: 'inline-flex',
-                                            alignItems: 'center',
-                                            '& > svg': { transition: '0.2s' },
-                                            '&:hover > svg': { transform: 'translateX(2px)' },
-                                        }}
-                                    >
-                                        <span>Learn more</span>
-                                        <ChevronRightRoundedIcon
-                                            fontSize="small"
-                                            sx={{ mt: '1px', ml: '2px' }}
-                                        />
-                                    </Link>
-                                </Box>
-                            </Box>
-                            <Stack
-                                direction="column"
-                                justifyContent="center"
-                                alignItems="flex-start"
-                                spacing={2}
-                                useFlexGap
-                                sx={{ width: '100%', display: { xs: 'none', sm: 'flex' } }}
-                            >
-                                {items.map(({ icon, title, description }, index) => (
-                                    <Card
-                                        key={index}
-                                        variant="outlined"
-                                        component={Button}
-                                        onClick={() => handleItemClick(index)}
-                                        sx={{
-                                            p: 3,
-                                            height: 'fit-content',
-                                            width: '100%',
-                                            background: 'none',
-                                            backgroundColor:
-                                                selectedItemIndex === index ? 'action.selected' : undefined,
-                                            borderColor: (theme) => {
-                                                if (theme.palette.mode === 'light') {
-                                                    return selectedItemIndex === index
-                                                        ? 'primary.light'
-                                                        : 'grey.200';
-                                                }
-                                                return selectedItemIndex === index ? 'primary.dark' : 'grey.800';
-                                            },
-                                        }}
-                                    >
-                                        <Box
+                <Container id="features" sx={{ py: { xs: 0, sm: 0 } }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+                        <Typography component="h2" variant="h4" color="text.primary" sx={{ pb: 0 }}>
+                            Our Features
+                        </Typography>
+                        <IconButton onClick={handleExpandClick}>
+                            <ExpandMoreIcon />
+                        </IconButton>
+                    </Box>
+                    <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+                        <Typography
+                            variant="body1"
+                            color="text.secondary"
+                            sx={{ mb: { xs: 2, sm: 4 } }}
+                        >
+                            Our app helps you easily assess if solar panels are right for your property. It uses your property data and solar energy potential to give you accurate information. You can upload documents, see a visual of your property with potential solar panels, and get detailed reports on costs and savings. Everything is updated in real-time to make the process simple and efficient for you.
+                        </Typography>
+                        <Grid container spacing={6}>
+                            <Grid item xs={12} md={6}>
+                                <Grid container item gap={1} sx={{ display: { xs: 'auto', sm: 'none' } }}>
+                                    {items.map(({ title }, index) => (
+                                        <Chip
+                                            key={index}
+                                            label={title}
+                                            onClick={() => handleItemClick(index)}
                                             sx={{
+                                                borderColor: (theme) => {
+                                                    if (theme.palette.mode === 'light') {
+                                                        return selectedItemIndex === index ? 'primary.light' : '';
+                                                    }
+                                                    return selectedItemIndex === index ? 'primary.light' : '';
+                                                },
+                                                background: (theme) => {
+                                                    if (theme.palette.mode === 'light') {
+                                                        return selectedItemIndex === index ? 'none' : '';
+                                                    }
+                                                    return selectedItemIndex === index ? 'none' : '';
+                                                },
+                                                backgroundColor: selectedItemIndex === index ? 'primary.main' : '',
+                                                '& .MuiChip-label': {
+                                                    color: selectedItemIndex === index ? '#fff' : '',
+                                                },
+                                            }}
+                                        />
+                                    ))}
+                                </Grid>
+                                <Box
+                                    component={Card}
+                                    variant="outlined"
+                                    sx={{
+                                        display: { xs: 'auto', sm: 'none' },
+                                        mt: 4,
+                                    }}
+                                >
+                                    <CardMedia
+                                        component="img"
+                                        alt={selectedFeature.title}
+                                        height="280"
+                                        image={selectedFeature.imageLight}
+                                        title={selectedFeature.title}
+                                    />
+                                    <Box sx={{ px: 2, pb: 2 }}>
+                                        <Typography color="text.primary" variant="body2" fontWeight="bold">
+                                            {selectedFeature.title}
+                                        </Typography>
+                                        <Typography color="text.secondary" variant="body2" sx={{ my: 0.5 }}>
+                                            {selectedFeature.description}
+                                        </Typography>
+                                        <Typography color="text.secondary" variant="body2">
+                                            {selectedFeature.extendedDesc}
+                                        </Typography>
+                                        <Link
+                                            color="primary"
+                                            variant="body2"
+                                            fontWeight="bold"
+                                            sx={{
+                                                display: 'inline-flex',
+                                                alignItems: 'center',
+                                                '& > svg': { transition: '0.2s' },
+                                                '&:hover > svg': { transform: 'translateX(2px)' },
+                                            }}
+                                        >
+                                            <span>Learn more</span>
+                                            <ChevronRightRoundedIcon
+                                                fontSize="small"
+                                                sx={{ mt: '1px', ml: '2px' }}
+                                            />
+                                        </Link>
+                                    </Box>
+                                </Box>
+                                <Stack
+                                    direction="column"
+                                    justifyContent="center"
+                                    alignItems="flex-start"
+                                    spacing={2}
+                                    useFlexGap
+                                    sx={{ width: '100%', display: { xs: 'none', sm: 'flex' } }}
+                                >
+                                    {items.map(({ icon, title, description }, index) => (
+                                        <Card
+                                            key={index}
+                                            variant="outlined"
+                                            component={Button}
+                                            onClick={() => handleItemClick(index)}
+                                            sx={{
+                                                p: 3,
+                                                height: 'fit-content',
                                                 width: '100%',
-                                                display: 'flex',
-                                                textAlign: 'left',
-                                                flexDirection: { xs: 'column', md: 'row' },
-                                                alignItems: { md: 'center' },
-                                                gap: 2.5,
+                                                background: 'none',
+                                                backgroundColor:
+                                                    selectedItemIndex === index ? 'action.selected' : undefined,
+                                                borderColor: (theme) => {
+                                                    if (theme.palette.mode === 'light') {
+                                                        return selectedItemIndex === index
+                                                            ? 'primary.light'
+                                                            : 'grey.200';
+                                                    }
+                                                    return selectedItemIndex === index ? 'primary.dark' : 'grey.800';
+                                                },
                                             }}
                                         >
                                             <Box
                                                 sx={{
-                                                    color: (theme) => {
-                                                        if (theme.palette.mode === 'light') {
-                                                            return selectedItemIndex === index
-                                                                ? 'primary.main'
-                                                                : 'grey.300';
-                                                        }
-                                                        return selectedItemIndex === index
-                                                            ? 'primary.main'
-                                                            : 'grey.700';
-                                                    },
+                                                    width: '100%',
+                                                    display: 'flex',
+                                                    textAlign: 'left',
+                                                    flexDirection: { xs: 'column', md: 'row' },
+                                                    alignItems: { md: 'center' },
+                                                    gap: 2.5,
                                                 }}
                                             >
-                                                {icon}
-                                            </Box>
-                                            <Box sx={{ textTransform: 'none' }}>
-                                                <Typography
-                                                    color="text.primary"
-                                                    variant="body2"
-                                                    fontWeight="bold"
-                                                >
-                                                    {title}
-                                                </Typography>
-                                                <Typography
-                                                    color="text.secondary"
-                                                    variant="body2"
-                                                    sx={{ my: 0.5 }}
-                                                >
-                                                    {description}
-                                                </Typography>
-                                                <Link
-                                                    color="primary"
-                                                    variant="body2"
-                                                    fontWeight="bold"
+                                                <Box
                                                     sx={{
-                                                        display: 'inline-flex',
-                                                        alignItems: 'center',
-                                                        '& > svg': { transition: '0.2s' },
-                                                        '&:hover > svg': { transform: 'translateX(2px)' },
-                                                    }}
-                                                    onClick={(event) => {
-                                                        event.stopPropagation();
+                                                        color: (theme) => {
+                                                            if (theme.palette.mode === 'light') {
+                                                                return selectedItemIndex === index
+                                                                    ? 'primary.main'
+                                                                    : 'grey.300';
+                                                            }
+                                                            return selectedItemIndex === index
+                                                                ? 'primary.main'
+                                                                : 'grey.700';
+                                                        },
                                                     }}
                                                 >
-                                                    <span>Learn more</span>
-                                                    <ChevronRightRoundedIcon
-                                                        fontSize="small"
-                                                        sx={{ mt: '1px', ml: '2px' }}
-                                                    />
-                                                </Link>
+                                                    {icon}
+                                                </Box>
+                                                <Box sx={{ textTransform: 'none' }}>
+                                                    <Typography
+                                                        color="text.primary"
+                                                        variant="body2"
+                                                        fontWeight="bold"
+                                                    >
+                                                        {title}
+                                                    </Typography>
+                                                    <Typography
+                                                        color="text.secondary"
+                                                        variant="body2"
+                                                        sx={{ my: 0.5 }}
+                                                    >
+                                                        {description}
+                                                    </Typography>
+                                                    <Link
+                                                        color="primary"
+                                                        variant="body2"
+                                                        fontWeight="bold"
+                                                        sx={{
+                                                            display: 'inline-flex',
+                                                            alignItems: 'center',
+                                                            '& > svg': { transition: '0.2s' },
+                                                            '&:hover > svg': { transform: 'translateX(2px)' },
+                                                        }}
+                                                        onClick={(event) => {
+                                                            event.stopPropagation();
+                                                        }}
+                                                    >
+                                                        <span>Learn more</span>
+                                                        <ChevronRightRoundedIcon
+                                                            fontSize="small"
+                                                            sx={{ mt: '1px', ml: '2px' }}
+                                                        />
+                                                    </Link>
+                                                </Box>
                                             </Box>
-                                        </Box>
-                                    </Card>
-                                ))}
-                            </Stack>
-                        </Grid>
-                        <Grid
-                            item
-                            xs={12}
-                            md={6}
-                            sx={{ display: { xs: 'none', sm: 'flex' }, width: '100%' }}
-                        >
-                            <Card
-                                variant="outlined"
-                                sx={{
-                                    height: '100%',
-                                    width: '100%',
-                                    display: { xs: 'none', sm: 'flex' },
-                                    flexDirection: 'column', // Ensures the content is stacked vertically
-                                    pointerEvents: 'none',
-                                }}
+                                        </Card>
+                                    ))}
+                                </Stack>
+                            </Grid>
+                            <Grid
+                                item
+                                xs={12}
+                                md={6}
+                                sx={{ display: { xs: 'none', sm: 'flex' }, width: '100%' }}
                             >
-                                <CardMedia
-                                    component="img"
-                                    alt={selectedFeature.title}
-                                    height="280"
-                                    image={selectedFeature.imageLight}
-                                    title={selectedFeature.title}
-                                />
-                                <Box sx={{ p: 2 }}>
-                                    <Typography color="text.primary" variant="body2" fontWeight="bold">
-                                        {selectedFeature.title}
-                                    </Typography>
-                                    <Typography color="text.secondary" variant="body2" sx={{ my: 0.5 }}>
-                                        {selectedFeature.description}
-                                    </Typography>
-                                    <Typography color="text.secondary" variant="body2">
-                                        {selectedFeature.extendedDesc}
-                                    </Typography>
-                                </Box>
-                            </Card>
+                                <Card
+                                    variant="outlined"
+                                    sx={{
+                                        height: '100%',
+                                        width: '100%',
+                                        display: { xs: 'none', sm: 'flex' },
+                                        flexDirection: 'column', // Ensures the content is stacked vertically
+                                        pointerEvents: 'none',
+                                    }}
+                                >
+                                    <CardMedia
+                                        component="img"
+                                        alt={selectedFeature.title}
+                                        height="280"
+                                        image={selectedFeature.imageLight}
+                                        title={selectedFeature.title}
+                                    />
+                                    <Box sx={{ p: 2 }}>
+                                        <Typography color="text.primary" variant="body2" fontWeight="bold">
+                                            {selectedFeature.title}
+                                        </Typography>
+                                        <Typography color="text.secondary" variant="body2" sx={{ my: 0.5 }}>
+                                            {selectedFeature.description}
+                                        </Typography>
+                                        <Typography color="text.secondary" variant="body2">
+                                            {selectedFeature.extendedDesc}
+                                        </Typography>
+                                    </Box>
+                                </Card>
+                            </Grid>
                         </Grid>
-                    </Grid>
+                    </Collapse>
                 </Container>
 
                 <Container sx={{ flex: 1, py: 4, pb: 8 }}>
@@ -478,6 +520,44 @@ const Guide: React.FC = () => {
                                     </CardContent>
                                 </Card>
                             </Grid>
+                            <Grid item xs={12} md={6}>
+                                <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <CardMedia
+                                        component="img"
+                                        alt="Carbon Footprint Calculator"
+                                        height="140"
+                                        image={PlaceholderImage}
+                                        title="Carbon Footprint Calculator"
+                                    />
+                                    <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                        <Typography variant="h4" component="h2" gutterBottom>
+                                            Carbon Footprint 
+                                        </Typography>
+                                        <Button variant="contained" color="primary" onClick={() => handleOptionClick('carbonFootprintCalculator')}>
+                                            Select
+                                        </Button>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <CardMedia
+                                        component="img"
+                                        alt="Chatbot"
+                                        height="140"
+                                        image={PlaceholderImage}
+                                        title="Chatbot"
+                                    />
+                                    <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                        <Typography variant="h4" component="h2" gutterBottom>
+                                            Chatbot
+                                        </Typography>
+                                        <Button variant="contained" color="primary" onClick={() => handleOptionClick('chatbot')}>
+                                            Select
+                                        </Button>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
                         </Grid>
                     ) : (
                         <>
@@ -516,7 +596,7 @@ const Guide: React.FC = () => {
                             )}
                         </>
                     )}
-                    {['ewaBillUpload', 'map'].includes(currentTutorial) && (
+                    {['ewaBillUpload', 'map', 'carbonFootprintCalculator', 'chatbot'].includes(currentTutorial) && (
                         <Box sx={{ display: 'flex', justifyContent: 'center', pt: 4 }}>
                             <Button variant="contained" color="secondary" onClick={handleBackToCalculation}>
                                 Back to Calculation

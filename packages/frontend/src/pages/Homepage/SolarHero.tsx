@@ -8,7 +8,7 @@ export default function SolarHero() {
   const navigate = useNavigate();
 
   const handleGetStartedClick = () => {
-    navigate('/Guide');
+    navigate('/GetStarted');
   };
 
   return (
