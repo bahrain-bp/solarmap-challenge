@@ -403,7 +403,7 @@ const Providers: React.FC<ProvidersProps> = ({ isLoggedIn }) => {
             ))}
             {activeTab === 'contractors' && paginatedContractors.map((contractor, index) => (
               <Grid item xs={12} sm={6} md={4} key={index}>
-                <Accordion sx={{ borderRadius: 2, boxShadow: 3, backgroundColor: '#073763', color: 'white', minHeight: 180 }}>
+                <Accordion sx={{ borderRadius: 2, boxShadow: 3, backgroundColor: '#073763', color: 'white', minHeight: 120 }}>
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon sx={{ color: 'white' }} />}
                     aria-controls={`panel${index}-content`}
@@ -441,7 +441,11 @@ const Providers: React.FC<ProvidersProps> = ({ isLoggedIn }) => {
                           color="primary"
                           startIcon={<Iconify icon="eva:edit-outline" />}
                           onClick={() => handleEditProvider(contractor, 'contractor')}
-                          sx={{ fontSize: '0.75rem' }}
+                          sx={{
+                            fontSize: '0.75rem',
+                            backgroundColor: '#FF8C00', // Darker orange
+                            '&:hover': { backgroundColor: '#FF7F00' } // Even darker orange on hover
+                          }}
                         >
                           Edit Contractor
                         </Button>
