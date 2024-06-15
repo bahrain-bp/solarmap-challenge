@@ -384,10 +384,13 @@ const Providers: React.FC<ProvidersProps> = ({ isLoggedIn }) => {
                       </Button>
                       <Button
                         variant="contained"
-                        color="primary"
                         startIcon={<Iconify icon="eva:edit-outline" />}
                         onClick={() => handleEditProvider(consultant, 'consultant')}
-                        sx={{ fontSize: '0.75rem' }}
+                        sx={{ 
+                          fontSize: '0.75rem',
+                          backgroundColor: '#FF8C00', // Darker orange
+                          '&:hover': { backgroundColor: '#FF7F00' } // Even darker orange on hover
+                        }}
                       >
                         Edit Consultant
                       </Button>

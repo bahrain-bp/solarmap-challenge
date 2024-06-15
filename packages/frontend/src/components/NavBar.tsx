@@ -480,7 +480,7 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
                       }}
                       className={isActive('/calcUsageStats') ? 'active' : ''}
                     >
-                      Statistics
+                      Calculator Statistics
                     </MenuItem>
                   </Menu>
 
