@@ -10,9 +10,11 @@ import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import GuideHeader from '../assets/guide.jpg';
-import PlaceholderImage from '../assets/default-fallback-image.png';
 import ProvidersImg from '../assets/installing-solar-panels-ezgif.com-webp-to-jpg-converter.jpg';
 import MapImg from '../assets/bahrainmap.png';
+import mapstep1 from '../assets/mapstep1.png';
+import mapstep2 from '../assets/mapstep2.png';
+import mapstep3 from '../assets/mapstep3.png';
 import EduResourceImg from '../assets/types-of-solar-panels-in-india-ezgif.com-webp-to-jpg-converter.jpg';
 import BillUploadImg from '../assets/ewabill.jpg';
 import carbon from '../assets/csm_SW_Carbon_footprint_9f8063814d.png';
@@ -31,56 +33,56 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 
-type TutorialStep = { title: string; heading: string; description: string };
+type TutorialStep = { title: string; heading: string; description: string; image: string };
 type Tutorial = { steps: TutorialStep[]; route: string };
 type TutorialSteps = { [key: string]: Tutorial };
 
 const tutorialSteps: TutorialSteps = {
     ewaBillUpload: {
         steps: [
-            { title: 'STEP 1', heading: 'Upload Bill', description: 'Upload your EWA bill from your computer.' },
-            { title: 'STEP 2', heading: 'Verify Details', description: 'Verify the details extracted from the bill.' },
-            { title: 'STEP 3', heading: 'Submit', description: 'Submit the verified details for further processing.' },
+            { title: 'STEP 1', heading: 'Upload Bill', description: 'Upload your EWA bill from your computer.', image: BillUploadImg },
+            { title: 'STEP 2', heading: 'Verify Details', description: 'Verify the details extracted from the bill.', image: BillUploadImg },
+            { title: 'STEP 3', heading: 'Submit', description: 'Submit the verified details for further processing.', image: BillUploadImg },
         ],
         route: '/DocumentUpload',
     },
     map: {
         steps: [
-            { title: 'STEP 1', heading: 'Open Map', description: 'Open the map tool from the dashboard.' },
-            { title: 'STEP 2', heading: 'Select Area', description: 'Select the area you want to analyze.' },
-            { title: 'STEP 3', heading: 'View Results', description: 'View the analysis results on the map.' },
+            { title: 'STEP 1', heading: 'Open Map', description: 'Open the map tool from the dashboard and enable the overlay.', image: mapstep1 },
+            { title: 'STEP 2', heading: 'Select Area', description: 'Select the area you want to analyze and fill in the remaining details.', image: mapstep2 },
+            { title: 'STEP 3', heading: 'View Results', description: 'View the calculation results on the map.', image: mapstep3 },
         ],
         route: '/MapV2',
     },
     providers: {
         steps: [
-            { title: 'STEP 1', heading: 'Open', description: 'Open the provider setup file from the downloads list.' },
-            { title: 'STEP 2', heading: 'Allow', description: 'Click "Install anyway" and "Yes" on the dialogs.' },
-            { title: 'STEP 3', heading: 'Install', description: 'Wait for the installation to finish.' },
+            { title: 'STEP 1', heading: 'Open', description: 'Open the provider setup file from the downloads list.', image: ProvidersImg },
+            { title: 'STEP 2', heading: 'Allow', description: 'Click "Install anyway" and "Yes" on the dialogs.', image: ProvidersImg },
+            { title: 'STEP 3', heading: 'Install', description: 'Wait for the installation to finish.', image: ProvidersImg },
         ],
         route: '/Provider',
     },
     educationalResources: {
         steps: [
-            { title: 'STEP 1', heading: 'Access', description: 'Go to the educational resources section.' },
-            { title: 'STEP 2', heading: 'Select', description: 'Choose the resource you want to explore.' },
-            { title: 'STEP 3', heading: 'Learn', description: 'Read through the material and watch videos.' },
+            { title: 'STEP 1', heading: 'Access', description: 'Go to the educational resources section.', image: EduResourceImg },
+            { title: 'STEP 2', heading: 'Select', description: 'Choose the resource you want to explore.', image: EduResourceImg },
+            { title: 'STEP 3', heading: 'Learn', description: 'Read through the material and watch videos.', image: EduResourceImg },
         ],
         route: '/EducationalResources',
     },
     carbonFootprintCalculator: {
         steps: [
-            { title: 'STEP 1', heading: 'Open Calculator', description: 'Open the carbon footprint calculator from the dashboard.' },
-            { title: 'STEP 2', heading: 'Input Data', description: 'Enter your energy consumption data.' },
-            { title: 'STEP 3', heading: 'View Results', description: 'See your carbon footprint and potential savings with solar panels.' },
+            { title: 'STEP 1', heading: 'Open Calculator', description: 'Open the carbon footprint calculator from the dashboard.', image: carbon },
+            { title: 'STEP 2', heading: 'Input Data', description: 'Enter your energy consumption data.', image: carbon },
+            { title: 'STEP 3', heading: 'View Results', description: 'See your carbon footprint and potential savings with solar panels.', image: carbon },
         ],
         route: '/CarbonFootprintCalculator',
     },
     chatbot: {
         steps: [
-            { title: 'STEP 1', heading: 'Open Chatbot', description: 'Open the chatbot from the dashboard.' },
-            { title: 'STEP 2', heading: 'Ask Questions', description: 'Type your questions about solar panels.' },
-            { title: 'STEP 3', heading: 'Get Answers', description: 'Receive instant answers from the chatbot.' },
+            { title: 'STEP 1', heading: 'Open Chatbot', description: 'Open the chatbot from the dashboard.', image: ChatbotImg },
+            { title: 'STEP 2', heading: 'Ask Questions', description: 'Type your questions about solar panels.', image: ChatbotImg },
+            { title: 'STEP 3', heading: 'Get Answers', description: 'Receive instant answers from the chatbot.', image: ChatbotImg },
         ],
         route: '/Chatbot',
     },
@@ -93,7 +95,7 @@ const items = [
         description: 'Interactive map tool for analysis.',
         imageLight: MapImg,
         imageDark: MapImg,
-        extendedDesc: 'Use the interactive map to analyze the solar potential of different areas and make informed decisions about solar panel installations.',
+        extendedDesc: 'Use the interactive map to analyze the solar potential of different areas and make informed decisions about solar panel installations. Enable the overlay and fill in the required details to get instant cost and ROI estimations. Then click on the inquire button to inquire further.',
     },
     {
         icon: <InsertDriveFileRoundedIcon />,
@@ -488,7 +490,7 @@ const Guide: React.FC = () => {
                                         component="img"
                                         alt="EWA Bill Upload"
                                         height="140"
-                                        image={PlaceholderImage}
+                                        image={BillUploadImg} // Updated image
                                         title="EWA Bill Upload"
                                     />
                                     <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -507,7 +509,7 @@ const Guide: React.FC = () => {
                                         component="img"
                                         alt="Map"
                                         height="140"
-                                        image={PlaceholderImage}
+                                        image={MapImg} // Updated image
                                         title="Map"
                                     />
                                     <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -526,7 +528,7 @@ const Guide: React.FC = () => {
                                         component="img"
                                         alt="Carbon Footprint Calculator"
                                         height="140"
-                                        image={PlaceholderImage}
+                                        image={carbon} // Updated image
                                         title="Carbon Footprint Calculator"
                                     />
                                     <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -545,7 +547,7 @@ const Guide: React.FC = () => {
                                         component="img"
                                         alt="Chatbot"
                                         height="140"
-                                        image={PlaceholderImage}
+                                        image={ChatbotImg} // Updated image
                                         title="Chatbot"
                                     />
                                     <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -580,7 +582,7 @@ const Guide: React.FC = () => {
                                                 component="img"
                                                 alt={step.heading}
                                                 height="140"
-                                                image={PlaceholderImage}
+                                                image={step.image} // Use the image from step
                                                 title={step.heading}
                                             />
                                         </Card>

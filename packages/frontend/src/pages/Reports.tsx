@@ -1,4 +1,7 @@
+import { Box, Typography, Tabs, Tab, TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+import solarprovider from '../assets/solarprovider.jpg';
+import pattern from '../assets/pattern.png';
 
 interface Calculation {
   calculation_id: number;
@@ -14,7 +17,7 @@ interface InquiryDetail {
   email: string;
   phone: number;
   inquiry_content: string;
-  address: string; // Add address field
+  address: string;
 }
 
 interface Feedback {
@@ -196,188 +199,209 @@ const Reports = () => {
     }
   };
 
-
   return (
-    <div className="container" style={{ marginBottom: '20px' }}>
-      <h1>Reports</h1>
-      <h4>Click on an inquiry to send an email</h4>
-      <div className="row align-items-center" style={{ marginTop: '20px'}}>
-        <div className="col-auto">
-          <ul className="nav nav-tabs">
-            <li className="nav-item">
-              <button
-                className={`nav-link ${activeTab === 'calculations' ? 'active' : ''}`}
-                onClick={() => setActiveTab('calculations')} style={{color:"black"}}
+    <Box sx={{ backgroundColor: 'white', display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <Box sx={{ position: 'relative', width: '100%', height: '300px', mb: 4, overflow: 'hidden' }}>
+        <img
+          src={solarprovider}
+          alt="Solar Providers"
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            filter: 'brightness(70%) blur(3px)',
+            marginBottom: '-5px',
+            borderRadius: '0',
+          }}
+        />
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            color: 'white',
+            textAlign: 'center',
+          }}
+        >
+          <Typography variant="h3" component="h1" gutterBottom>
+            Reports
+          </Typography>
+          <Typography variant="h6">
+            A list of all reports, click on an inquiry to email them a response.
+          </Typography>
+        </Box>
+      </Box>
+      <Box
+        sx={{
+          background: `url(${pattern})`, // Use imported pattern as background
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          py: 8,
+        }}
+      >
+        <div className="container" style={{ marginBottom: '20px' }}>
+          <div className="row align-items-center" style={{ marginTop: '20px' }}>
+            <div className="col-auto">
+              <Tabs
+                value={activeTab}
+                onChange={(_event, newValue) => setActiveTab(newValue)}
+                aria-label="simple tabs example"
               >
-                Calculation
-              </button>
-            </li>
-            <li className="nav-item">
-              <button
-                className={`nav-link ${activeTab === 'inquiries' ? 'active' : ''}`}
-                onClick={() => setActiveTab('inquiries')} style={{color:"black"}}
-              >
-                Inquiries
-              </button>
-            </li>
-            <li className="nav-item">
-              <button
-                className={`nav-link ${activeTab === 'feedbacks' ? 'active' : ''}`}
-                onClick={() => setActiveTab('feedbacks')} style={{color:"black"}}
-              >
-                Feedbacks
-              </button>
-            </li>
-          </ul>
-        </div>
-        <div className="col-auto ml-auto">
-          <div className="badge badge-info mr-2">
-            Total Calculator Usages: {totalCalculatorUsages}
-          </div>
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Search..."
-            value={
-              activeTab === 'calculations'
-                ? calculationSearch
-                : activeTab === 'inquiries'
-                ? inquirySearch
-                : feedbackSearch
-            }
-            onChange={
-              activeTab === 'calculations'
-                ? handleCalculationSearchChange
-                : activeTab === 'inquiries'
-                ? handleInquirySearchChange
-                : handleFeedbackSearchChange
-            }
-          />
-        </div>
-      </div>
-      <div className="tab-content mt-2">
-        <div className={`tab-pane ${activeTab === 'calculations' ? 'show active' : ''}`}>
-          <div className="table-responsive" style={{ maxHeight: '300px', overflowY: 'auto' }}>
-            <table className="table table-hover">
-              <thead className="thead-dark">
-                <tr>
-                  <th>Calculation ID</th>
-                  <th>Number of Panels</th>
-                  <th>Total Cost</th>
-                  <th>ROI Percentage</th>
-                  <th>Payback Period</th>
-                </tr>
-              </thead>
-              <tbody>
-                {calculations.filter(filterCalculations).map((calculation, index) => (
-                  <tr key={index}>
-                    <td>{calculation.calculation_id}</td>
-                    <td>{calculation.number_of_panels}</td>
-                    <td>{calculation.total_cost}</td>
-                    <td>{calculation.roi_percentage}</td>
-                    <td>{calculation.payback_period}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div className={`tab-pane ${activeTab === 'inquiries' ? 'show active' : ''}`}>
-          <div className="table-responsive" style={{ maxHeight: '300px', overflowY: 'auto' }}>
-            <table className="table table-hover">
-              <thead className="thead-dark">
-                <tr>
-                  <th>First Name</th>
-                  <th>Last Name</th>
-                  <th>Email</th>
-                  <th>Phone</th>
-                  <th>Inquiry</th>
-                  <th>Address</th> {/* Add Address column header */}
-                </tr>
-              </thead>
-              <tbody>
-                {inquiryDetails.filter(filterInquiries).map((detail, index) => (
-                  <tr key={index} onClick={() => handleInquiryClick(detail)} style={{ cursor: 'pointer' }}>
-                    <td>{detail.first_name}</td>
-                    <td>{detail.last_name}</td>
-                    <td>{detail.email}</td>
-                    <td>{detail.phone}</td>
-                    <td>{detail.inquiry_content}</td>
-                    <td>{detail.address}</td> {/* Add Address column */}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          {selectedInquiry && (
-            <div className="mt-4">
-              <h3>Send Email</h3>
-              <form onSubmit={handleSubmitEmail}>
-                <div className="form-group">
-                  <label htmlFor="emailTo">To</label>
-                  <input
-                    type="email"
-                    className="form-control"
-                    id="emailTo"
-                    value={emailTo}
-                    readOnly // Make it read-only since it's auto-populated
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="emailSubject">Subject</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="emailSubject"
-                    value={emailSubject}
-                    onChange={handleEmailSubjectChange}
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="emailBody">Body</label>
-                  <textarea
-                    className="form-control"
-                    id="emailBody"
-                    rows={3}
-                    value={emailBody}
-                    onChange={handleEmailBodyChange}
-                    required
-                  ></textarea>
-                </div>
-                <button type="submit" className="btn btn-primary">
-                  Submit
-                </button>
-              </form>
-              <div>{responseMessage}</div>
+                <Tab label="Calculations" value="calculations" />
+                <Tab label="Inquiries" value="inquiries" />
+                <Tab label="Feedbacks" value="feedbacks" />
+              </Tabs>
             </div>
-          )}
-        </div>
-        <div className={`tab-pane ${activeTab === 'feedbacks' ? 'show active' : ''}`}>
-          <div className="table-responsive" style={{ maxHeight: '300px', overflowY: 'auto' }}>
-            <table className="table table-hover">
-              <thead className="thead-dark">
-                <tr>
-                  <th>Feedback ID</th>
-                  <th>Feedback Content</th>
-                </tr>
-              </thead>
-              <tbody>
-                {feedbacks.filter(filterFeedbacks).map((feedback, index) => (
-                  <tr key={index}>
-                    <td>{feedback.feedback_id}</td>
-                    <td>{feedback.feedback_content}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <div className="col-auto ml-auto">
+              <Typography className="badge badge-info mr-2">
+                Total Calculator Usages: {totalCalculatorUsages}
+              </Typography>
+              <TextField
+                fullWidth
+                placeholder="Search..."
+                value={
+                  activeTab === 'calculations'
+                    ? calculationSearch
+                    : activeTab === 'inquiries'
+                      ? inquirySearch
+                      : feedbackSearch
+                }
+                onChange={
+                  activeTab === 'calculations'
+                    ? handleCalculationSearchChange
+                    : activeTab === 'inquiries'
+                      ? handleInquirySearchChange
+                      : handleFeedbackSearchChange
+                }
+                margin="normal"
+                variant="outlined"
+              />
+            </div>
+          </div>
+          <div className="tab-content mt-2">
+            {activeTab === 'calculations' && (
+              <div className="table-responsive" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                <table className="table table-hover">
+                  <thead className="thead-dark">
+                    <tr>
+                      <th>Calculation ID</th>
+                      <th>Number of Panels</th>
+                      <th>Total Cost</th>
+                      <th>ROI Percentage</th>
+                      <th>Payback Period</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {calculations.filter(filterCalculations).map((calculation, index) => (
+                      <tr key={index}>
+                        <td>{calculation.calculation_id}</td>
+                        <td>{calculation.number_of_panels}</td>
+                        <td>{calculation.total_cost}</td>
+                        <td>{calculation.roi_percentage}</td>
+                        <td>{calculation.payback_period}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+            {activeTab === 'inquiries' && (
+              <div className="table-responsive" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                <table className="table table-hover">
+                  <thead className="thead-dark">
+                    <tr>
+                      <th>First Name</th>
+                      <th>Last Name</th>
+                      <th>Email</th>
+                      <th>Phone</th>
+                      <th>Inquiry</th>
+                      <th>Address</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {inquiryDetails.filter(filterInquiries).map((detail, index) => (
+                      <tr key={index} onClick={() => handleInquiryClick(detail)} style={{ cursor: 'pointer' }}>
+                        <td>{detail.first_name}</td>
+                        <td>{detail.last_name}</td>
+                        <td>{detail.email}</td>
+                        <td>{detail.phone}</td>
+                        <td>{detail.inquiry_content}</td>
+                        <td>{detail.address}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+            {activeTab === 'feedbacks' && (
+              <div className="table-responsive" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                <table className="table table-hover">
+                  <thead className="thead-dark">
+                    <tr>
+                      <th>Feedback ID</th>
+                      <th>Feedback Content</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {feedbacks.filter(filterFeedbacks).map((feedback, index) => (
+                      <tr key={index}>
+                        <td>{feedback.feedback_id}</td>
+                        <td>{feedback.feedback_content}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </div>
-      </div>
-    </div>
+      </Box>
+      <Dialog open={!!selectedInquiry} onClose={() => setSelectedInquiry(null)}>
+        <DialogTitle>Send Email</DialogTitle>
+        <DialogContent>
+          <form onSubmit={handleSubmitEmail}>
+            <TextField
+              fullWidth
+              label="To"
+              type="email"
+              value={emailTo}
+              InputProps={{ readOnly: true }}
+              required
+              margin="normal"
+            />
+            <TextField
+              fullWidth
+              label="Subject"
+              value={emailSubject}
+              onChange={handleEmailSubjectChange}
+              required
+              margin="normal"
+            />
+            <TextField
+              fullWidth
+              label="Body"
+              value={emailBody}
+              onChange={handleEmailBodyChange}
+              required
+              multiline
+              rows={4}
+              margin="normal"
+            />
+            <DialogActions>
+              <Button onClick={() => setSelectedInquiry(null)} color="secondary">
+                Cancel
+              </Button>
+              <Button type="submit" variant="contained" color="primary">
+                Submit
+              </Button>
+            </DialogActions>
+          </form>
+          <Typography>{responseMessage}</Typography>
+        </DialogContent>
+      </Dialog>
+    </Box>
   );
 };
 
 export default Reports;
-

@@ -274,7 +274,7 @@ const AdminMap = () => {
       <div className="row">
         <div className="col">
           <div className="map-container" style={{ position: 'relative' }}>
-            <div id="map" style={{ height: '300px', width: '100%' }}>
+            <div id="map" style={{ height: '400px', width: '100%' }}>
               {mapClickable && (
                 <div
                   style={{
