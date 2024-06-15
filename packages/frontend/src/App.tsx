@@ -25,7 +25,7 @@ import Reports from './pages/Reports';
 import CalculationReccomendation from './components/CalculationRec';
 import CalcUsageStats from './components/CalculatorUsageStats';
 import AdminMapAnalytics from './pages/AdminMapAnalytics/AdminMapAnalytics';
-
+import Guide from './pages/Guide';
 import CalculationResultsPage from './pages/SegmentationResults';
 import { Authenticator } from './modules/Authenticator';
 import { getCurrentUser, signOut } from 'aws-amplify/auth';
@@ -36,6 +36,7 @@ import Inquiry from './pages/Inquiry';
 import AdminMap from './pages/AdminMap';
 import ErrorView from './pages/Error/ErrorView';
 import UserManagement from './pages/UserManagement';
+import GetStarted from './pages/GetStarted';
 
 function App() {
   const identityPoolId = import.meta.env.VITE_IDENTITY_POOL_ID; // Cognito Identity Pool ID
@@ -134,6 +135,8 @@ function App() {
       <Route path="/Privacy" element={<Privacy />} />
       <Route path="/Inquiry" element={<Inquiry />} />
       <Route path="/UserManagement" element={<UserManagement />} />
+      <Route path="/Guide" element={<Guide />} />
+      <Route path="/GetStarted" element={<GetStarted />} />
       <Route path="*" element={<ErrorView />} />
     </Routes>
   );
@@ -150,6 +153,8 @@ function App() {
       <Route path="/Terms" element={<Terms />} />
       <Route path="/Privacy" element={<Privacy />} />
       <Route path="/Inquiry" element={<Inquiry />} />
+      <Route path="/Guide" element={<Guide />} />
+      <Route path="/GetStarted" element={<GetStarted />} />
       <Route path="/SegmentationResults" element={<CalculationResultsPage />} />
       <Route path="*" element={<ErrorView />} />
     </Routes>

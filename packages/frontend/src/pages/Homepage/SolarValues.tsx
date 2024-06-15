@@ -20,6 +20,8 @@ const item: SxProps<Theme> = {
   borderRadius: 1, // Optional: adds a bit of rounding to the corners
   boxShadow: 3, // Optional: adds a slight shadow for better separation
   color: 'white', // Set text color to white
+  height: 300, // Fixed height to ensure consistency
+  justifyContent: 'center', // Center content vertically
 };
 
 function SolarValues() {
