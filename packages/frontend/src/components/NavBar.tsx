@@ -448,7 +448,7 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
                     >
                       Reports
                     </MenuItem>
-                    <MenuItem
+                    {/* <MenuItem
                       onClick={() => {
                         navigate('/QuickSightDashboard');
                         handleClose();
@@ -456,7 +456,7 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
                       className={isActive('/QuickSightDashboard') ? 'active' : ''}
                     >
                       Business Dashboard
-                    </MenuItem>
+                    </MenuItem> */}
                     <MenuItem
                       onClick={() => {
                         navigate('/DocumentsDashboard');
