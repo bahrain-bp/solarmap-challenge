@@ -10,14 +10,21 @@ import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import GuideHeader from '../assets/guide.jpg';
-import ProvidersImg from '../assets/installing-solar-panels-ezgif.com-webp-to-jpg-converter.jpg';
+import ProvidersImg from '../assets/provider1.png';
+import ProvidersImg2 from '../assets/provider2.png';
+import ProvidersImg3 from '../assets/provider3.png';
 import MapImg from '../assets/bahrainmap.png';
 import mapstep1 from '../assets/mapstep1.png';
 import mapstep2 from '../assets/mapstep2.png';
 import mapstep3 from '../assets/mapstep3.png';
-import EduResourceImg from '../assets/types-of-solar-panels-in-india-ezgif.com-webp-to-jpg-converter.jpg';
+// import EduResourceImg from '../assets/types-of-solar-panels-in-india-ezgif.com-webp-to-jpg-converter.jpg';
+import EduResourceImg from '../assets/eduresource.png';
+import EduResourceImg1 from '../assets/edurecoursestep1.png';
+import EduResourceImg3 from '../assets/eduresource3.png';
 import BillUploadImg from '../assets/ewabill.jpg';
-import carbon from '../assets/csm_SW_Carbon_footprint_9f8063814d.png';
+import carbon from '../assets/carbon1.png';
+import carbon2 from '../assets/carbon2.png';
+import carbon3 from '../assets/carbon3.png';
 import ChatbotImg from '../assets/chatbot-3-ezgif.com-webp-to-jpg-converter.jpg';
 import Chip from '@mui/material/Chip';
 import Link from '@mui/material/Link';
@@ -56,25 +63,25 @@ const tutorialSteps: TutorialSteps = {
     },
     providers: {
         steps: [
-            { title: 'STEP 1', heading: 'Open', description: 'Open the provider setup file from the downloads list.', image: ProvidersImg },
-            { title: 'STEP 2', heading: 'Allow', description: 'Click "Install anyway" and "Yes" on the dialogs.', image: ProvidersImg },
-            { title: 'STEP 3', heading: 'Install', description: 'Wait for the installation to finish.', image: ProvidersImg },
+            { title: 'STEP 1', heading: 'Access', description: 'Go to the providers section.', image: ProvidersImg },
+            { title: 'STEP 2', heading: 'Choose', description: 'Search for your chosen provider.', image: ProvidersImg2 },
+            { title: 'STEP 3', heading: 'Select', description: 'Click on your chosen provider`s card to display more details.', image: ProvidersImg3 },
         ],
         route: '/Provider',
     },
     educationalResources: {
         steps: [
-            { title: 'STEP 1', heading: 'Access', description: 'Go to the educational resources section.', image: EduResourceImg },
+            { title: 'STEP 1', heading: 'Access', description: 'Go to the educational resources section.', image: EduResourceImg1 },
             { title: 'STEP 2', heading: 'Select', description: 'Choose the resource you want to explore.', image: EduResourceImg },
-            { title: 'STEP 3', heading: 'Learn', description: 'Read through the material and watch videos.', image: EduResourceImg },
+            { title: 'STEP 3', heading: 'Learn', description: 'Read through the material and watch videos.', image: EduResourceImg3 },
         ],
         route: '/EducationalResources',
     },
     carbonFootprintCalculator: {
         steps: [
             { title: 'STEP 1', heading: 'Open Calculator', description: 'Open the carbon footprint calculator from the dashboard.', image: carbon },
-            { title: 'STEP 2', heading: 'Input Data', description: 'Enter your energy consumption data.', image: carbon },
-            { title: 'STEP 3', heading: 'View Results', description: 'See your carbon footprint and potential savings with solar panels.', image: carbon },
+            { title: 'STEP 2', heading: 'Input Data', description: 'Enter your energy consumption data.', image: carbon2 },
+            { title: 'STEP 3', heading: 'View Results', description: 'See your carbon footprint and potential savings with solar panels.', image: carbon3 },
         ],
         route: '/CarbonFootprintCalculator',
     },
