@@ -8,10 +8,15 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
-import GuideHeader from '../assets/guide.jpg';
+import Carousel from 'react-material-ui-carousel';
+import GuideHeader from '../assets/getstarted.jpg';
 import BillUploadImg from '../assets/ewabill.jpg';
 import MapImg from '../assets/bahrainmap.png';
 import ChatbotImg from '../assets/chatbot-3-ezgif.com-webp-to-jpg-converter.jpg';
+import carousel1 from '../assets/Screenshot 2024-06-19 220412.png';
+import carousel2 from '../assets/carousel2.png';
+import carousel3 from '../assets/carousel3.png';
+import carousel4 from '../assets/carousel4.png';
 
 const GetStarted: React.FC = () => {
     const navigate = useNavigate();
@@ -20,9 +25,32 @@ const GetStarted: React.FC = () => {
         navigate(path);
     };
 
+    const slides = [
+        {
+            title: "Choose One Approach",
+            description: "First, choose one of the three approaches to get started.",
+            image: carousel1,
+        },
+        {
+            title: "Input Required Data",
+            description: "Input the required data for the selected approach.",
+            image: carousel2,
+        },
+        {
+            title: "Verify Results",
+            description: "Verify the results of the analysis.",
+            image: carousel3,
+        },
+        {
+            title: "Inquire from Administrators",
+            description: "Proceed to inquire from administrators if needed.",
+            image: carousel4,
+        },
+    ];
+
     return (
         <Box sx={{ backgroundColor: 'white', display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-            <Box sx={{ position: 'relative', width: '100%', height: '300px', mb: 4, overflow: 'hidden' }}>
+            <Box sx={{ position: 'relative', width: '100%', height: '300px', mb: 0, overflow: 'hidden' }}>
                 <img
                     src={GuideHeader}
                     alt="Guide"
@@ -53,7 +81,34 @@ const GetStarted: React.FC = () => {
                     </Typography>
                 </Box>
             </Box>
-            <Container sx={{ py: { xs: 8, sm: 16 } }}>
+
+            <Container sx={{ py: { xs: 2, sm: 2 } }}>
+                <Carousel>
+                    {slides.map((slide, index) => (
+                        <Box key={index} sx={{ textAlign: 'center', px: 2 }}>
+                            <img
+                                src={slide.image}
+                                alt={slide.title}
+                                style={{
+                                    width: '100%',
+                                    height: '300px',
+                                    objectFit: 'cover',
+                                    borderRadius: '4px',
+                                    marginBottom: '16px'
+                                }}
+                            />
+                            <Typography variant="h4" gutterBottom>
+                                {slide.title}
+                            </Typography>
+                            <Typography variant="body1" color="text.secondary">
+                                {slide.description}
+                            </Typography>
+                        </Box>
+                    ))}
+                </Carousel>
+            </Container>
+
+            <Container sx={{ py: { xs: 4, sm: 8 } }}>
                 <Typography component="h2" variant="h4" color="text.primary" sx={{ pb: 4 }}>
                     How the System Works
                 </Typography>
@@ -101,7 +156,7 @@ const GetStarted: React.FC = () => {
                         </Card>
                     </Grid>
                     <Grid item xs={12} md={4}>
-                        <Card sx={{ height: '350px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Card sx={{ height: '350px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                             <CardMedia
                                 component="img"
                                 alt="Chatbot"
@@ -109,13 +164,13 @@ const GetStarted: React.FC = () => {
                                 image={ChatbotImg}
                                 title="Chatbot"
                             />
-                            <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                            <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
                                 <Typography variant="h4" component="h2" gutterBottom>
                                     Chatbot
                                 </Typography>
-                                <Button variant="contained" color="primary" onClick={() => handleNavigate('/Chatbot')}>
-                                    Get Started
-                                </Button>
+                                <Typography variant="body1" color="text.secondary">
+                                    Please click on the chatbot icon at the bottom right to start.
+                                </Typography>
                             </CardContent>
                         </Card>
                     </Grid>
