@@ -83,7 +83,7 @@ const tutorialSteps: TutorialSteps = {
             { title: 'STEP 2', heading: 'Input Data', description: 'Enter your energy consumption data.', image: carbon2 },
             { title: 'STEP 3', heading: 'View Results', description: 'See your carbon footprint and potential savings with solar panels.', image: carbon3 },
         ],
-        route: '/CarbonFootprintCalculator',
+        route: '/CarbonEmissionsCalculator',
     },
     chatbot: {
         steps: [
@@ -91,7 +91,7 @@ const tutorialSteps: TutorialSteps = {
             { title: 'STEP 2', heading: 'Ask Questions', description: 'Type your questions about solar panels.', image: ChatbotImg },
             { title: 'STEP 3', heading: 'Get Answers', description: 'Receive instant answers from the chatbot.', image: ChatbotImg },
         ],
-        route: '/Chatbot',
+        route: '/Guide',
     },
 };
 
