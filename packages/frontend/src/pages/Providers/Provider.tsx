@@ -13,6 +13,12 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import BuildIcon from '@mui/icons-material/Build';
+import DesignServicesIcon from '@mui/icons-material/DesignServices';
 import solarprovider from '../../assets/solarprovider.jpg';
 import AddConsultant from './addConsultants';
 import AddContractor from './addContractor';
@@ -85,7 +91,6 @@ const LevelDetails = ({ level, details }: { level: string; details: LevelInfo })
   );
 };
 
-
 const LevelsSection = () => {
   return (
     <div className="levels-section">
@@ -114,7 +119,7 @@ const Providers: React.FC<ProvidersProps> = ({ isLoggedIn }) => {
   const [editProvider, setEditProvider] = useState<Consultant | Contractor | null>(null); // Add editProvider state
   const [refreshTrigger, setRefreshTrigger] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
-  const [rowsPerPage, ] = useState<number>(6);
+  const [rowsPerPage] = useState<number>(6);
   const [error, setError] = useState<string | null>(null);
 
   const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
@@ -256,16 +261,18 @@ const Providers: React.FC<ProvidersProps> = ({ isLoggedIn }) => {
         }}
       >
         <Container>
-          <Box sx={{ mb: 4, p: 3, borderRadius: 2 }}>
-            <Typography variant="h6" sx={{ mb: 2, color: 'black' }}>
-              Contractors: These are the entities responsible for the installation and construction of solar PV systems. The levels (D, C, B, A) indicate the qualifications and capabilities of the contractors, with A being the highest.
-            </Typography>
-            <Typography variant="h6" sx={{ mb: 2, color: 'black' }}>
-              Consultants: These are the entities responsible for the planning, design, and consultancy services for solar PV systems. The levels (C, A) and combinations (C + B) indicate their qualifications and capabilities, with A being the highest.
-            </Typography>
-          </Box>
-          <LevelsSection />
-        </Container>
+  <Box sx={{ mb: 4, p: 3, borderRadius: 2 }}>
+    <Typography variant="h6" sx={{ mb: 2, color: 'black', display: 'flex', alignItems: 'center' }}>
+      <BuildIcon sx={{ mr: 1 }} />
+      Contractors: These are the entities responsible for the installation and construction of solar PV systems. The levels (D, C, B, A) indicate the qualifications and capabilities of the contractors, with A being the highest.
+    </Typography>
+    <Typography variant="h6" sx={{ mb: 2, color: 'black', display: 'flex', alignItems: 'center' }}>
+      <DesignServicesIcon sx={{ mr: 1 }} />
+      Consultants: These are the entities responsible for the planning, design, and consultancy services for solar PV systems. The levels (C, A) and combinations (C + B) indicate their qualifications and capabilities, with A being the highest.
+    </Typography>
+  </Box>
+  <LevelsSection />
+</Container>
       </Box>
       <Container sx={{ flex: 1, py: 4, pb: 8 }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
@@ -343,24 +350,19 @@ const Providers: React.FC<ProvidersProps> = ({ isLoggedIn }) => {
           <Grid container spacing={4}>
             {activeTab === 'consultants' && paginatedConsultants.map((consultant, index) => (
               <Grid item xs={12} sm={6} md={4} key={index}>
-                <Box
-                  sx={{
-                    borderRadius: 2,
-                    boxShadow: 3,
-                    overflow: 'hidden',
-                    backgroundColor: '#073763',
-                    position: 'relative',
-                    height: '100%',
-                    color: 'white'
-                  }}
-                >
-                  <Box sx={{ p: 2 }}>
-                    <Typography variant="h6" gutterBottom sx={{ color: 'white' }}>
-                      {consultant.name}
-                    </Typography>
-                    <Typography variant="body2" sx={{ mb: 2, color: 'white' }}>
-                      Level: {consultant.level}
-                    </Typography>
+                <Accordion sx={{ borderRadius: 2, boxShadow: 3, backgroundColor: '#073763', color: 'white', minHeight: 120 }}>
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon sx={{ color: 'white' }} />}
+                    aria-controls={`panel${index}-content`}
+                    id={`panel${index}-header`}
+                    sx={{ minHeight: 60 }}
+                  >
+                    <Box sx={{ width: '100%' }}>
+                      <Typography>{consultant.name}</Typography>
+                      <Typography sx={{ color: 'white' }}>Level: {consultant.level}</Typography>
+                    </Box>
+                  </AccordionSummary>
+                  <AccordionDetails>
                     <Typography variant="body2" sx={{ mb: 2, color: 'white' }}>
                       CRPEP Number: {consultant.crep_num}
                     </Typography>
@@ -370,52 +372,50 @@ const Providers: React.FC<ProvidersProps> = ({ isLoggedIn }) => {
                     <Typography variant="body2" sx={{ mb: 2, color: 'white' }}>
                       Fax: {consultant.fax}
                     </Typography>
-                  </Box>
-                  {isLoggedIn && (
-                    <Stack direction="row" spacing={2} mt={2} px={2} pb={2}>
-                      <Button
-                        variant="contained"
-                        color="secondary"
-                        startIcon={<Iconify icon="eva:trash-2-outline" />}
-                        onClick={() => handleDeleteProvider('consultant', consultant.consultant_id)}
-                        sx={{ fontSize: '0.75rem' }}
-                      >
-                        Delete Consultant
-                      </Button>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        startIcon={<Iconify icon="eva:edit-outline" />}
-                        onClick={() => handleEditProvider(consultant, 'consultant')}
-                        sx={{ fontSize: '0.75rem' }}
-                      >
-                        Edit Consultant
-                      </Button>
-                    </Stack>
-                  )}
-                </Box>
+                    {isLoggedIn && (
+                      <Stack direction="row" spacing={2} mt={2}>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          startIcon={<Iconify icon="eva:trash-2-outline" />}
+                          onClick={() => handleDeleteProvider('consultant', consultant.consultant_id)}
+                          sx={{ fontSize: '0.75rem' }}
+                        >
+                          Delete Consultant
+                        </Button>
+                        <Button
+                          variant="contained"
+                          startIcon={<Iconify icon="eva:edit-outline" />}
+                          onClick={() => handleEditProvider(consultant, 'consultant')}
+                          sx={{
+                            fontSize: '0.75rem',
+                            backgroundColor: '#FF8C00', // Darker orange
+                            '&:hover': { backgroundColor: '#FF7F00' } // Even darker orange on hover
+                          }}
+                        >
+                          Edit Consultant
+                        </Button>
+                      </Stack>
+                    )}
+                  </AccordionDetails>
+                </Accordion>
               </Grid>
             ))}
             {activeTab === 'contractors' && paginatedContractors.map((contractor, index) => (
               <Grid item xs={12} sm={6} md={4} key={index}>
-                <Box
-                  sx={{
-                    borderRadius: 2,
-                    boxShadow: 3,
-                    overflow: 'hidden',
-                    backgroundColor: '#073763',
-                    position: 'relative',
-                    height: '100%',
-                    color: 'white'
-                  }}
-                >
-                  <Box sx={{ p: 2 }}>
-                    <Typography variant="h6" gutterBottom sx={{ color: 'white' }}>
-                      {contractor.name}
-                    </Typography>
-                    <Typography variant="body2" sx={{ mb: 2, color: 'white' }}>
-                      Level: {contractor.level}
-                    </Typography>
+                <Accordion sx={{ borderRadius: 2, boxShadow: 3, backgroundColor: '#073763', color: 'white', minHeight: 120 }}>
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon sx={{ color: 'white' }} />}
+                    aria-controls={`panel${index}-content`}
+                    id={`panel${index}-header`}
+                    sx={{ minHeight: 60 }}
+                  >
+                    <Box sx={{ width: '100%' }}>
+                      <Typography>{contractor.name}</Typography>
+                      <Typography sx={{ color: 'white' }}>Level: {contractor.level}</Typography>
+                    </Box>
+                  </AccordionSummary>
+                  <AccordionDetails>
                     <Typography variant="body2" sx={{ mb: 2, color: 'white' }}>
                       License Number: {contractor.license_num}
                     </Typography>
@@ -425,30 +425,34 @@ const Providers: React.FC<ProvidersProps> = ({ isLoggedIn }) => {
                     <Typography variant="body2" sx={{ mb: 2, color: 'white' }}>
                       Fax: {contractor.fax}
                     </Typography>
-                  </Box>
-                  {isLoggedIn && (
-                    <Stack direction="row" spacing={2} mt={2} px={2} pb={2}>
-                      <Button
-                        variant="contained"
-                        color="secondary"
-                        startIcon={<Iconify icon="eva:trash-2-outline" />}
-                        onClick={() => handleDeleteProvider('contractor', contractor.contractor_id)}
-                        sx={{ fontSize: '0.75rem' }}
-                      >
-                        Delete Contractor
-                      </Button>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        startIcon={<Iconify icon="eva:edit-outline" />}
-                        onClick={() => handleEditProvider(contractor, 'contractor')}
-                        sx={{ fontSize: '0.75rem' }}
-                      >
-                        Edit Contractor
-                      </Button>
-                    </Stack>
-                  )}
-                </Box>
+                    {isLoggedIn && (
+                      <Stack direction="row" spacing={2} mt={2}>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          startIcon={<Iconify icon="eva:trash-2-outline" />}
+                          onClick={() => handleDeleteProvider('contractor', contractor.contractor_id)}
+                          sx={{ fontSize: '0.75rem' }}
+                        >
+                          Delete Contractor
+                        </Button>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          startIcon={<Iconify icon="eva:edit-outline" />}
+                          onClick={() => handleEditProvider(contractor, 'contractor')}
+                          sx={{
+                            fontSize: '0.75rem',
+                            backgroundColor: '#FF8C00', // Darker orange
+                            '&:hover': { backgroundColor: '#FF7F00' } // Even darker orange on hover
+                          }}
+                        >
+                          Edit Contractor
+                        </Button>
+                      </Stack>
+                    )}
+                  </AccordionDetails>
+                </Accordion>
               </Grid>
             ))}
           </Grid>

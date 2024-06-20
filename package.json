@@ -38,6 +38,7 @@
     "@maptiler/geocoding-control": "^1.2.4",
     "@maptiler/sdk": "^2.0.3",
     "@maptiler/weather": "^2.0.0",
+    "@mui/icons-material": "^5.15.20",
     "@mui/material": "^5.15.17",
     "@splinetool/runtime": "^1.2.0",
     "aws-amplify": "^6.3.0",

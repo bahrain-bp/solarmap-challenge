@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Box, Button, Container, Grid, Link, Typography, TextField } from '@mui/material';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
@@ -9,8 +10,8 @@ import SubscribeForm from '../forms/SubscribeForm';
 import UnsubscribeForm from '../forms/UnsubscribeForm';
 
 const LANGUAGES = [
-  { code: 'en-US', name: 'English' },
-  { code: 'ar-AR', name: 'Arabic' },
+  { code: 'en', name: 'English' },
+  { code: 'ar', name: 'Arabic' },
 ];
 
 const iconStyles = {
@@ -30,10 +31,23 @@ const iconStyles = {
 };
 
 function Copyright() {
+  const navigate = useNavigate();
+  
   return (
     <Typography variant="body2" color="white">
       {'© '}
-      <Link color="inherit" href="/" sx={{ color: 'white' }}>
+      <Link
+        onClick={() => navigate('/')}
+        sx={{
+          color: 'white',
+          cursor: 'pointer',
+          textDecoration: 'none',
+          '&:hover': {
+            color: 'blue',
+            textDecoration: 'underline',
+          },
+        }}
+      >
         SolarMap
       </Link>{' '}
       {new Date().getFullYear()}
@@ -41,8 +55,8 @@ function Copyright() {
   );
 }
 
-
 export default function AppFooter() {
+  const navigate = useNavigate();
   const [subscribeOpen, setSubscribeOpen] = useState(false);
   const [unsubscribeOpen, setUnsubscribeOpen] = useState(false);
 
@@ -50,6 +64,25 @@ export default function AppFooter() {
   const handleSubscribeClose = () => setSubscribeOpen(false);
   const handleUnsubscribeOpen = () => setUnsubscribeOpen(true);
   const handleUnsubscribeClose = () => setUnsubscribeOpen(false);
+
+  const linkStyle = {
+    color: 'white',
+    cursor: 'pointer',
+    textDecoration: 'none',
+    '&:hover': {
+      color: 'blue',
+      textDecoration: 'underline',
+    },
+  };
+
+  const handleLanguageChange = (e: { target: { value: any; }; }) => {
+    const lang = e.target.value;
+    const translateElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+    if (translateElement) {
+      translateElement.value = lang;
+      translateElement.dispatchEvent(new Event('change'));
+    }
+  };
 
   return (
     <Box component="footer" sx={{ display: 'flex', bgcolor: 'black', color: 'white' }}>
@@ -72,12 +105,26 @@ export default function AppFooter() {
                 </Link>
               </Grid>
               <Copyright />
+              <Grid item>
+                <Typography variant="body2" color="white">
+                  <Link
+                    onClick={() => navigate('/About')}
+                    sx={linkStyle}
+                  >
+                    About
+                  </Link>
+                </Typography>
+              </Grid>
             </Grid>
           </Grid>
           <Grid item xs={6} sm={3} md={2}>
             <Typography variant="h6" sx={{ color: 'white', mb: 1 }}>Legal</Typography>
-            <Link href="/Terms" sx={{ color: 'white', display: 'block', textDecoration: 'none' }}>Terms</Link>
-            <Link href="/Privacy" sx={{ color: 'white', textDecoration: 'none' }}>Privacy</Link>
+            <Typography variant="body2" sx={linkStyle} onClick={() => navigate('/Terms')}>
+              Terms
+            </Typography>
+            <Typography variant="body2" sx={linkStyle} onClick={() => navigate('/Privacy')}>
+              Privacy
+            </Typography>
           </Grid>
           <Grid item xs={6} sm={3} md={2}>
             <Typography variant="h6" sx={{ color: 'white', mb: 1 }}>Our Hours</Typography>
@@ -109,6 +156,7 @@ export default function AppFooter() {
                 '.MuiInput-underline:after': { borderBottomColor: 'white' },
                 '.MuiNativeSelect-select': { backgroundColor: 'black' },
               }}
+              onChange={handleLanguageChange}
             >
               {LANGUAGES.map(language => (
                 <option key={language.code} value={language.code} style={{ backgroundColor: 'black', color: 'white' }}>

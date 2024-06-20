@@ -51,8 +51,8 @@ const QuickSightDashboard: React.FC = () => {
         const options = {
           url: dashboardUrl,
           container: dashboardRef.current,
-          height: '1500px',
-          width: '1850px',
+          height: '2000px',
+          width: '100%',
         };
 
         await embeddingContext.embedDashboard(options);
@@ -69,8 +69,8 @@ const QuickSightDashboard: React.FC = () => {
         const options = {
           url: searchUrl,
           container: searchRef.current,
-          height: '50px',
-          width: '1850px',
+          height: '50px',  
+          width: '100%', 
         };
 
         await embeddingContext.embedQSearchBar(options);
@@ -83,6 +83,11 @@ const QuickSightDashboard: React.FC = () => {
 
   return (
     <>
+      <div className="container mt-4 mb-4">
+        <h1 className="text-center">Solar Panel Installation Insights</h1>
+        <p className="text-center text-muted">
+        This dashboard offers a comprehensive visual analysis of solar panel-related data, including a list of contractors and consultants, as well as details on solar panel installations throughout Bahrain.        </p>
+      </div>
       <div ref={searchRef} className="quicksightSearchContainer" /> {/* Search Container */}
       <div ref={dashboardRef} className="quicksightDashboardContainer" /> {/* Dashboard Container */}
     </>

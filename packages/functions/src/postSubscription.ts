@@ -1,5 +1,6 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import { SQL } from "./dbConfig";
+import AWS from 'aws-sdk';
 
 interface SubscriptionData {
   first_name: string;
@@ -8,6 +9,8 @@ interface SubscriptionData {
   phone: string;
 }
 
+const sns = new AWS.SNS();
+
 export const handler: APIGatewayProxyHandler = async (event) => {
   console.log('Received event:', JSON.stringify(event, null, 2));
 
@@ -15,7 +18,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     console.error('No data provided in the event body');
     return {
       statusCode: 400,
-      body: JSON.stringify({ message: 'No data provided' }),
+      body: JSON.stringify({ message: 'No subscription data provided' }),
     };
   }
 
@@ -29,15 +32,6 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       body: JSON.stringify({ message: 'First name, last name, email, and phone number are required' }),
     };
   }
-
- // Validate phone number format (+973 followed by 8 digits)
- if (!/^\+973\d{8}$/.test(phone)) {
-  console.error('Invalid phone number format');
-  return {
-    statusCode: 400,
-    body: JSON.stringify({ message: 'Phone number must be in the format +973 followed by 8 digits' }),
-  };
-}
 
   try {
     // Check if the email already exists
@@ -82,17 +76,27 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       .execute();
     console.log('Subscription data insert successful');
 
+    // Send SMS message to the new subscriber
+    const snsParams = {
+      Message: `Welcome, ${first_name} ${last_name}! Thank you for subscribing to our educational resources.`,
+      PhoneNumber: phone,
+    };
+
+    console.log('Sending SMS message...');
+    await sns.publish(snsParams).promise();
+    console.log('SMS message sent successfully');
+
     return {
       statusCode: 201,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: 'Subscription data added successfully' }),
+      body: JSON.stringify({ message: 'Subscription data added and SMS sent successfully' }),
     };
   } catch (error) {
     console.error('Error during operation:', error);
     const errorMessage = (error instanceof Error) ? error.message : 'Unknown error';
     return {
       statusCode: 500,
-      body: JSON.stringify({ message: 'Failed to insert subscription data', error: errorMessage }),
+      body: JSON.stringify({ message: 'Failed to insert subscription data or send SMS', error: errorMessage }),
     };
   }
 };

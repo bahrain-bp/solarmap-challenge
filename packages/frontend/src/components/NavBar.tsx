@@ -21,7 +21,6 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import { fetchUserAttributes } from '@aws-amplify/auth';
 import logo from "../assets/logo.png";
 import HomeIcon from '@mui/icons-material/Home';
-import InfoIcon from '@mui/icons-material/Info';
 import PeopleIcon from '@mui/icons-material/People';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import SchoolIcon from '@mui/icons-material/School';
@@ -31,6 +30,8 @@ import FolderIcon from '@mui/icons-material/Folder';
 import MapIcon from '@mui/icons-material/Map';
 import ThermostatIcon from '@mui/icons-material/Thermostat';
 import StatsIcon from '@mui/icons-material/BarChart';
+import BookIcon from '@mui/icons-material/Book';
+import GetStartedIcon from '@mui/icons-material/PlayCircleFilled'; // Add icon for Get Started
 
 interface DrawerLinkProps {
   active: boolean;
@@ -55,7 +56,7 @@ const StyledLink = styled(Button)(({ theme }) => ({
   color: theme.palette.common.white,
   marginLeft: theme.spacing(3),
   fontFamily: 'Quicksand, sans-serif',
-  textTransform: 'none', // Ensures text is not in all caps
+  textTransform: 'none',
   transition: 'background-color 0.3s ease-in-out, transform 0.3s ease',
   '&:hover, &.active': {
     backgroundColor: theme.palette.primary.dark,
@@ -70,7 +71,7 @@ const StyledLink = styled(Button)(({ theme }) => ({
 const DropdownButton = styled(Button)(({ theme }) => ({
   color: theme.palette.common.white,
   marginLeft: theme.spacing(1),
-  textTransform: 'none', // Ensures text is not in all caps
+  textTransform: 'none',
   fontFamily: 'Quicksand, sans-serif',
   transition: 'background-color 0.3s, transform 0.3s ease',
   '&:hover, &.active': {
@@ -83,7 +84,7 @@ const RightLink = styled(Button)(({ theme }) => ({
   color: theme.palette.common.white,
   borderColor: theme.palette.common.white,
   fontFamily: 'Quicksand, sans-serif',
-  textTransform: 'none', // Ensures text is not in all caps
+  textTransform: 'none',
   '&:hover': {
     backgroundColor: theme.palette.primary.dark,
     transform: 'scale(1.05)',
@@ -105,7 +106,7 @@ const DrawerLink = styled(Box)<DrawerLinkProps>(({ theme, active }) => ({
   alignItems: 'center',
   padding: theme.spacing(1, 2),
   transition: 'background-color 0.3s ease-in-out, transform 0.3s ease',
-  cursor: 'pointer', // Ensure cursor shows as pointer
+  cursor: 'pointer',
   '&:hover, &.active': {
     backgroundColor: theme.palette.primary.dark,
     color: theme.palette.common.white,
@@ -125,7 +126,8 @@ const icons: { [key: string]: JSX.Element } = {
   'Heat Map': <ThermostatIcon />,
   'Calculator Usage Stats': <StatsIcon />,
   User: <PeopleIcon />,
-  About: <InfoIcon />
+  Guide: <BookIcon />,
+  'Get Started': <GetStartedIcon />, // Add icon for Get Started
 };
 
 const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
@@ -215,6 +217,18 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
         </DrawerLink>
       </ListItem>
       <ListItem disablePadding>
+        <DrawerLink active={isActive('/GetStarted')} onClick={() => navigate('/GetStarted')}>
+          {icons['Get Started']}
+          <ListItemText primary="Get Started" sx={{ marginLeft: theme.spacing(1) }} />
+        </DrawerLink>
+      </ListItem>
+      <ListItem disablePadding>
+        <DrawerLink active={isActive('/Guide')} onClick={() => navigate('/Guide')}>
+          {icons.Guide}
+          <ListItemText primary="Guide" sx={{ marginLeft: theme.spacing(1) }} />
+        </DrawerLink>
+      </ListItem>
+      <ListItem disablePadding>
         <DrawerLink active={isActive('/Provider')} onClick={() => navigate('/Provider')}>
           {icons.Providers}
           <ListItemText primary="Providers" sx={{ marginLeft: theme.spacing(1) }} />
@@ -253,12 +267,6 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
           </ListItem>
         </List>
       </Collapse>
-      <ListItem disablePadding>
-        <DrawerLink active={isActive('/About')} onClick={() => navigate('/About')}>
-          {icons.About}
-          <ListItemText primary="About" sx={{ marginLeft: theme.spacing(1) }} />
-        </DrawerLink>
-      </ListItem>
       {isLoggedIn && (
         <>
           <ListItem button onClick={handleAdminDashboardMenuClick}>
@@ -338,6 +346,12 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
               <StyledLink onClick={() => navigate('/')} className={isActive('/') ? 'active' : ''}>
                 Home
               </StyledLink>
+              <StyledLink onClick={() => navigate('/GetStarted')} className={isActive('/GetStarted') ? 'active' : ''}>
+                Get Started
+              </StyledLink>
+              <StyledLink onClick={() => navigate('/Guide')} className={isActive('/Guide') ? 'active' : ''}>
+                Guide
+              </StyledLink>
               <StyledLink onClick={() => navigate('/Provider')} className={isActive('/Provider') ? 'active' : ''}>
                 Providers
               </StyledLink>
@@ -393,9 +407,6 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
                   Carbon Calculator
                 </MenuItem>
               </Menu>
-              <StyledLink onClick={() => navigate('/About')} className={isActive('/About') ? 'active' : ''}>
-                About
-              </StyledLink>
               {isLoggedIn && (
                 <>
                   <DropdownButton
@@ -437,7 +448,7 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
                     >
                       Reports
                     </MenuItem>
-                    <MenuItem
+                    {/* <MenuItem
                       onClick={() => {
                         navigate('/QuickSightDashboard');
                         handleClose();
@@ -445,7 +456,7 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
                       className={isActive('/QuickSightDashboard') ? 'active' : ''}
                     >
                       Business Dashboard
-                    </MenuItem>
+                    </MenuItem> */}
                     <MenuItem
                       onClick={() => {
                         navigate('/DocumentsDashboard');
@@ -480,10 +491,9 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
                       }}
                       className={isActive('/calcUsageStats') ? 'active' : ''}
                     >
-                      Statistics
+                      Calculator Statistics
                     </MenuItem>
                   </Menu>
-
                 </>
               )}
             </>
@@ -528,3 +538,4 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
 };
 
 export default NavBar;
+

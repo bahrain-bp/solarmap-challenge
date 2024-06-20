@@ -1,5 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createEmbeddingContext, EmbeddingContext } from 'amazon-quicksight-embedding-sdk';
+import {
+  Box,
+  Typography,
+  Container,
+  Paper,
+  CircularProgress,
+  Divider,
+  Tooltip,
+  IconButton,
+} from '@mui/material';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 // Interface to type the response received for embedding URLs
 interface QuickSightEmbedResponse {
@@ -61,7 +73,7 @@ const QuickSightDashboard: React.FC = () => {
         const options = {
           url: dashboardUrl,
           container: dashboardRef.current,
-          height: '2000px',
+          height: '2500px',
           width: '100%',
         };
 
@@ -93,16 +105,49 @@ const QuickSightDashboard: React.FC = () => {
   }, [embeddingContext, isSearchBarEmbedded, searchBarUrl]);
 
   return (
-    <>
-      <div className="container mt-4 mb-4">
-        <h1 className="text-center">Dashboard: Calculator Usage Insights</h1>
-        <p className="text-center text-muted">
-          This dashboard provides a visual analysis of the usage patterns of our calculator tools. Explore interactive data representations to understand user engagement and operational metrics.
-        </p>
-      </div>
-      <div ref={searchBarRef} className="quicksightSearchBarContainer" />
-      <div ref={dashboardRef} className="quicksightDashboardContainer" />
-    </>
+    <Box>
+      <Container maxWidth="lg" sx={{ position: 'relative' }}>
+        <Tooltip title="The Q search bar allows you to quickly search and filter the dashboard data. Simply type in your query to get insights.">
+          <IconButton
+            sx={{
+              position: 'absolute',
+              top: 16,
+              left: 28,
+              color: '#3f51b5',
+            }}
+          >
+            <HelpOutlineIcon />
+          </IconButton>
+        </Tooltip>
+        <Paper
+          elevation={3}
+          sx={{
+            padding: 4,
+            marginTop: 4,
+            marginBottom: 4,
+            background: 'linear-gradient(to right, #f5f5f5, #e0e0e0)',
+            boxShadow: '0 3px 5px 2px rgba(105, 105, 105, .3)',
+            borderRadius: 2,
+          }}
+        >
+          <Box display="flex" alignItems="center" justifyContent="center" mb={2}>
+            <BarChartIcon sx={{ fontSize: 40, marginRight: 2, color: '#3f51b5' }} />
+            <Typography variant="h4" component="h1" gutterBottom align="center" sx={{ fontWeight: 'bold', color: '#3f51b5' }}>
+              Dashboard: Calculator Usage Insights
+            </Typography>
+          </Box>
+          <Typography variant="body1" align="center" color="textSecondary" paragraph>
+            This dashboard provides a visual analysis of the usage patterns of our calculator tools.
+            Explore interactive data representations to understand user engagement and operational metrics.
+          </Typography>
+          <Divider sx={{ marginY: 4 }} />
+        </Paper>
+      </Container>
+      <Box ref={searchBarRef} />
+      <Box ref={dashboardRef} sx={{ height: '2500px', width: '100%' }}>
+        {!isDashboardEmbedded && <CircularProgress />}
+      </Box>
+    </Box>
   );
 };
 
