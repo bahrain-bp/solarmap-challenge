@@ -33,6 +33,7 @@ export default function SolarHero() {
         autoPlay
         loop
         muted
+        playsInline // Ensure autoplay works on iOS devices
       >
         <source src={video} type="video/mp4" />
         Your browser does not support the video tag.

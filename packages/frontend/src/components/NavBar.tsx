@@ -163,6 +163,10 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
     setMobileOpen(!mobileOpen);
   };
 
+  const handleCloseDrawer = () => {
+    setMobileOpen(false);
+  };
+
   const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -207,35 +211,38 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
           src={logo}
           alt="Logo"
           style={{ height: '55px', margin: theme.spacing(1), cursor: 'pointer' }}
-          onClick={() => navigate('/')}
+          onClick={() => {
+            navigate('/');
+            handleCloseDrawer();
+          }}
         />
       </ListItem>
       <ListItem disablePadding>
-        <DrawerLink active={isActive('/')} onClick={() => navigate('/')}>
+        <DrawerLink active={isActive('/')} onClick={() => { navigate('/'); handleCloseDrawer(); }}>
           {icons.Home}
           <ListItemText primary="Home" sx={{ marginLeft: theme.spacing(1) }} />
         </DrawerLink>
       </ListItem>
       <ListItem disablePadding>
-        <DrawerLink active={isActive('/GetStarted')} onClick={() => navigate('/GetStarted')}>
+        <DrawerLink active={isActive('/GetStarted')} onClick={() => { navigate('/GetStarted'); handleCloseDrawer(); }}>
           {icons['Get Started']}
           <ListItemText primary="Get Started" sx={{ marginLeft: theme.spacing(1) }} />
         </DrawerLink>
       </ListItem>
       <ListItem disablePadding>
-        <DrawerLink active={isActive('/Guide')} onClick={() => navigate('/Guide')}>
+        <DrawerLink active={isActive('/Guide')} onClick={() => { navigate('/Guide'); handleCloseDrawer(); }}>
           {icons.Guide}
           <ListItemText primary="Guide" sx={{ marginLeft: theme.spacing(1) }} />
         </DrawerLink>
       </ListItem>
       <ListItem disablePadding>
-        <DrawerLink active={isActive('/Provider')} onClick={() => navigate('/Provider')}>
+        <DrawerLink active={isActive('/Provider')} onClick={() => { navigate('/Provider'); handleCloseDrawer(); }}>
           {icons.Providers}
           <ListItemText primary="Providers" sx={{ marginLeft: theme.spacing(1) }} />
         </DrawerLink>
       </ListItem>
       <ListItem disablePadding>
-        <DrawerLink active={isActive('/EducationalResources')} onClick={() => navigate('/EducationalResources')}>
+        <DrawerLink active={isActive('/EducationalResources')} onClick={() => { navigate('/EducationalResources'); handleCloseDrawer(); }}>
           {icons['Educational Resources']}
           <ListItemText primary="Educational Resources" sx={{ marginLeft: theme.spacing(1) }} />
         </DrawerLink>
@@ -248,19 +255,19 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
       <Collapse in={mapMenuOpen} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           <ListItem disablePadding>
-            <DrawerLink active={isActive('/DocumentUpload')} onClick={() => navigate('/DocumentUpload')} sx={{ pl: 4 }}>
+            <DrawerLink active={isActive('/DocumentUpload')} onClick={() => { navigate('/DocumentUpload'); handleCloseDrawer(); }} sx={{ pl: 4 }}>
               {icons['Document Upload']}
               <ListItemText primary="Document Upload" sx={{ marginLeft: theme.spacing(1) }} />
             </DrawerLink>
           </ListItem>
           <ListItem disablePadding>
-            <DrawerLink active={isActive('/MapV2')} onClick={() => navigate('/MapV2')} sx={{ pl: 4 }}>
+            <DrawerLink active={isActive('/MapV2')} onClick={() => { navigate('/MapV2'); handleCloseDrawer(); }} sx={{ pl: 4 }}>
               {icons['Admin Map']}
               <ListItemText primary="Map" sx={{ marginLeft: theme.spacing(1) }} />
             </DrawerLink>
           </ListItem>
           <ListItem disablePadding>
-            <DrawerLink active={isActive('/CarbonEmissionsCalculator')} onClick={() => navigate('/CarbonEmissionsCalculator')} sx={{ pl: 4 }}>
+            <DrawerLink active={isActive('/CarbonEmissionsCalculator')} onClick={() => { navigate('/CarbonEmissionsCalculator'); handleCloseDrawer(); }} sx={{ pl: 4 }}>
               {icons['Calculator Usage Stats']}
               <ListItemText primary="Carbon Calculator" sx={{ marginLeft: theme.spacing(1) }} />
             </DrawerLink>
@@ -277,43 +284,43 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
           <Collapse in={adminMenuOpen} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
               <ListItem disablePadding>
-                <DrawerLink active={isActive('/UserManagement')} onClick={() => navigate('/UserManagement')} sx={{ pl: 4 }}>
+                <DrawerLink active={isActive('/UserManagement')} onClick={() => { navigate('/UserManagement'); handleCloseDrawer(); }} sx={{ pl: 4 }}>
                   {icons.User}
                   <ListItemText primary="User Management" sx={{ marginLeft: theme.spacing(1) }} />
                 </DrawerLink>
               </ListItem>
               <ListItem disablePadding>
-                <DrawerLink active={isActive('/Reports')} onClick={() => navigate('/Reports')} sx={{ pl: 4 }}>
+                <DrawerLink active={isActive('/Reports')} onClick={() => { navigate('/Reports'); handleCloseDrawer(); }} sx={{ pl: 4 }}>
                   {icons.Reports}
                   <ListItemText primary="Reports" sx={{ marginLeft: theme.spacing(1) }} />
                 </DrawerLink>
               </ListItem>
               <ListItem disablePadding>
-                <DrawerLink active={isActive('/QuickSightDashboard')} onClick={() => navigate('/QuickSightDashboard')} sx={{ pl: 4 }}>
+                <DrawerLink active={isActive('/QuickSightDashboard')} onClick={() => { navigate('/QuickSightDashboard'); handleCloseDrawer(); }} sx={{ pl: 4 }}>
                   {icons['Business Dashboard']}
                   <ListItemText primary="Business Dashboard" sx={{ marginLeft: theme.spacing(1) }} />
                 </DrawerLink>
               </ListItem>
               <ListItem disablePadding>
-                <DrawerLink active={isActive('/DocumentsDashboard')} onClick={() => navigate('/DocumentsDashboard')} sx={{ pl: 4 }}>
+                <DrawerLink active={isActive('/DocumentsDashboard')} onClick={() => { navigate('/DocumentsDashboard'); handleCloseDrawer(); }} sx={{ pl: 4 }}>
                   {icons['Documents Dashboard']}
                   <ListItemText primary="Documents Dashboard" sx={{ marginLeft: theme.spacing(1) }} />
                 </DrawerLink>
               </ListItem>
               <ListItem disablePadding>
-                <DrawerLink active={isActive('/AdminMap')} onClick={() => navigate('/AdminMap')} sx={{ pl: 4 }}>
+                <DrawerLink active={isActive('/AdminMap')} onClick={() => { navigate('/AdminMap'); handleCloseDrawer(); }} sx={{ pl: 4 }}>
                   {icons['Admin Map']}
                   <ListItemText primary="Admin Map" sx={{ marginLeft: theme.spacing(1) }} />
                 </DrawerLink>
               </ListItem>
               <ListItem disablePadding>
-                <DrawerLink active={isActive('/AdminMapAnalytics')} onClick={() => navigate('/AdminMapAnalytics')} sx={{ pl: 4 }}>
+                <DrawerLink active={isActive('/AdminMapAnalytics')} onClick={() => { navigate('/AdminMapAnalytics'); handleCloseDrawer(); }} sx={{ pl: 4 }}>
                   {icons['Heat Map']}
                   <ListItemText primary="Heat Map" sx={{ marginLeft: theme.spacing(1) }} />
                 </DrawerLink>
               </ListItem>
               <ListItem disablePadding>
-                <DrawerLink active={isActive('/calcUsageStats')} onClick={() => navigate('/calcUsageStats')} sx={{ pl: 4 }}>
+                <DrawerLink active={isActive('/calcUsageStats')} onClick={() => { navigate('/calcUsageStats'); handleCloseDrawer(); }} sx={{ pl: 4 }}>
                   {icons['Calculator Usage Stats']}
                   <ListItemText primary="Statistics" sx={{ marginLeft: theme.spacing(1) }} />
                 </DrawerLink>
@@ -448,7 +455,7 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
                     >
                       Reports
                     </MenuItem>
-                    {/* <MenuItem
+                    <MenuItem
                       onClick={() => {
                         navigate('/QuickSightDashboard');
                         handleClose();
@@ -456,7 +463,7 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
                       className={isActive('/QuickSightDashboard') ? 'active' : ''}
                     >
                       Business Dashboard
-                    </MenuItem> */}
+                    </MenuItem>
                     <MenuItem
                       onClick={() => {
                         navigate('/DocumentsDashboard');
@@ -538,4 +545,3 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
 };
 
 export default NavBar;
-

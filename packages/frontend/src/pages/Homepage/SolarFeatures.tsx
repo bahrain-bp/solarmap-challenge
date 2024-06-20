@@ -47,6 +47,10 @@ const ImageIconButton = styled(ButtonBase)(({ theme }) => ({
   '& .imageTitle': {
     position: 'relative',
     padding: `${theme.spacing(2)} ${theme.spacing(4)} 14px`,
+    [theme.breakpoints.down('sm')]: {
+      padding: `${theme.spacing(1)} ${theme.spacing(2)} 10px`, // Adjust padding for smaller screens
+      fontSize: '1rem', // Adjust font size for smaller screens
+    },
   },
   '& .imageMarked': {
     height: 3,
@@ -104,7 +108,13 @@ export default function SolarFeatures() {
   return (
     <Box sx={{ bgcolor: '#0d1b2a', py: 8 }}>
       <Container component="section" sx={{ mt: 8, mb: 4 }}>
-        <Typography variant="h4" marked="center" align="center" component="h2" sx={{ color: 'white' }}>
+        <Typography
+          variant="h4"
+          marked="center"
+          align="center"
+          component="h2"
+          sx={{ color: 'white', fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem' } }} // Adjust font size based on screen size
+        >
           What we offer
         </Typography>
         <Box sx={{ mt: 8, display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start' }}>
@@ -145,6 +155,7 @@ export default function SolarFeatures() {
                     variant="h6"
                     color="inherit"
                     className="imageTitle"
+                    sx={{ fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' } }} // Adjust font size based on screen size
                   >
                     {image.title}
                     <div className="imageMarked" />
