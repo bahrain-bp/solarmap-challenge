@@ -9,6 +9,7 @@ import {
   Stack,
   Typography,
   CircularProgress,
+  TextField,
 } from '@mui/material';
 import exportString from '../../api_url';
 import GroundStation from '../../assets/catagory_satellite_banner.jpg';
@@ -28,7 +29,22 @@ const SatelliteData: React.FC<SatelliteDataProps> = ({ isLoggedIn }) => {
   const [snackbarMessage, setSnackbarMessage] = useState<string>('');
   const [page, setPage] = useState<number>(1);
   const [rowsPerPage, setRowsPerPage] = useState<number>(6);
-  const [refreshTrigger, setRefreshTrigger] = useState<boolean>(false); // New state for refresh trigger
+  const [searchQuery, setSearchQuery] = useState<string>(''); // New state for search query
+
+  const getFileName = (key: string) => key.replace('data/JPSS1/viirs/level2/', '');
+
+  const extractFileInfo = (fileName: string) => {
+    const nameParts = fileName.split('.');
+    const dateMatch = fileName.match(/d(\d{8})/);
+    const formattedDate = dateMatch ? dateMatch[1].replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3') : '';
+    const firstPart = nameParts[0];
+    const lastPart = nameParts[nameParts.length - 2] + '.' + nameParts[nameParts.length - 1];
+    return {
+      firstPart,
+      formattedDate,
+      lastPart,
+    };
+  };
 
   const fetchSatelliteImages = async () => {
     try {
@@ -47,7 +63,7 @@ const SatelliteData: React.FC<SatelliteDataProps> = ({ isLoggedIn }) => {
 
   useEffect(() => {
     fetchSatelliteImages(); // Fetch satellite images on initial render
-  }, [refreshTrigger]); // Fetch satellite images on initial render and whenever refreshTrigger changes
+  }, []);
 
   const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
@@ -64,14 +80,21 @@ const SatelliteData: React.FC<SatelliteDataProps> = ({ isLoggedIn }) => {
     setSnackbarOpen(false);
   };
 
-  const paginatedImages = satelliteImages.slice(
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+    setPage(1); // Reset to the first page on search
+  };
+
+  const filteredImages = satelliteImages.filter((image) =>
+    getFileName(image.key).toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const paginatedImages = filteredImages.slice(
     (page - 1) * rowsPerPage,
     page * rowsPerPage
   );
 
   const cardBackgroundColor = '#073763'; // Same color as the "Learn More" button
-
-  const getFileName = (key: string) => key.replace('data/JPSS1/viirs/level2/', '');
 
   return (
     <Box sx={{ backgroundColor: 'white', display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
@@ -106,61 +129,106 @@ const SatelliteData: React.FC<SatelliteDataProps> = ({ isLoggedIn }) => {
         </Box>
       </Box>
       <Container sx={{ flex: 1, py: 4, pb: 8 }}>
+        <Box mb={4}>
+          <TextField
+            label="Search Images"
+            variant="outlined"
+            fullWidth
+            value={searchQuery}
+            onChange={handleSearchChange}
+          />
+        </Box>
         {isLoading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }}>
             <CircularProgress />
           </Box>
         ) : error ? (
           <Alert severity="error">{error}</Alert>
-        ) : satelliteImages.length === 0 ? (
+        ) : filteredImages.length === 0 ? (
           <Typography variant="body1">No images found.</Typography>
         ) : (
           <Grid container spacing={4}>
-            {paginatedImages.map((imageData) => (
-              <Grid item xs={12} sm={6} md={4} key={imageData.key}>
-                <Box
-                  sx={{
-                    borderRadius: 2,
-                    boxShadow: 3,
-                    overflow: 'hidden',
-                    backgroundColor: cardBackgroundColor,
-                    position: 'relative',
-                    height: '100%',
-                  }}
-                >
-                  <a
-                    href={imageData.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      textDecoration: 'none',
-                      color: 'white',
+            {paginatedImages.map((imageData) => {
+              const { firstPart, formattedDate, lastPart } = extractFileInfo(getFileName(imageData.key));
+              return (
+                <Grid item xs={12} sm={6} md={4} key={imageData.key}>
+                  <Box
+                    sx={{
+                      borderRadius: 2,
+                      boxShadow: 3,
+                      overflow: 'hidden',
+                      backgroundColor: cardBackgroundColor,
+                      position: 'relative',
+                      height: '100%',
                     }}
                   >
-                    <img
-                      src={imageData.url}
-                      alt={imageData.key}
+                    <a
+                      href={imageData.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       style={{
-                        width: '100%',
-                        height: '200px',
-                        objectFit: 'cover',
+                        textDecoration: 'none',
+                        color: 'white',
                       }}
-                    />
-                  </a>
-                  <Box sx={{ p: 2 }}>
-                    <Typography variant="h6" gutterBottom sx={{ color: 'white' }}>
-                      {getFileName(imageData.key)}
-                    </Typography>
+                    >
+                      <img
+                        src={imageData.url}
+                        alt={imageData.key}
+                        style={{
+                          width: '100%',
+                          height: '200px',
+                          objectFit: 'cover',
+                        }}
+                      />
+                    </a>
+                    <Box sx={{ p: 2 }}>
+                      <Typography 
+                        variant="body1" 
+                        gutterBottom 
+                        sx={{ 
+                          color: 'white', 
+                          textOverflow: 'ellipsis', 
+                          whiteSpace: 'nowrap', 
+                          overflow: 'hidden'
+                        }}
+                      >
+                        <strong>Satellite Name:</strong> {firstPart}
+                      </Typography>
+                      <Typography 
+                        variant="body1" 
+                        gutterBottom 
+                        sx={{ 
+                          color: 'white', 
+                          textOverflow: 'ellipsis', 
+                          whiteSpace: 'nowrap', 
+                          overflow: 'hidden'
+                        }}
+                      >
+                        <strong>Contact Date:</strong> {formattedDate}
+                      </Typography>
+                      <Typography 
+                        variant="body1" 
+                        gutterBottom 
+                        sx={{ 
+                          color: 'white', 
+                          textOverflow: 'ellipsis', 
+                          whiteSpace: 'nowrap', 
+                          overflow: 'hidden'
+                        }}
+                      >
+                        <strong>Data Type:</strong> {lastPart}
+                      </Typography>
+                    </Box>
                   </Box>
-                </Box>
-              </Grid>
-            ))}
+                </Grid>
+              );
+            })}
           </Grid>
         )}
 
         <Stack spacing={2} mt={4} alignItems="center">
           <Pagination
-            count={Math.ceil(satelliteImages.length / rowsPerPage)}
+            count={Math.ceil(filteredImages.length / rowsPerPage)}
             page={page}
             onChange={handlePageChange}
             color="primary"
