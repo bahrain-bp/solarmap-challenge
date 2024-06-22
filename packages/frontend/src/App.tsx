@@ -145,7 +145,7 @@ function App() {
 
   const normRoutes = (
     <Routes>
-            <Route path="/SatelliteData" element={<SatelliteData isLoggedIn={false} />} />
+      <Route path="/SatelliteData" element={<SatelliteData isLoggedIn={false}/>} />
       <Route path="/" element={<Home />} />
       <Route path="/About" element={<About />} />
       <Route path="/Provider" element={<Providers isLoggedIn={isLoggedIn} />} />

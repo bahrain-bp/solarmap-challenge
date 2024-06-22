@@ -21,14 +21,14 @@ interface SatelliteDataProps {
   isLoggedIn: boolean;
 }
 
-const SatelliteData: React.FC<SatelliteDataProps> = ({ isLoggedIn }) => {
+const SatelliteData: React.FC<SatelliteDataProps> = ({ }) => {
   const [satelliteImages, setSatelliteImages] = useState<{ key: string, url: string }[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
   const [snackbarMessage, setSnackbarMessage] = useState<string>('');
   const [page, setPage] = useState<number>(1);
-  const [rowsPerPage, setRowsPerPage] = useState<number>(6);
+  const [rowsPerPage] = useState<number>(6);
   const [searchQuery, setSearchQuery] = useState<string>(''); // New state for search query
 
   const getFileName = (key: string) => key.replace('data/JPSS1/viirs/level2/', '');
@@ -69,11 +69,6 @@ const SatelliteData: React.FC<SatelliteDataProps> = ({ isLoggedIn }) => {
     setPage(value);
     setSnackbarMessage(`Page ${value}`);
     setSnackbarOpen(true);
-  };
-
-  const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(1);
   };
 
   const handleCloseSnackbar = () => {
@@ -173,7 +168,7 @@ const SatelliteData: React.FC<SatelliteDataProps> = ({ isLoggedIn }) => {
                     >
                       <img
                         src={imageData.url}
-                        alt={imageData.key}
+                        alt={"Click to Download\n"+imageData.key}
                         style={{
                           width: '100%',
                           height: '200px',
