@@ -71,6 +71,8 @@ const SatelliteData: React.FC<SatelliteDataProps> = ({ isLoggedIn }) => {
 
   const cardBackgroundColor = '#073763'; // Same color as the "Learn More" button
 
+  const getFileName = (key: string) => key.replace('data/JPSS1/viirs/level2/', '');
+
   return (
     <Box sx={{ backgroundColor: 'white', display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Box sx={{ position: 'relative', width: '100%', height: '300px', mb: 4, overflow: 'hidden' }}>
@@ -147,7 +149,7 @@ const SatelliteData: React.FC<SatelliteDataProps> = ({ isLoggedIn }) => {
                   </a>
                   <Box sx={{ p: 2 }}>
                     <Typography variant="h6" gutterBottom sx={{ color: 'white' }}>
-                      {imageData.key}
+                      {getFileName(imageData.key)}
                     </Typography>
                   </Box>
                 </Box>
