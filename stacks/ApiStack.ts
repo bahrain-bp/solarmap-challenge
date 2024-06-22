@@ -66,6 +66,17 @@ export function ApiStack(context: StackContext) {
             "POST /inquiry": "packages/functions/src/postInquiry.handler",
             "GET /inquiry": "packages/functions/src/fetchInquiry.handler",
 
+            "GET /satelliteData": {
+              function: {
+                  handler: "packages/functions/src/getSatelliteData.handler",
+                  permissions: [new PolicyStatement({
+                    actions: ['s3:*'],
+                    resources: ['arn:aws:s3:::aws-groundstation-s3dd-husain/*'],
+                  })],
+              }
+          },
+          
+
             "GET /testWebSocket": "packages/functions/src/testWebSocket.handler",
                       "POST /segmentedRooftop": "packages/functions/src/segmentedRooftop.handler",
               "PUT /consultants/{consultant_id}": "packages/functions/src/updateConsultant.handler",
