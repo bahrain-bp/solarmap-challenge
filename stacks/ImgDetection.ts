@@ -5,12 +5,12 @@ import * as iam from "aws-cdk-lib/aws-iam";
 
 export function ImgDetection({ stack }: StackContext) {
 
- // Create a policy statement for ECR
- const ecrPolicy = new iam.PolicyStatement({
-    actions: ['ecr:GetAuthorizationToken', 'ecr:PutImage'],
-    resources: ['*'], 
-    effect: iam.Effect.ALLOW
-});
+    // Create a policy statement for ECR
+    const ecrPolicy = new iam.PolicyStatement({
+        actions: ['ecr:GetAuthorizationToken', 'ecr:PutImage'],
+        resources: ['*'],
+        effect: iam.Effect.ALLOW
+    });
     /*
 
     const rooftopFunction = new Function(stack, "rooftopFunction", {
@@ -22,58 +22,72 @@ export function ImgDetection({ stack }: StackContext) {
     });
 
     */
-   /*
+    /*
+ 
+     // Inside your ApiStack function
+     const rooftopInferenceFunction = new lambda.Function(stack, 'rooftopInferenceFunction', {
+         runtime: lambda.Runtime.PYTHON_3_11, // Specify the Python 3.8 runtime
+         code: lambda.Code.fromAsset("packages/functions/src/rooftop-segmentation/"), // Assuming the Lambda handler code is in this directory
+         handler: "rooftopDetection.lambda_handler", // Adjust the handler path as necessary
+         memorySize: 2048,
+         timeout: Duration.seconds(120),
+         layers: [
+             new lambda.LayerVersion(stack, "firstLayer", {
+                 layerVersionName: stack.stage + '-inference-requests-rich-layers',
+                 code: lambda.Code.fromAsset("packages/functions/src/rooftop-segmentation/inference-requests-rich/python.zip")
+             }),
+             new lambda.LayerVersion(stack, "secondLayer", {
+                 layerVersionName: stack.stage + '-charset-idna-certifi-dotenv-layers',
+                 code: lambda.Code.fromAsset("packages/functions/src/rooftop-segmentation/charset-idna-certifi-dotenv/python.zip")
+             }),
+ 
+         ],
+     });
+ 
+     */
 
-    // Inside your ApiStack function
-    const rooftopInferenceFunction = new lambda.Function(stack, 'rooftopInferenceFunction', {
-        runtime: lambda.Runtime.PYTHON_3_11, // Specify the Python 3.8 runtime
-        code: lambda.Code.fromAsset("packages/functions/src/rooftop-segmentation/"), // Assuming the Lambda handler code is in this directory
-        handler: "rooftopDetection.lambda_handler", // Adjust the handler path as necessary
-        memorySize: 2048,
-        timeout: Duration.seconds(120),
-        layers: [
-            new lambda.LayerVersion(stack, "firstLayer", {
-                layerVersionName: stack.stage + '-inference-requests-rich-layers',
-                code: lambda.Code.fromAsset("packages/functions/src/rooftop-segmentation/inference-requests-rich/python.zip")
-            }),
-            new lambda.LayerVersion(stack, "secondLayer", {
-                layerVersionName: stack.stage + '-charset-idna-certifi-dotenv-layers',
-                code: lambda.Code.fromAsset("packages/functions/src/rooftop-segmentation/charset-idna-certifi-dotenv/python.zip")
-            }),
 
-        ],
-    });
 
-    */
-
-    const rooftopInferenceDockerFunction = new lambda.DockerImageFunction(stack, 'rooftopInferenceDockerFunction', {
-        code: lambda.DockerImageCode.fromImageAsset("packages/functions/src/rooftop-segmentation/"), 
+    const solarPanelInferenceDockerFunction = new lambda.DockerImageFunction(stack, 'solarPanelInferenceDockerFunction', {
+        code: lambda.DockerImageCode.fromImageAsset("packages/functions/src/solar-panel-detection/"),
         memorySize: 2048,
         timeout: Duration.seconds(120),
         architecture: lambda.Architecture.X86_64,
     });
 
-    
-// Attach the ECR policy to the Lambda function's role
-rooftopInferenceDockerFunction.role?.addToPrincipalPolicy(ecrPolicy);
-// Create a FIFO SQS Queue
-const queue = new Queue(stack, "rooftopQueue", {
-    consumer: {
-        cdk: {
-            function: lambda.Function.fromFunctionAttributes(stack, "IFunction", {
-                functionArn: rooftopInferenceDockerFunction.functionArn,
-                role: rooftopInferenceDockerFunction.role,
-            }),
 
+    // Attach the ECR policy to the Lambda function's role
+    solarPanelInferenceDockerFunction.role?.addToPrincipalPolicy(ecrPolicy);
+
+
+    const rooftopInferenceDockerFunction = new lambda.DockerImageFunction(stack, 'rooftopInferenceDockerFunction', {
+        code: lambda.DockerImageCode.fromImageAsset("packages/functions/src/rooftop-segmentation/"),
+        memorySize: 2048,
+        timeout: Duration.seconds(120),
+        architecture: lambda.Architecture.X86_64,
+    });
+
+
+    // Attach the ECR policy to the Lambda function's role
+    rooftopInferenceDockerFunction.role?.addToPrincipalPolicy(ecrPolicy);
+    // Create a FIFO SQS Queue
+    const queue = new Queue(stack, "rooftopQueue", {
+        consumer: {
+            cdk: {
+                function: lambda.Function.fromFunctionAttributes(stack, "IFunction", {
+                    functionArn: rooftopInferenceDockerFunction.functionArn,
+                    role: rooftopInferenceDockerFunction.role,
+                }),
+
+            },
         },
-    },
-    cdk: {
-        queue: {
-            queueName: stack.stage + 'rooftopQueue',
-            visibilityTimeout: Duration.seconds(120),
-        },
-    }
-});
+        cdk: {
+            queue: {
+                queueName: stack.stage + 'rooftopQueue',
+                visibilityTimeout: Duration.seconds(120),
+            },
+        }
+    });
 
 
 
@@ -122,6 +136,7 @@ const queue = new Queue(stack, "rooftopQueue", {
 
     return {
         queue,
-        bucket
+        bucket, 
+        solarPanelInferenceDockerFunction
     }
 }

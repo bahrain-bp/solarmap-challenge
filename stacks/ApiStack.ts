@@ -23,7 +23,7 @@ export function ApiStack(context: StackContext) {
 
     const imgDetection = use(ImgDetection);
     const mapsBucket = imgDetection.bucket;
-
+    const solarPanelDetection = imgDetection.solarPanelInferenceDockerFunction;
 
     const amazonLexSolarMapFulfillment = use(AmazonLexSolarMapFulfillment);
     const communicationFunction = amazonLexSolarMapFulfillment.communicationFunction;
@@ -70,6 +70,13 @@ export function ApiStack(context: StackContext) {
                       "POST /segmentedRooftop": "packages/functions/src/segmentedRooftop.handler",
               "PUT /consultants/{consultant_id}": "packages/functions/src/updateConsultant.handler",
                       "PUT /contractors/{contractor_id}": "packages/functions/src/updateContractor.handler",
+
+
+          "POST /solarPanelDetection": {
+            cdk: {
+              function: solarPanelDetection,
+            },
+          },
 
 
           "PUT /resources/{resource_id}": "packages/functions/src/updateEduResources.handler",
