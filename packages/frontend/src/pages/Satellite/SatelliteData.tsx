@@ -1,12 +1,15 @@
-import Alert from '@mui/material/Alert';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
-import Pagination from '@mui/material/Pagination';
-import Snackbar from '@mui/material/Snackbar';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
 import React, { useEffect, useState } from 'react';
+import {
+  Alert,
+  Box,
+  Container,
+  Grid,
+  Pagination,
+  Snackbar,
+  Stack,
+  Typography,
+  CircularProgress,
+} from '@mui/material';
 import exportString from '../../api_url';
 import GroundStation from '../../assets/catagory_satellite_banner.jpg';
 
@@ -48,6 +51,8 @@ const SatelliteData: React.FC<SatelliteDataProps> = ({ isLoggedIn }) => {
 
   const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
+    setSnackbarMessage(`Page ${value}`);
+    setSnackbarOpen(true);
   };
 
   const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,7 +96,7 @@ const SatelliteData: React.FC<SatelliteDataProps> = ({ isLoggedIn }) => {
           }}
         >
           <Typography variant="h3" component="h1" gutterBottom>
-            Satellite Data
+            Satellite L2 Data
           </Typography>
           <Typography variant="h6">
             View satellite images retrieved from the Ground Station.
@@ -100,9 +105,11 @@ const SatelliteData: React.FC<SatelliteDataProps> = ({ isLoggedIn }) => {
       </Box>
       <Container sx={{ flex: 1, py: 4, pb: 8 }}>
         {isLoading ? (
-          <Typography>Loading...</Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }}>
+            <CircularProgress />
+          </Box>
         ) : error ? (
-          <Typography variant="body1" color="error">{error}</Typography>
+          <Alert severity="error">{error}</Alert>
         ) : satelliteImages.length === 0 ? (
           <Typography variant="body1">No images found.</Typography>
         ) : (
