@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Container, Grid, Link, Typography, TextField } from '@mui/material';
+import { Box, Button, Container, Grid, Link, Typography } from '@mui/material';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import YouTubeIcon from '@mui/icons-material/YouTube';
@@ -9,10 +9,6 @@ import { faXTwitter } from '@fortawesome/free-brands-svg-icons';
 import SubscribeForm from '../forms/SubscribeForm';
 import UnsubscribeForm from '../forms/UnsubscribeForm';
 
-const LANGUAGES = [
-  { code: 'en', name: 'English' },
-  { code: 'ar', name: 'Arabic' },
-];
 
 const iconStyles = {
   base: {
@@ -75,15 +71,6 @@ export default function AppFooter() {
     },
   };
 
-  const handleLanguageChange = (e: { target: { value: any; }; }) => {
-    const lang = e.target.value;
-    const translateElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
-    if (translateElement) {
-      translateElement.value = lang;
-      translateElement.dispatchEvent(new Event('change'));
-    }
-  };
-
   return (
     <Box component="footer" sx={{ display: 'flex', bgcolor: 'black', color: 'white' }}>
       <Container maxWidth="xl" sx={{ my: 4 }}>
@@ -140,30 +127,6 @@ export default function AppFooter() {
             <Typography variant="body2" sx={{ color: 'white' }}>Southern Municipal</Typography>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <Typography variant="h6" sx={{ color: 'white' }}>Language</Typography>
-            <TextField
-              select
-              size="medium"
-              variant="standard"
-              SelectProps={{ native: true }}
-              sx={{
-                mt: 1,
-                width: 180,
-                color: 'white',
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                '.MuiInputBase-root': { color: 'white' },
-                '.MuiInput-underline:before': { borderBottomColor: 'white' },
-                '.MuiInput-underline:after': { borderBottomColor: 'white' },
-                '.MuiNativeSelect-select': { backgroundColor: 'black' },
-              }}
-              onChange={handleLanguageChange}
-            >
-              {LANGUAGES.map(language => (
-                <option key={language.code} value={language.code} style={{ backgroundColor: 'black', color: 'white' }}>
-                  {language.name}
-                </option>
-              ))}
-            </TextField>
             <Typography variant="h6" sx={{ color: 'white', mt: 2 }}>
               Subscribe to our Newsletter
             </Typography>
