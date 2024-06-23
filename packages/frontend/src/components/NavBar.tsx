@@ -31,7 +31,8 @@ import MapIcon from '@mui/icons-material/Map';
 import ThermostatIcon from '@mui/icons-material/Thermostat';
 import StatsIcon from '@mui/icons-material/BarChart';
 import BookIcon from '@mui/icons-material/Book';
-import GetStartedIcon from '@mui/icons-material/PlayCircleFilled'; // Add icon for Get Started
+import GetStartedIcon from '@mui/icons-material/PlayCircleFilled';
+import SatelliteIcon from '@mui/icons-material/Satellite'; // Add icon for Satellite Data
 
 interface DrawerLinkProps {
   active: boolean;
@@ -115,6 +116,7 @@ const DrawerLink = styled(Box)<DrawerLinkProps>(({ theme, active }) => ({
 }));
 
 const icons: { [key: string]: JSX.Element } = {
+  'Satellite Data': <SatelliteIcon />, 
   Home: <HomeIcon />,
   Providers: <PeopleIcon />,
   'Document Upload': <UploadFileIcon />,
@@ -127,7 +129,7 @@ const icons: { [key: string]: JSX.Element } = {
   'Calculator Usage Stats': <StatsIcon />,
   User: <PeopleIcon />,
   Guide: <BookIcon />,
-  'Get Started': <GetStartedIcon />, // Add icon for Get Started
+  'Get Started': <GetStartedIcon />,
 };
 
 const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
@@ -235,6 +237,12 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
           <ListItemText primary="Guide" sx={{ marginLeft: theme.spacing(1) }} />
         </DrawerLink>
       </ListItem>
+      <ListItem disablePadding>
+            <DrawerLink active={isActive('/SatelliteData')} onClick={() => { navigate('/SatelliteData'); handleCloseDrawer(); }}>
+              {icons['Satellite Data']}
+              <ListItemText primary="Satellite Data" sx={{ marginLeft: theme.spacing(1) }} />
+            </DrawerLink>
+          </ListItem>
       <ListItem disablePadding>
         <DrawerLink active={isActive('/Provider')} onClick={() => { navigate('/Provider'); handleCloseDrawer(); }}>
           {icons.Providers}
@@ -359,6 +367,15 @@ const NavBar: React.FC<NavbarProps> = ({ isLoggedIn, onLogInButton }) => {
               <StyledLink onClick={() => navigate('/Guide')} className={isActive('/Guide') ? 'active' : ''}>
                 Guide
               </StyledLink>
+              <StyledLink
+                  onClick={() => {
+                    navigate('/SatelliteData');
+                    handleClose();
+                  }}
+                  className={isActive('/SatelliteData') ? 'active' : ''}
+                >
+                  Satellite Data
+                </StyledLink>
               <StyledLink onClick={() => navigate('/Provider')} className={isActive('/Provider') ? 'active' : ''}>
                 Providers
               </StyledLink>

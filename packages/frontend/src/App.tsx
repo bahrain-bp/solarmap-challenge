@@ -38,6 +38,8 @@ import ErrorView from './pages/Error/ErrorView';
 import UserManagement from './pages/UserManagement';
 import GetStarted from './pages/GetStarted';
 
+import SatelliteData from './pages/Satellite/SatelliteData';
+
 function App() {
   const identityPoolId = import.meta.env.VITE_IDENTITY_POOL_ID; // Cognito Identity Pool ID
   const mapName = import.meta.env.VITE_MAP_NAME; // Amazon Location Service Map Name
@@ -143,6 +145,7 @@ function App() {
 
   const normRoutes = (
     <Routes>
+      <Route path="/SatelliteData" element={<SatelliteData isLoggedIn={false}/>} />
       <Route path="/" element={<Home />} />
       <Route path="/About" element={<About />} />
       <Route path="/Provider" element={<Providers isLoggedIn={isLoggedIn} />} />
