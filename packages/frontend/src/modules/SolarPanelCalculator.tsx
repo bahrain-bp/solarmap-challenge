@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from "react";
 import exportString from "../api_url";
 
-const SolarPanelCalculator = () => {
-  const [rooftopSize, setRooftopSize] = useState<number>(0);
+interface SolarPanelCalculatorProps {
+  firstAreaSize: number | null;
+}
+
+const SolarPanelCalculator: React.FC<SolarPanelCalculatorProps> = ({ firstAreaSize }) => {
+  const [rooftopSize, setRooftopSize] = useState<number>(firstAreaSize || 0);
   const [fillPercentage, setFillPercentage] = useState<number>(50);
   const [electricityUsage, setElectricityUsage] = useState<number>(0);
   const [subsidized, setSubsidized] = useState<boolean>(false);
@@ -16,6 +20,12 @@ const SolarPanelCalculator = () => {
   const [treesPlanted, setTreesPlanted] = useState<number>(0);
   const API_BASE_URL = exportString();
   const [showInquireButton, setShowInquireButton] = useState(false);
+  
+  useEffect(() => {
+    if (firstAreaSize !== null) {
+      setRooftopSize(firstAreaSize);
+    }
+  }, [firstAreaSize]);
   
   const handleRooftopSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRooftopSize(parseFloat(event.target.value));
