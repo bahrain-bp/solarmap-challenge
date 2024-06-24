@@ -110,7 +110,7 @@ def lambda_handler(event, context):
                     "segmentedImage": annotated_image_base64,
                     "areaSizes": area_sizes
                 }
-                post_response = requests.post("https://4fa2gsnj8b.execute-api.us-east-1.amazonaws.com/segmentedRooftop", json=post_data)
+                post_response = requests.post("https://3n4cdty3o9.execute-api.us-east-1.amazonaws.com/segmentedRooftop", json=post_data)
 
                 if post_response.status_code == 200:
                     print("Data successfully sent to /segmentedRooftop")
