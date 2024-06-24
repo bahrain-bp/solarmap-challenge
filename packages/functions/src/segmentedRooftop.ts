@@ -10,7 +10,7 @@ export const handler = async (event: APIGatewayProxyEvent) => {
     // @ts-ignore
     const TableName = Table.Connections.tableName;
     const dynamoDb = new DynamoDB.DocumentClient();
-    const url = 'wss://zrzuvslvoj.execute-api.us-east-1.amazonaws.com/husain';
+    const url = 'wss://fckt4ovy57.execute-api.us-east-1.amazonaws.com/prod';
 
     // Parse the incoming event body
     // @ts-ignore

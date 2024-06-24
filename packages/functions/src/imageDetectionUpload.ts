@@ -20,7 +20,7 @@ export async function handler(event: any) {
             };
         }
 
-        const bucketName = "husain-codecatalyst-sst-app-imgde-mybucket63468683-q3geernroc75";
+        const bucketName = "prod-codecatalyst-sst-app-imgdete-mybucket63468683-5afsqszsqfoy";
         // Get the current date and time formatted
         const currentDateTime = Moment().format('YYYYMMDD_HHmmss');
 
