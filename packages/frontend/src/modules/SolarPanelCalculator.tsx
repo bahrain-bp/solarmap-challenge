@@ -170,10 +170,10 @@ const SolarPanelCalculator = () => {
         <div className="card">
           <div className="card-body">
             <p>Number of Solar Panels: {numPanels}</p>
-            <p>Installation Cost: {installationCost.toFixed(1)} BHD</p>
-            <p>Electricity Cost: {electricityCost.toFixed(1)} BHD/month</p>
-            <p>Monthly Savings: {savingsPerMonth.toFixed(1)} BHD</p>
-            <p>ROI: {roiYears.toFixed(1)} years until break-even</p>
+            <p>Installation Cost: {Math.trunc(installationCost)} BHD</p>
+            <p>Electricity Cost: {Math.trunc(electricityCost)} BHD/month</p>
+            <p>Monthly Savings: {Math.trunc(savingsPerMonth)} BHD</p>
+            <p>ROI: {Math.trunc(roiYears)} years until break-even</p>
           </div>
         </div>
       </div>
@@ -183,9 +183,9 @@ const SolarPanelCalculator = () => {
         <div className="card">
           <div className="card-body">
             <h5 className="card-title">Carbon Calculator</h5>
-            <p>Kilometers Driven Saved: {kmDrivenSaved}</p>
-            <p>Emissions Saved (kg): {emissionsSaved}</p>
-            <p>Trees Planted: {treesPlanted}</p>
+            <p>Driving Emissions Saved (kg): {Math.trunc(kmDrivenSaved)}</p>
+            <p>Emissions Saved (kg): {Math.trunc(emissionsSaved)}</p>
+            <p>Trees Planted: {Math.trunc(treesPlanted)}</p>
             {/* Add more carbon footprint details here */}
           </div>
         </div>
