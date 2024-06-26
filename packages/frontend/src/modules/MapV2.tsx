@@ -7,13 +7,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import ToggleIcon from '@mui/icons-material/ToggleOn'; // Import toggle icon
 import ToggleOffIcon from '@mui/icons-material/ToggleOff'; // Import toggle off icon
 import './geoCoding.css'
-import type { MapController } from "@maptiler/geocoding-control/types";
 import { GeocodingControl } from "@maptiler/geocoding-control/react";
-import { createMapLibreGlMapController } from "@maptiler/geocoding-control/maplibregl-controller";
 import "@maptiler/geocoding-control/style.css";
 import 'maplibre-gl/dist/maplibre-gl.css';
 import SolarPanelCalculator from "./SolarPanelCalculator";
 import IconButton from "@mui/material/IconButton";
+
+import { createMapLibreGlMapController } from "@maptiler/geocoding-control/maplibregl-controller";
 
 // @ts-ignore
 MapboxDraw.constants.classes.CONTROL_BASE = "maplibregl-ctrl";
@@ -41,7 +41,6 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
   const [errorMessage, setErrorMessage] = useState<string>('');
   const mapRef = useRef<maplibregl.Map | null>(null);
   const [boxSize, setBoxSize] = useState<number>(0.001);  // Initial size of the box in degrees
-  const [mapController, setMapController] = useState<MapController | undefined>()
   const [isCalculatorVisible, setIsCalculatorVisible] = useState(false);
 
   const handleToggle = () => {
@@ -76,12 +75,7 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
           canvasContainer.classList.add('mapboxgl-interactive');
         }
 
-        mapRef.current.on('load', () => {
-          if (mapRef.current) {
-            const mapController = createMapLibreGlMapController(mapRef.current, maplibregl);
-            setMapController(mapController);
-          }
-
+        const loadMyLayers = () => {
           mapRef.current?.addSource('openmaptiles', {
             url: `https://api.maptiler.com/tiles/v3/tiles.json?key=${import.meta.env.VITE_TILER_API_KEY}`,
             type: 'vector',
@@ -164,6 +158,17 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
               });
             }
           });
+        };
+
+        mapRef.current.on('style.load', () => {
+          const waiting = () => {
+            if (!mapRef.current?.isStyleLoaded()) {
+              setTimeout(waiting, 200);
+            } else {
+              loadMyLayers();
+            }
+          };
+          waiting();
         });
 
         mapRef.current.addControl(new maplibregl.NavigationControl(), "bottom-right");
@@ -430,7 +435,6 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
       newSocket.close();
     };
   }, []);
-
   return (
     <>
       {isModalVisible && (
@@ -503,13 +507,13 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
       )}
 
       <div style={{ position: 'relative', width: '100%', height: '90vh' }}>
-        <div className="geocoding">
-          <GeocodingControl apiKey={import.meta.env.VITE_TILER_API_KEY} country={"BH"} mapController={mapController} />
-        </div>
+        {mapRef.current ? ( <div className="geocoding">
+          <GeocodingControl apiKey={import.meta.env.VITE_TILER_API_KEY} country={"BH"} mapController={createMapLibreGlMapController(mapRef.current, maplibregl)}/>
+        </div>) : (<h1></h1>)}
         <div>
-          <div className="geocoding">
-            <GeocodingControl apiKey={import.meta.env.VITE_TILER_API_KEY} country={"BH"} mapController={mapController} />
-          </div>
+        {mapRef.current ? ( <div className="geocoding">
+          <GeocodingControl apiKey={import.meta.env.VITE_TILER_API_KEY} country={"BH"} mapController={createMapLibreGlMapController(mapRef.current, maplibregl)}/>
+        </div>) : (<h1></h1>)}
           <IconButton
             color="primary"
             onClick={handleToggle}
