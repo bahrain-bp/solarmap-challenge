@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from "react";
 import exportString from "../api_url";
 
-const SolarPanelCalculator = () => {
-  const [rooftopSize, setRooftopSize] = useState<number>(0);
+interface SolarPanelCalculatorProps {
+  firstAreaSize: number | null;
+}
+
+const SolarPanelCalculator: React.FC<SolarPanelCalculatorProps> = ({ firstAreaSize }) => {
+  const [rooftopSize, setRooftopSize] = useState<number>(firstAreaSize || 0);
   const [fillPercentage, setFillPercentage] = useState<number>(50);
   const [electricityUsage, setElectricityUsage] = useState<number>(0);
   const [subsidized, setSubsidized] = useState<boolean>(false);
@@ -16,7 +20,13 @@ const SolarPanelCalculator = () => {
   const [treesPlanted, setTreesPlanted] = useState<number>(0);
   const API_BASE_URL = exportString();
   const [showInquireButton, setShowInquireButton] = useState(false);
-  
+
+  useEffect(() => {
+    if (firstAreaSize !== null) {
+      setRooftopSize(firstAreaSize);
+    }
+  }, [firstAreaSize]);
+
   const handleRooftopSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRooftopSize(parseFloat(event.target.value));
   };
@@ -31,6 +41,16 @@ const SolarPanelCalculator = () => {
 
   const handleSubsidizedChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSubsidized(event.target.checked);
+  };
+
+  const convertToYearsMonths = (decimalYears: number) => {
+    const totalMonths = Math.round(decimalYears * 12);
+    const years = Math.floor(totalMonths / 12);
+    const months = totalMonths % 12;
+    if (months === 0) {
+      return `${years} years`;
+    }
+    return `${years} years and ${months} months`;
   };
 
   const saveSolarPanelCalculation = async (
@@ -57,12 +77,11 @@ const SolarPanelCalculator = () => {
     }
   };
 
-
   const calculateSolarPanels = () => {
     const actualRooftopSize = (fillPercentage / 100) * rooftopSize;
     const panelsFit = Math.floor(actualRooftopSize / 1.6);
     setNumPanels(panelsFit);
-    const installationCost = panelsFit * 500;
+    const installationCost = panelsFit * 90; // Adjusted cost per panel to 300 BHD
     setInstallationCost(installationCost);
     let costPerKWh = 0;
     if (subsidized) {
@@ -76,10 +95,10 @@ const SolarPanelCalculator = () => {
     } else {
       costPerKWh = 0.29;
     }
-    
+
     const electricityCost = costPerKWh * electricityUsage;
     setElectricityCost(electricityCost);
-    const dailyProductionPerPanel = 1.5;
+    const dailyProductionPerPanel = 1.5; // Adjusted to 1.5 kWh per panel per day
     const daysInMonth = 30;
     const potentialSavings = panelsFit * dailyProductionPerPanel * daysInMonth * costPerKWh;
     const maximumSavings = Math.min(potentialSavings, electricityCost);
@@ -90,7 +109,7 @@ const SolarPanelCalculator = () => {
     saveSolarPanelCalculation(
       panelsFit,
       installationCost,
-      (maximumSavings / installationCost) * 100, // ROI percentage
+      ((maximumSavings / installationCost) * 100 ) /4, // ROI percentage
       roiYears
     );
     calculateCarbonFootprint(maximumSavings);
@@ -103,11 +122,11 @@ const SolarPanelCalculator = () => {
 
     // Store results in sessionStorage
     sessionStorage.setItem('calculationResults', JSON.stringify({
-        numPanels: panelsFit,
-        installationCost,
-        electricityCost,
-        monthlySavings: potentialSavings, 
-        roiYears
+      numPanels: panelsFit,
+      installationCost,
+      electricityCost,
+      monthlySavings: potentialSavings,
+      roiYears
     }));
     setShowInquireButton(true);
   };
@@ -170,10 +189,10 @@ const SolarPanelCalculator = () => {
         <div className="card">
           <div className="card-body">
             <p>Number of Solar Panels: {numPanels}</p>
-            <p>Installation Cost: {installationCost.toFixed(1)} BHD</p>
-            <p>Electricity Cost: {electricityCost.toFixed(1)} BHD/month</p>
-            <p>Monthly Savings: {savingsPerMonth.toFixed(1)} BHD</p>
-            <p>ROI: {roiYears.toFixed(1)} years until break-even</p>
+            <p>Installation Cost: {Math.trunc(installationCost)} BHD</p>
+            <p>Electricity Cost: {Math.trunc(electricityCost)} BHD/month</p>
+            <p>Monthly Savings: {Math.trunc(savingsPerMonth)} BHD</p>
+            <p>ROI: {convertToYearsMonths(roiYears)}</p>
           </div>
         </div>
       </div>
@@ -183,14 +202,14 @@ const SolarPanelCalculator = () => {
         <div className="card">
           <div className="card-body">
             <h5 className="card-title">Carbon Calculator</h5>
-            <p>Kilometers Driven Saved: {kmDrivenSaved}</p>
-            <p>Emissions Saved (kg): {emissionsSaved}</p>
-            <p>Trees Planted: {treesPlanted}</p>
-            {/* Add more carbon footprint details here */}
+            <p>Driving Emissions Saved (kg): {Math.trunc(kmDrivenSaved)}</p>
+            <p>Emissions Saved (kg): {Math.trunc(emissionsSaved)}</p>
+            <p>Trees Planted: {Math.trunc(treesPlanted)}</p>
           </div>
         </div>
       </div>
     </div>
+    
   );
 };
 
