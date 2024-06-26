@@ -20,13 +20,13 @@ const SolarPanelCalculator: React.FC<SolarPanelCalculatorProps> = ({ firstAreaSi
   const [treesPlanted, setTreesPlanted] = useState<number>(0);
   const API_BASE_URL = exportString();
   const [showInquireButton, setShowInquireButton] = useState(false);
-  
+
   useEffect(() => {
     if (firstAreaSize !== null) {
       setRooftopSize(firstAreaSize);
     }
   }, [firstAreaSize]);
-  
+
   const handleRooftopSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRooftopSize(parseFloat(event.target.value));
   };
@@ -67,12 +67,11 @@ const SolarPanelCalculator: React.FC<SolarPanelCalculatorProps> = ({ firstAreaSi
     }
   };
 
-
   const calculateSolarPanels = () => {
     const actualRooftopSize = (fillPercentage / 100) * rooftopSize;
     const panelsFit = Math.floor(actualRooftopSize / 1.6);
     setNumPanels(panelsFit);
-    const installationCost = panelsFit * 500;
+    const installationCost = panelsFit * 90; // Adjusted cost per panel to 300 BHD
     setInstallationCost(installationCost);
     let costPerKWh = 0;
     if (subsidized) {
@@ -86,10 +85,10 @@ const SolarPanelCalculator: React.FC<SolarPanelCalculatorProps> = ({ firstAreaSi
     } else {
       costPerKWh = 0.29;
     }
-    
+
     const electricityCost = costPerKWh * electricityUsage;
     setElectricityCost(electricityCost);
-    const dailyProductionPerPanel = 1.5;
+    const dailyProductionPerPanel = 1.5; // Adjusted to 1.5 kWh per panel per day
     const daysInMonth = 30;
     const potentialSavings = panelsFit * dailyProductionPerPanel * daysInMonth * costPerKWh;
     const maximumSavings = Math.min(potentialSavings, electricityCost);
@@ -100,7 +99,7 @@ const SolarPanelCalculator: React.FC<SolarPanelCalculatorProps> = ({ firstAreaSi
     saveSolarPanelCalculation(
       panelsFit,
       installationCost,
-      (maximumSavings / installationCost) * 100, // ROI percentage
+      ((maximumSavings / installationCost) * 100 ) /4, // ROI percentage
       roiYears
     );
     calculateCarbonFootprint(maximumSavings);
@@ -113,11 +112,11 @@ const SolarPanelCalculator: React.FC<SolarPanelCalculatorProps> = ({ firstAreaSi
 
     // Store results in sessionStorage
     sessionStorage.setItem('calculationResults', JSON.stringify({
-        numPanels: panelsFit,
-        installationCost,
-        electricityCost,
-        monthlySavings: potentialSavings, 
-        roiYears
+      numPanels: panelsFit,
+      installationCost,
+      electricityCost,
+      monthlySavings: potentialSavings,
+      roiYears
     }));
     setShowInquireButton(true);
   };
@@ -196,7 +195,6 @@ const SolarPanelCalculator: React.FC<SolarPanelCalculatorProps> = ({ firstAreaSi
             <p>Driving Emissions Saved (kg): {Math.trunc(kmDrivenSaved)}</p>
             <p>Emissions Saved (kg): {Math.trunc(emissionsSaved)}</p>
             <p>Trees Planted: {Math.trunc(treesPlanted)}</p>
-            {/* Add more carbon footprint details here */}
           </div>
         </div>
       </div>
