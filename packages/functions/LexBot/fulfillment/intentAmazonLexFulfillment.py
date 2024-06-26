@@ -137,7 +137,7 @@ def GetSolarPanelInstallationEstimateIntent(intent_request):
     estimate = calculate_solar_panel_estimate(property_size, location, electricity_consumption, roof_orientation, roof_type, shading, budget, installation_timeline)
     
     # Construct response text
-    text = f"ROI: {estimate['roi']} months, Cost: {estimate['cost']} BD, Solar Panels: {estimate['total_panels']}."
+    text = f"ROI: {estimate['roi']} years, Cost: {estimate['cost']} BD, Solar Panels: {estimate['total_panels']}."
 
     message = {
         'contentType': 'PlainText',
