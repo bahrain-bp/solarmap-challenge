@@ -13,6 +13,9 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import SolarPanelCalculator from "./SolarPanelCalculator";
 import IconButton from "@mui/material/IconButton";
 
+import type {MapController} from "@maptiler/geocoding-control/types";
+import { createMapLibreGlMapController } from "@maptiler/geocoding-control/maplibregl-controller";
+
 // @ts-ignore
 MapboxDraw.constants.classes.CONTROL_BASE = "maplibregl-ctrl";
 // @ts-ignore
@@ -505,13 +508,13 @@ const MapV2: React.FC<MapV2Props> = ({ identityPoolId, mapName }) => {
       )}
 
       <div style={{ position: 'relative', width: '100%', height: '90vh' }}>
-        <div className="geocoding">
-          <GeocodingControl apiKey={import.meta.env.VITE_TILER_API_KEY} country={"BH"} />
-        </div>
+        {mapRef.current ? ( <div className="geocoding">
+          <GeocodingControl apiKey={import.meta.env.VITE_TILER_API_KEY} country={"BH"} mapController={createMapLibreGlMapController(mapRef.current, maplibregl)}/>
+        </div>) : (<h1></h1>)}
         <div>
-          <div className="geocoding">
-            <GeocodingControl apiKey={import.meta.env.VITE_TILER_API_KEY} country={"BH"} />
-          </div>
+        {mapRef.current ? ( <div className="geocoding">
+          <GeocodingControl apiKey={import.meta.env.VITE_TILER_API_KEY} country={"BH"} mapController={createMapLibreGlMapController(mapRef.current, maplibregl)}/>
+        </div>) : (<h1></h1>)}
           <IconButton
             color="primary"
             onClick={handleToggle}
