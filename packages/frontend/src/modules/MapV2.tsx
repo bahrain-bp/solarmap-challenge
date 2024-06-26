@@ -13,7 +13,6 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import SolarPanelCalculator from "./SolarPanelCalculator";
 import IconButton from "@mui/material/IconButton";
 
-import type {MapController} from "@maptiler/geocoding-control/types";
 import { createMapLibreGlMapController } from "@maptiler/geocoding-control/maplibregl-controller";
 
 // @ts-ignore
