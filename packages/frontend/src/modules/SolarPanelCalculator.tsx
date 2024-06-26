@@ -43,6 +43,16 @@ const SolarPanelCalculator: React.FC<SolarPanelCalculatorProps> = ({ firstAreaSi
     setSubsidized(event.target.checked);
   };
 
+  const convertToYearsMonths = (decimalYears: number) => {
+    const totalMonths = Math.round(decimalYears * 12);
+    const years = Math.floor(totalMonths / 12);
+    const months = totalMonths % 12;
+    if (months === 0) {
+      return `${years} years`;
+    }
+    return `${years} years and ${months} months`;
+  };
+
   const saveSolarPanelCalculation = async (
     numberOfPanels: number,
     totalCost: number,
@@ -182,7 +192,7 @@ const SolarPanelCalculator: React.FC<SolarPanelCalculatorProps> = ({ firstAreaSi
             <p>Installation Cost: {Math.trunc(installationCost)} BHD</p>
             <p>Electricity Cost: {Math.trunc(electricityCost)} BHD/month</p>
             <p>Monthly Savings: {Math.trunc(savingsPerMonth)} BHD</p>
-            <p>ROI: {Math.trunc(roiYears)} years until break-even</p>
+            <p>ROI: {convertToYearsMonths(roiYears)}</p>
           </div>
         </div>
       </div>
@@ -199,6 +209,7 @@ const SolarPanelCalculator: React.FC<SolarPanelCalculatorProps> = ({ firstAreaSi
         </div>
       </div>
     </div>
+    
   );
 };
 
