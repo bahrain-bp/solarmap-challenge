@@ -13,7 +13,7 @@ import GuideHeader from '../assets/getstarted.jpg';
 import BillUploadImg from '../assets/ewabill.jpg';
 import MapImg from '../assets/bahrainmap.png';
 import ChatbotImg from '../assets/chatbot-3-ezgif.com-webp-to-jpg-converter.jpg';
-import carousel1 from '../assets/Screenshot 2024-06-19 220412.png';
+import carousel1 from '../assets/carousel1.png';
 import carousel2 from '../assets/carousel2.png';
 import carousel3 from '../assets/carousel3.png';
 import carousel4 from '../assets/carousel4.png';
@@ -81,32 +81,6 @@ const GetStarted: React.FC = () => {
                     </Typography>
                 </Box>
             </Box>
-
-            <Container sx={{ py: { xs: 2, sm: 2 } }}>
-                <Carousel>
-                    {slides.map((slide, index) => (
-                        <Box key={index} sx={{ textAlign: 'center', px: 2 }}>
-                            <img
-                                src={slide.image}
-                                alt={slide.title}
-                                style={{
-                                    width: '100%',
-                                    height: '300px',
-                                    objectFit: 'cover',
-                                    borderRadius: '4px',
-                                    marginBottom: '16px'
-                                }}
-                            />
-                            <Typography variant="h4" gutterBottom>
-                                {slide.title}
-                            </Typography>
-                            <Typography variant="body1" color="text.secondary">
-                                {slide.description}
-                            </Typography>
-                        </Box>
-                    ))}
-                </Carousel>
-            </Container>
 
             <Container sx={{ py: { xs: 4, sm: 8 } }}>
                 <Typography component="h2" variant="h4" color="text.primary" sx={{ pb: 4 }}>
@@ -176,6 +150,33 @@ const GetStarted: React.FC = () => {
                     </Grid>
                 </Grid>
             </Container>
+
+            <Container sx={{ py: { xs: 2, sm: 2 } }}>
+                <Carousel>
+                    {slides.map((slide, index) => (
+                        <Box key={index} sx={{ textAlign: 'center', px: 2 }}>
+                            <img
+                                src={slide.image}
+                                alt={slide.title}
+                                style={{
+                                    width: '100%',
+                                    height: '300px',
+                                    objectFit: 'cover',
+                                    borderRadius: '4px',
+                                    marginBottom: '16px'
+                                }}
+                            />
+                            <Typography variant="h4" gutterBottom>
+                                {slide.title}
+                            </Typography>
+                            <Typography variant="body1" color="text.secondary">
+                                {slide.description}
+                            </Typography>
+                        </Box>
+                    ))}
+                </Carousel>
+            </Container>
+
         </Box>
     );
 };
